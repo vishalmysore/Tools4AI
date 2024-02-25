@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Flight , Restaurant and Movie booking all in one go 
+ * Flight , Restaurant and Movie booking all in one go
  */
 public class UdoKhaoDekho {
 
@@ -140,9 +140,10 @@ public class UdoKhaoDekho {
 
             Gson restaurentGson = new Gson();
             String restaurentJsonString = restaurentGson.toJson(restaurantValues);
-            //send this to restaurant booking system
+            //you have got the json string with all the details send this to restaurant booking system
             System.out.println(restaurentJsonString);
            //restaurant booking done
+            //get the details from the booking system so that it can be send back to ai
 
             //return something in real world it will be response from retaurant booking system
             content =
