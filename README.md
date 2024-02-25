@@ -1,6 +1,6 @@
 # gemini
 
-## setup
+## SETUP
 
 mvn clean install
 

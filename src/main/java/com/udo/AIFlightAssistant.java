@@ -17,13 +17,13 @@ public class AIFlightAssistant {
         String location = "us-central1";
         String modelName = "gemini-1.0-pro";
 
-        String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june";
+        String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, what a great day it is";
 
         String status = bookFlight(projectId, location, modelName, promptText);
         System.out.println(promptText+ " : "+status);
     }
 
-    private static String bookFlight(String projectId, String location, String modelName,String promptText) {
+    public static String bookFlight(String projectId, String location, String modelName,String promptText) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
             Map<String, Type> properties = new HashMap<>();
@@ -32,8 +32,8 @@ public class AIFlightAssistant {
             properties.put("date", Type.STRING);
             properties.put("name", Type.STRING);
             FunctionDeclaration getDetailsOfFlight = FunctionDeclaration.newBuilder()
-                    .setName("getLocation")
-                    .setDescription("find the location of the person")
+                    .setName("getDetails")
+                    .setDescription("find the location and dates")
                     .setParameters(
                             getBuild(properties)
                     )
