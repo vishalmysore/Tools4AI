@@ -6,6 +6,12 @@ mvn clean install
 
 ## GCLOUD
 Make sure you have gloud project set up and have enabled vertex API
+```     
+        String projectId = "cookgptserver"
+        String location = "us-central1";
+        String modelName = "gemini-1.0-pro";
+```
+You have to mention your project id from cloud 
 
 ## Examples
 ``` RecipeTasteFinder  ```  This class demonstrates function calling with mapped Hashmap response <br>
