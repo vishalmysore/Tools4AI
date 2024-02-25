@@ -26,6 +26,7 @@ public class AIFlightAssistant {
     public static String bookFlight(String projectId, String location, String modelName,String promptText) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
+            //create the function getDetails , AI will pick the values and populate
             Map<String, Type> properties = new HashMap<>();
             properties.put("fromLocation", Type.STRING);
             properties.put("toLocation", Type.STRING);
@@ -43,6 +44,7 @@ public class AIFlightAssistant {
             System.out.println(getDetailsOfFlight);
 
 
+            //add the function to the tool
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(getDetailsOfFlight)
                     .build();

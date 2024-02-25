@@ -2,6 +2,9 @@ package com.udo;
 
 import java.io.IOException;
 
+/**
+ * Class to test various prompts and see if the booking works
+ */
 public class FlightCustomer {
     public static void main(String[] args) throws IOException {
 

@@ -9,6 +9,9 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Flight and Restaurant booking together
+ */
 public class MultiBot {
         public static void main(String[] args) throws IOException {
 
