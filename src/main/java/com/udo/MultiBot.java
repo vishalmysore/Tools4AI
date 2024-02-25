@@ -1,10 +1,9 @@
 package com.udo;
 
+import com.cookgpt.IndianFoodRecipes;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.*;
-import com.google.cloud.vertexai.generativeai.ChatSession;
-import com.google.cloud.vertexai.generativeai.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.google.cloud.vertexai.generativeai.*;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ public class MultiBot {
             String location = "us-central1";
             String modelName = "gemini-1.0-pro";
 
-            String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, what a great day it is";
+            String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, then i need to eat paneer butter masala with 4 people at Maharaja restaurant on 1st july";
 
             String status = bookFlightAndDinner(projectId, location, modelName, promptText);
             System.out.println(promptText+ " : "+status);
@@ -79,6 +78,7 @@ public class MultiBot {
 
                 System.out.println("\nPrint response 1 : ");
                 System.out.println(ResponseHandler.getContent(response));
+
                 Map<String,String> values =  getPropertyValues(response,(new ArrayList<>(properties.keySet())));
                 for (Map.Entry<String, String> entry : values.entrySet()) {
                     String propertyName = entry.getKey();
@@ -92,12 +92,35 @@ public class MultiBot {
                 System.out.println(jsonString);
 
                 FlightDetails flightDetails = gson.fromJson(jsonString, FlightDetails.class);
-                return BookingHelper.bookFlight(flightDetails);
+                Content content =
+                        ContentMaker.fromMultiModalData(
+                                PartMaker.fromFunctionResponse(
+                                        "getFlightDetails",Collections.singletonMap("","")));
+                //call the second function
+                response = chat.sendMessage(content);
+
+                System.out.println("Print response content: ");
+                System.out.println(ResponseHandler.getContent(response));
+                System.out.println(BookingHelper.bookFlight(flightDetails));
+
+                //fetch the resuaurent details
+                Map<String,String> restaurantValues =  getPropertyValues(response,(new ArrayList<>(dinnerProperties.keySet())));
+                for (Map.Entry<String, String> entry : restaurantValues.entrySet()) {
+                    String propertyName = entry.getKey();
+                    String propertyValue = entry.getValue();
+                    System.out.println(propertyName + ": " + propertyValue);
+                }
+
+                Gson restaurentGson = new Gson();
+                String restaurentJsonString = restaurentGson.toJson(restaurantValues);
+                //send this to restaurant booking system
+                System.out.println(restaurentJsonString);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
+            return "all done";
         }
         private static Map<String, String> getPropertyValues(GenerateContentResponse response, List<String> propertyNames) {
             Map<String, String> propertyValues = new HashMap<>();

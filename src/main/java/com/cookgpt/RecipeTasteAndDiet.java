@@ -64,7 +64,8 @@ public class RecipeTasteAndDiet {
             System.out.println(functionTaste);
 
             Tool tool = Tool.newBuilder()
-                    .addFunctionDeclarations(functionDeclaration).addFunctionDeclarations(functionTaste)
+                    .addFunctionDeclarations(functionDeclaration)
+                    .addFunctionDeclarations(functionTaste)
                     .build();
 
 
