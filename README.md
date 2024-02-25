@@ -22,8 +22,8 @@ You have to mention your project id from cloud
 ## Advanced Examples
 ``` Security - Guard Rails using Spring Security``` TBD <br>
 ``` Application Checkout and monitoring using with Gemini - Prompt - Check if my restaurant system is up and running and able to book the reservation``` TBD <br>
-``` Validation with Prompt  - Prompt - What happned the the flight booking i made whats the status?```TBD <br>
+``` Validation with Prompt  - Prompt - What happened the the flight booking i made whats the status?```TBD <br>
 
 ## Advanced prompt function calling
-``` Can you check if my movie booking system can handle 50 reservations in 1 min ```
-``` what happens if my cookgpt is giving only vegetarian recipes```
+``` Can you check if my movie booking system can handle 50 reservations in 1 min ``` <br>
+``` what happens if my cookgpt is giving only vegetarian recipes``` <br>
