@@ -2,6 +2,9 @@ package com.udo;
 
 import java.util.function.Function;
 
+/**
+ * In real world this will call the flight booking API we have got all the details here
+ */
 public class BookingHelper {
     public static String bookFlight(FlightDetails bookingRequest) {
         // Define the book function inside this method
