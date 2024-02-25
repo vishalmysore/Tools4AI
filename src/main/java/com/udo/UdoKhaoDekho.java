@@ -80,6 +80,7 @@ public class UdoKhaoDekho {
 
 
 
+            //add all 3 functions to the tool
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(getDetailsOfFlight)
                     .addFunctionDeclarations(dinnerPropertiesFunction)
@@ -98,9 +99,11 @@ public class UdoKhaoDekho {
             System.out.println(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
+            //this will populate values into the function automatically
             System.out.println("\nPrint response 1 : ");
             System.out.println(ResponseHandler.getContent(response));
 
+            //fetch the values and put in map
             Map<String,String> values =  getPropertyValues(response,(new ArrayList<>(properties.keySet())));
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 String propertyName = entry.getKey();
@@ -108,11 +111,13 @@ public class UdoKhaoDekho {
                 System.out.println(propertyName + ": " + propertyValue);
             }
 
+            //convert map to json
             Gson gson = new Gson();
             String jsonString = gson.toJson(values);
 
             System.out.println(jsonString);
 
+            //create pojo from the json
             FlightDetails flightDetails = gson.fromJson(jsonString, FlightDetails.class);
             System.out.println(BookingHelper.bookFlight(flightDetails));
             //Flight booking done
