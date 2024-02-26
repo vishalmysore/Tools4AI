@@ -1,4 +1,7 @@
-# gemini
+# Tools4AI
+This project illustrates the integration of AI with enterprise tools, converting natural language prompts <br>
+into actionable behaviors. By leveraging AI capabilities, it streamlines <br>
+user interactions with complex systems, enhancing productivity and innovation across diverse applications.<br>
 
 ## SETUP
 
