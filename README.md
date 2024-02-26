@@ -2,7 +2,13 @@
 This project illustrates the integration of AI with enterprise tools, converting natural language prompts <br>
 into actionable behaviors. By leveraging AI capabilities, it streamlines <br>
 user interactions with complex systems, enhancing productivity and innovation across diverse applications.<br>
-
+<br><br>
+we can integrate AI with a customer service application. Users can interact with the AI system by asking<br> 
+questions or making requests in natural language. For example, a user might ask, "Schedule a maintenance <br>
+appointment for my car." The AI system interprets the request, extracts relevant information such as the <br>
+service required and preferred date, and then triggers the appropriate action in the customer service<br>
+application to schedule the appointment. This seamless integration streamlines the process for users and<br>
+enhances the efficiency of the customer service workflow.<br>
 ## SETUP
 
 mvn clean install
