@@ -19,6 +19,28 @@ You have to mention your project id from cloud
 ``` MultiBot  ```  Run this class for function chaining with 2 functions Airline booking and restaurant booking<br>
 ``` UdoKhaoDekho  ```  3 functions Flight , Restaurant and Movie <br>
 
+## Tools Integration
+```
+   AITools tools = new AITools(projectId,location,modelName);
+   RestaurantPojo pojo = (RestaurantPojo)tools.invokeClass(promptText,"com.mysore.bridge.test.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
+   return pojo.toString();
+
+```
+The above code can be executed with prompts like this <br> 
+```
+can you book a dinner reseration for Vishal and his family of 4 at Maharaj on Indian Independence day and make sure its cancellable
+
+```
+and it will create Pojo and can invoke method directly <br>
+Other Tools methods are 
+
+```
+tools.invokeTibco 
+tools.invokeDatabase
+
+```
+
+
 ## Advanced Examples
 ``` Security - Guard Rails using Spring Security``` TBD <br>
 ``` Application Checkout and monitoring using with Gemini - Prompt - Check if my restaurant system is up and running and able to book the reservation``` TBD <br>
