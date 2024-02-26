@@ -30,6 +30,7 @@ and it will create Pojo and can invoke method directly <br>
 Other Tools methods are 
 
 ```
+tools.invokeMethod
 tools.invokeTibco 
 tools.invokeDatabase
 tools.invokeCustomApplication
