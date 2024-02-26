@@ -8,7 +8,8 @@ questions or making requests in natural language. For example, a user might ask,
 appointment for my car." The AI system interprets the request, extracts relevant information such as the <br>
 service required and preferred date, and then triggers the appropriate action in the customer service<br>
 application to schedule the appointment. This seamless integration streamlines the process for users and<br>
-enhances the efficiency of the customer service workflow.<br>
+enhances the efficiency of the customer service workflow.
+<br>
 ## SETUP
 
 mvn clean install
