@@ -34,6 +34,13 @@ Make sure you have gcloud project set up and have enabled vertex API
 ```
 You have to mention your project id from Gcloud 
 
+## Quick Start
+```
+mvn exec:java
+```
+The above command will run ```WeatherSearchExample``` with a prompt ```Hey I am in Toronto do you think i can go out without jacket```   
+as we all know Gemini AI (or any other AI) does not have real time weather information, Tools4AI will pick the location information from the query  
+and do an api call to https://open-meteo.com/ for real time weather infomraiton which is fed back to Gemini which gives back the answer  
 
 ## Tools Integration
 ```

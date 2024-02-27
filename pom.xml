@@ -65,6 +65,29 @@
             <compilerArgument>-parameters</compilerArgument>
         </configuration>
     </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- Specify the main class of your Java program -->
+                    <mainClass>com.external.WeatherSearchExample</mainClass>
+                    <!-- Pass arguments to your Java program -->
+                    <arguments>
+                        <argument>projectId=cookgptserver</argument>
+                        <argument>location=us-central1</argument>
+                        <argument>modelName=gemini-1.0-pro</argument>
+                        <argument>promptText="Hey I am in Toronto do you think i can go out without jacket"</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
