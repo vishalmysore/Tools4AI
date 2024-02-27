@@ -1,7 +1,7 @@
 # Tools4AI
-This project illustrates the integration of AI with enterprise tools or external tools, converting natural language prompts <br>
-into <span style="font-size: larger;">**actionable behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>  
-or <span style="font-size: larger;">**"actionable prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions  
+This project illustrates the integration of AI with enterprise tools or external tools, converting natural language prompts
+into <span style="font-size: larger;">**actionable behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>
+or <span style="font-size: larger;">**"actionable prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
 with complex systems, enhancing productivity and innovation across diverse applications.<br>
 <br><br>
 For example , we can integrate AI with a customer service application. Users can interact with the AI system by asking<br> 
