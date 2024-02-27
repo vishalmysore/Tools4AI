@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>Gemini</artifactId>
+    <groupId>com.t4a</groupId>
+    <artifactId>Tools4AI</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -26,6 +26,21 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20211205</version> <!-- Replace with the latest version -->
+        </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-vertexai</artifactId>

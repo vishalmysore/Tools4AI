@@ -1,4 +1,4 @@
-package com.mysore.bridge;
+package com.t4a.bridge;
 
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -13,18 +13,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JavaMethodBridge extends AIBridge {
+public class JavaMethodAction extends AIAction {
     private final Map<String, Type> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
     private Gson gson = new Gson();
 
     private Class<?> clazz ;
     private Method method;
-    public JavaMethodBridge() {
+    public JavaMethodAction() {
 
     }
 
-    public JavaMethodBridge(Gson gson) {
+    public JavaMethodAction(Gson gson) {
         this.gson = gson;
 
     }
@@ -59,7 +59,11 @@ public class JavaMethodBridge extends AIBridge {
     }
 
 
-
+    /**
+     * Convert metod to map with name and value ( needs --parameter to be set at compiler to work )
+     * @param className
+     * @param methodName
+     */
 
     private void mapMethod(String className, String methodName) {
 
@@ -87,7 +91,7 @@ public class JavaMethodBridge extends AIBridge {
             System.out.println("Class not found: " + className);
         }
     }
-    public void invoke(GenerateContentResponse response, Object instance) throws InvocationTargetException, IllegalAccessException {
+    public Object action(GenerateContentResponse response, Object instance) throws InvocationTargetException, IllegalAccessException {
         Map<String, Object> propertyValuesMap = getPropertyValuesMap(response);
         String[] parameterNames = Arrays.stream(method.getParameters())
                 .map(p -> p.getName())
@@ -102,7 +106,8 @@ public class JavaMethodBridge extends AIBridge {
         }
 
         // Invoke the method with arguments
-        method.invoke(instance, parameterValues);
+        Object obj = method.invoke(instance, parameterValues);
+        return obj;
     }
 
 

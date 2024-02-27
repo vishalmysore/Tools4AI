@@ -1,4 +1,4 @@
-package com.mysore.bridge;
+package com.t4a.bridge;
 
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -9,20 +9,26 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JavaClassBridge extends AIBridge {
+public class JavaClassAction extends AIAction {
     private Map<String, Type> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
     private Gson gson = new Gson();
 
-    public JavaClassBridge() {
+    public JavaClassAction() {
 
     }
 
-    public JavaClassBridge(Gson gson) {
+    public JavaClassAction(Gson gson) {
         this.gson = gson;
 
     }
     private Class<?> pojoClass ;
+
+    /**
+     * map the class to a map with name and value
+     * @param className
+     * @throws ClassNotFoundException
+     */
     public void mapClass(String className) throws ClassNotFoundException {
         this.pojoClass = Class.forName(className);;
 
@@ -65,7 +71,7 @@ public class JavaClassBridge extends AIBridge {
         return gson;
     }
 
-    public Object invoke(GenerateContentResponse response, String jsonString){
+    public Object action(GenerateContentResponse response, String jsonString){
         Object obj = gson.fromJson(jsonString, pojoClass);
         return obj;
     }

@@ -1,4 +1,4 @@
-package com.udo;
+package com.enterprise.fly;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.*;
@@ -6,10 +6,12 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.util.*;
 
+@Log
 public class AIFlightAssistant {
     public static void main(String[] args) throws IOException {
 
@@ -20,7 +22,7 @@ public class AIFlightAssistant {
         String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, what a great day it is";
 
         String status = bookFlight(projectId, location, modelName, promptText);
-        System.out.println(promptText+ " : "+status);
+        log.info(promptText+ " : "+status);
     }
 
     public static String bookFlight(String projectId, String location, String modelName,String promptText) {
@@ -40,8 +42,8 @@ public class AIFlightAssistant {
                     )
                     .build();
 
-            System.out.println("Function declaration h1:");
-            System.out.println(getDetailsOfFlight);
+            log.info("Function declaration h1:");
+            log.info(""+getDetailsOfFlight);
 
 
             //add the function to the tool
@@ -58,22 +60,22 @@ public class AIFlightAssistant {
                             .build();
             ChatSession chat = model.startChat();
 
-            System.out.println(String.format("Ask the question 1: %s", promptText));
+            log.info(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            System.out.println("\nPrint response 1 : ");
-            System.out.println(ResponseHandler.getContent(response));
+            log.info("\nPrint response 1 : ");
+            log.info(""+ResponseHandler.getContent(response));
             Map<String,String> values =  getPropertyValues(response,(new ArrayList<>(properties.keySet())));
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 String propertyName = entry.getKey();
                 String propertyValue = entry.getValue();
-                System.out.println(propertyName + ": " + propertyValue);
+                log.info(propertyName + ": " + propertyValue);
             }
 
             Gson gson = new Gson();
             String jsonString = gson.toJson(values);
 
-            System.out.println(jsonString);
+            log.info(jsonString);
 
             FlightDetails flightDetails = gson.fromJson(jsonString, FlightDetails.class);
             return BookingHelper.bookFlight(flightDetails);

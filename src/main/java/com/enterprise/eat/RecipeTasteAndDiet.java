@@ -1,12 +1,14 @@
-package com.cookgpt;
+package com.enterprise.eat;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.*;
 import com.google.cloud.vertexai.generativeai.*;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+@Log
 public class RecipeTasteAndDiet {
 
 
@@ -58,10 +60,10 @@ public class RecipeTasteAndDiet {
                                     .build()
                     )
                     .build();
-            System.out.println("Function declaration h1:");
-            System.out.println(functionDeclaration);
-            System.out.println("Function declaration h2:");
-            System.out.println(functionTaste);
+            log.info("Function declaration h1:");
+            log.info(""+functionDeclaration);
+            log.info("Function declaration h2:");
+            log.info(""+functionTaste);
 
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(functionDeclaration)
@@ -77,15 +79,15 @@ public class RecipeTasteAndDiet {
                             .build();
             ChatSession chat = model.startChat();
 
-            System.out.println(String.format("Ask the question 1: %s", promptText));
+            log.info(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
             // The model will most likely return a function call to the declared
             // function `getRecipeTaste` with "Paneer Butter Masala" as the value for the
             // argument `recipe`.
-            System.out.println("\nPrint response 1 : ");
-            //System.out.println(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get("recipe").getStringValue());
-            System.out.println(ResponseHandler.getContent(response));
+            log.info("\nPrint response 1 : ");
+            //log.info(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get("recipe").getStringValue());
+            log.info(""+ResponseHandler.getContent(response));
 
 
             Content content =
@@ -96,16 +98,16 @@ public class RecipeTasteAndDiet {
                             PartMaker.fromFunctionResponse(
                                     "getHealthyDiet",
                                     IndianFoodRecipes.getHealthy()));
-            System.out.println("Provide the function response 1: ");
-            System.out.println(content);
+            log.info("Provide the function response 1: ");
+            log.info(""+content);
             response = chat.sendMessage(content);
 
-            System.out.println("Print response content: ");
-            System.out.println(ResponseHandler.getContent(response));
+            log.info("Print response content: ");
+            log.info(""+ResponseHandler.getContent(response));
             // See what the model replies now
-            System.out.println("Print response Text: ");
+            log.info("Print response Text: ");
             String finalAnswer = ResponseHandler.getText(response);
-            System.out.println(finalAnswer);
+            log.info(finalAnswer);
 
             return finalAnswer;
         }

@@ -1,4 +1,4 @@
-package com.mysore.bridge;
+package com.t4a.bridge;
 
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -13,9 +13,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AIBridge {
+/**
+ * This is the base class for all the bridges will implement common functionality
+ */
+public abstract class AIAction {
 
 
+    /**
+     * Map Java type to Gemini type
+     * @param type
+     * @return
+     */
     public Type mapType(Class<?> type) {
         if (type == String.class) {
             return Type.STRING;
@@ -30,6 +38,12 @@ public abstract class AIBridge {
         } //use default as Object
 
     }
+
+    /**
+     * Create Gemini Schema object this will be used to create funciton
+     * @param properties
+     * @return
+     */
     protected Schema getBuild(Map<String, Type> properties) {
         Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
 
@@ -49,6 +63,12 @@ public abstract class AIBridge {
         return schemaBuilder.build();
     }
 
+    /**
+     * Create schema from single property
+     * @param type
+     * @param property
+     * @return
+     */
     protected  Schema getBuild(Type type, String property) {
         return Schema.newBuilder()
                 .setType(Type.OBJECT)
@@ -60,6 +80,16 @@ public abstract class AIBridge {
                 .addRequired(property)
                 .build();
     }
+
+    /**
+     * Create function from the funciton name and discription , this is the main method behind all the magic
+     * it builds based on the properties which are initially created using properties, this properties are
+     * created by the subclasses by mapping the method or java class. Any subclass has to populate the properties
+     * map object
+     * @param funName
+     * @param discription
+     * @return
+     */
     protected FunctionDeclaration getBuildFunction(String funName, String discription) {
         return FunctionDeclaration.newBuilder()
                 .setName(funName)
@@ -69,6 +99,13 @@ public abstract class AIBridge {
                 )
                 .build();
     }
+
+    /**
+     * Fetches the values populated by gemini into the function , this will get mapped to a MAP
+     * which can then converted to json or invoke method or make http call
+     * @param response
+     * @return
+     */
     public Map<String, Object> getPropertyValuesMap(GenerateContentResponse response) {
         List<String> propertyNames = new ArrayList<>(getProperties().keySet());
         Map<String, Object> propertyValues = new HashMap<>();

@@ -1,4 +1,4 @@
-package com.mysore.bridge.test;
+package com.enterprise.basic;
 
 import java.util.Objects;
 

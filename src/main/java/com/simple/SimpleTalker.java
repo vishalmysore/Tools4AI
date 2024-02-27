@@ -1,4 +1,4 @@
-package org.example;
+package com.simple;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -6,6 +6,9 @@ import com.google.cloud.vertexai.generativeai.*;
 
 import java.io.IOException;
 
+/**
+ * Just basic example demonstrating chatting with Gemini
+ */
 public class SimpleTalker {
     public static void main(String[] args) {
         String projectId = "cookgptserver";

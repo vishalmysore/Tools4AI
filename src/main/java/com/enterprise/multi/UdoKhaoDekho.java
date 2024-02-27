@@ -1,5 +1,7 @@
-package com.udo;
+package com.enterprise.multi;
 
+import com.enterprise.fly.BookingHelper;
+import com.enterprise.fly.FlightDetails;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.*;
 import com.google.cloud.vertexai.generativeai.*;

@@ -1,4 +1,4 @@
-package com.cookgpt;
+package com.enterprise.eat;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
@@ -11,10 +11,11 @@ import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.util.Arrays;
-
+@Log
 public class RecipeTasteFinder {
     public static void main(String[] args) throws IOException {
 
@@ -49,8 +50,8 @@ public class RecipeTasteFinder {
                     )
                     .build();
 
-            System.out.println("Function declaration h1:");
-            System.out.println(functionDeclaration);
+            log.info("Function declaration h1:");
+            log.info(""+functionDeclaration);
 
 
             Tool tool = Tool.newBuilder()
@@ -66,29 +67,29 @@ public class RecipeTasteFinder {
                             .build();
             ChatSession chat = model.startChat();
 
-            System.out.println(String.format("Ask the question 1: %s", promptText));
+            log.info(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
             // The model will most likely return a function call to the declared
             // function `getRecipeTaste` with "Paneer Butter Masala" as the value for the
             // argument `recipe`.
-            System.out.println("\nPrint response 1 : ");
-            System.out.println(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get("recipe").getStringValue());
-            System.out.println(ResponseHandler.getText(response));
+            log.info("\nPrint response 1 : ");
+            log.info(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get("recipe").getStringValue());
+            log.info(ResponseHandler.getText(response));
 
             Content content =
                     ContentMaker.fromMultiModalData(
                             PartMaker.fromFunctionResponse(
                                     "getRecipeTaste",
                                     IndianFoodRecipes.getRecipe()));
-            System.out.println("Provide the function response 1: ");
-            System.out.println(content);
+            log.info("Provide the function response 1: ");
+            log.info(""+content);
             response = chat.sendMessage(content);
 
             // See what the model replies now
-            System.out.println("Print response: ");
+            log.info("Print response: ");
             String finalAnswer = ResponseHandler.getText(response);
-            System.out.println(finalAnswer);
+            log.info(finalAnswer);
 
             return finalAnswer;
         }

@@ -1,4 +1,4 @@
-package com.udo;
+package com.t4a.bridge;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
@@ -7,32 +7,44 @@ import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import com.mysore.bridge.JavaMethodBridge;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Map;
 
-public class JustKhao {
-    public JustKhao(){
+public class AITools {
+    private String projectId;
+    private String location;
+    private String modelName;
 
-    }
-    public static void main(String[] args) throws IOException {
-
-        String projectId = "cookgptserver";
-        String location = "us-central1";
-        String modelName = "gemini-1.0-pro";
-
-        String promptText = "can you book a dinner reseration for Vishal and 4 other people at Maharaj on 15th august and make sure its cancellable";
-
-        String status = khao(projectId, location, modelName, promptText);
-        System.out.println(promptText+ " : "+status);
+    public AITools(String projectId, String location, String modelName) {
+        this.projectId = projectId;
+        this.location = location;
+        this.modelName = modelName;
     }
 
-    public static String khao(String projectId, String location, String modelName,String promptText) {
+    public AITools() {
+
+    }
+
+    public Object action(ActionType type,GuardRails guard, Map<String,Object> arguments) throws GuardRailException {
+        guard.validateRequest((String)arguments.get("promptText"));
+        if (type.equals(ActionType.JAVACLASS)) {
+            // Extract arguments from the map
+            String promptText = (String) arguments.get("promptText");
+            String className = (String) arguments.get("className");
+            String funName = (String) arguments.get("funName");
+            String description = (String) arguments.get("description");
+
+            // Call invokeClass method with extracted arguments
+            return actionClass(promptText, className, funName, description);
+        } else return null;
+
+    }
+    public  Object actionClass(String promptText,String className, String funName, String description) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            JavaMethodBridge generator = new JavaMethodBridge();
-            FunctionDeclaration bookMyReservation = generator.buildFunction("com.udo.JustKhao", "bookMyReservation","bookMyReservation","Booking reservation Function");
+            JavaClassAction generator = new JavaClassAction();
+            FunctionDeclaration bookMyReservation = generator.buildFunction(className,funName,description);
 
             System.out.println("Function declaration h1:");
             System.out.println(bookMyReservation);
@@ -57,24 +69,18 @@ public class JustKhao {
 
             System.out.println("\nPrint response 1 : ");
             System.out.println(ResponseHandler.getContent(response));
-            System.out.println(generator.getPropertyValuesJsonString(response));
+           String jsonString = generator.getPropertyValuesJsonString(response);
 
-            generator.invoke(response,new JustKhao());
+            return generator.action(response,jsonString);
 
 
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        return null;
+
     }
 
-    public String bookMyReservation(String name , int numberOfPeople, String restaurantName, boolean cancel, String reserveDate) {
-        System.out.println(name +":"+numberOfPeople+":"+restaurantName+":"+cancel);
-        return "reserved";
-    }
 }
