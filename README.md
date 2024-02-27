@@ -41,6 +41,9 @@ mvn exec:java
 The above command will run ```WeatherSearchExample``` with a prompt ```Hey I am in Toronto do you think i can go out without jacket``` 
 as we all know Gemini AI (or any other AI) does not have real time weather information, Tools4AI will pick the location information from the query 
 and do an api call to https://open-meteo.com/ for real time weather infomraiton which is fed back to Gemini which gives back the answer 
+<br>
+If you rerun this program with a new prompt ```"Hey I am in Delhi do you think i can go out without jacket, also let me know best places to visit here"``` this
+will get the weather information and feed it back to Gemini and again go back with additional question and gets back with landmarks in delhi
 
 ## Tools Integration
 ```
