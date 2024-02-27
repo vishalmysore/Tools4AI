@@ -3,7 +3,7 @@ This project illustrates the integration of AI with enterprise tools or external
 into <span style="font-size: larger;">**actionable behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>
 or <span style="font-size: larger;">**"actionable prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
 with complex systems, enhancing productivity and innovation across diverse applications.<br>
-<br><br>
+
 For example , we can integrate AI with a customer service application. Users can interact with the AI system by asking<br> 
 questions or making requests in natural language. For example, a user might ask,**"Schedule a maintenance <br>
 appointment for my car."** The AI system interprets the request, extracts relevant information such as the <br>
@@ -38,9 +38,9 @@ You have to mention your project id from Gcloud
 ```
 mvn exec:java
 ```
-The above command will run ```WeatherSearchExample``` with a prompt ```Hey I am in Toronto do you think i can go out without jacket```   
-as we all know Gemini AI (or any other AI) does not have real time weather information, Tools4AI will pick the location information from the query  
-and do an api call to https://open-meteo.com/ for real time weather infomraiton which is fed back to Gemini which gives back the answer  
+The above command will run ```WeatherSearchExample``` with a prompt ```Hey I am in Toronto do you think i can go out without jacket``` 
+as we all know Gemini AI (or any other AI) does not have real time weather information, Tools4AI will pick the location information from the query 
+and do an api call to https://open-meteo.com/ for real time weather infomraiton which is fed back to Gemini which gives back the answer 
 
 ## Tools Integration
 ```
