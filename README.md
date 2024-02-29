@@ -22,7 +22,8 @@ enhances the efficiency of the customer service workflow.
 
 ## SETUP
 
-mvn clean install <br>
+```mvn clean install``` <br>
+
 if you are using Intellij or eclipse make sure you set -parameters option for compiler
 
 ## GCLOUD
