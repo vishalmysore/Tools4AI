@@ -9,16 +9,16 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JavaClassAction extends AIAction {
+public class JavaClassExecutor extends JavaActionExecutor {
     private Map<String, Type> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
     private Gson gson = new Gson();
 
-    public JavaClassAction() {
+    public JavaClassExecutor() {
 
     }
 
-    public JavaClassAction(Gson gson) {
+    public JavaClassExecutor(Gson gson) {
         this.gson = gson;
 
     }

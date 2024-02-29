@@ -13,18 +13,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JavaMethodAction extends AIAction {
+public class JavaMethodExecutor extends JavaActionExecutor {
     private final Map<String, Type> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
     private Gson gson = new Gson();
 
     private Class<?> clazz ;
     private Method method;
-    public JavaMethodAction() {
+    public JavaMethodExecutor() {
 
     }
 
-    public JavaMethodAction(Gson gson) {
+    public JavaMethodExecutor(Gson gson) {
         this.gson = gson;
 
     }
@@ -52,10 +52,14 @@ public class JavaMethodAction extends AIAction {
         return gson;
     }
 
-    public FunctionDeclaration buildFunction(String className, String methodName, String funName, String discription) {
+    private FunctionDeclaration buildFunction(String className, String methodName, String funName, String discription) {
         mapMethod(className, methodName);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
+    }
+
+    public FunctionDeclaration buildFunciton(AIAction action) {
+        return buildFunction(action.getClass().getName(),action.getActionName(),action.getActionName(),action.getDescription());
     }
 
 

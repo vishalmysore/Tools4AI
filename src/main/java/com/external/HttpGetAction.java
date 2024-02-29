@@ -1,5 +1,7 @@
 package com.external;
 
+import com.t4a.bridge.AIAction;
+import com.t4a.bridge.ActionType;
 import lombok.extern.java.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,7 +18,7 @@ import java.net.URL;
  */
 
 @Log
-public class HttpGetAction {
+public class HttpGetAction implements AIAction {
     public double getTemprature(String cityName) {
         double temperature = 0;
         String urlStr = "https://geocoding-api.open-meteo.com/v1/search?name="+cityName+"&count=1&language=en&format=json";
@@ -95,5 +97,20 @@ public class HttpGetAction {
         HttpGetAction action = new HttpGetAction();
         action.getTemprature("Toronto");
 
+    }
+
+    @Override
+    public String getActionName() {
+        return "getTemprature";
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.JAVAMETHOD;
+    }
+
+    @Override
+    public String getDescription() {
+        return "get weather for city";
     }
 }

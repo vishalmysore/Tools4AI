@@ -43,7 +43,7 @@ public class AITools {
     }
     public  Object actionClass(String promptText,String className, String funName, String description) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            JavaClassAction generator = new JavaClassAction();
+            JavaClassExecutor generator = new JavaClassExecutor();
             FunctionDeclaration bookMyReservation = generator.buildFunction(className,funName,description);
 
             System.out.println("Function declaration h1:");

@@ -6,7 +6,7 @@ import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
-import com.t4a.bridge.JavaMethodAction;
+import com.t4a.bridge.JavaMethodExecutor;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
@@ -69,13 +69,15 @@ public class WeatherSearchExample {
     }
     public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            JavaMethodAction methodAction = new JavaMethodAction();
-            FunctionDeclaration weatherFunciton = methodAction.buildFunction("com.external.HttpGetAction", "getTemprature", "getTemprature", "get weather for city");
+            JavaMethodExecutor methodAction = new JavaMethodExecutor();
+            HttpGetAction httpAction = new HttpGetAction();
+            FunctionDeclaration weatherFunciton = methodAction.buildFunciton(httpAction);
             log.info("Function declaration h1:");
             log.info("" + weatherFunciton);
 
-            JavaMethodAction additionalQuestion = new JavaMethodAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction("com.external.BlankAction", "askAdditionalQuestion", "askAdditionalQuestion", "ask remaining question");
+            JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
+            BlankAction blankAction = new BlankAction();
+            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunciton(blankAction);
             log.info("Function declaration h1:");
             log.info("" + additionalQuestionFun);
             //add the function to the tool
@@ -99,7 +101,7 @@ public class WeatherSearchExample {
             log.info("" + ResponseHandler.getContent(response));
             log.info(methodAction.getPropertyValuesJsonString(response));
 
-            Object obj = methodAction.action(response, new HttpGetAction());
+            Object obj = methodAction.action(response, httpAction);
             log.info(""+obj);
 
             Content content =

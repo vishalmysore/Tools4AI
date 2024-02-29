@@ -7,14 +7,16 @@ import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import com.t4a.bridge.JavaMethodAction;
+import com.t4a.bridge.AIAction;
+import com.t4a.bridge.ActionType;
+import com.t4a.bridge.JavaMethodExecutor;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 @Log
-public class JustKhao {
+public class JustKhao implements AIAction {
     public JustKhao(){
 
     }
@@ -32,8 +34,9 @@ public class JustKhao {
 
     public static String khao(String projectId, String location, String modelName,String promptText) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            JavaMethodAction generator = new JavaMethodAction();
-            FunctionDeclaration bookMyReservation = generator.buildFunction("com.enterprise.fly.JustKhao", "bookMyReservation","bookMyReservation","Booking reservation Function");
+            JavaMethodExecutor generator = new JavaMethodExecutor();
+            JustKhao justKhao = new JustKhao();
+            FunctionDeclaration bookMyReservation = generator.buildFunciton(justKhao);
 
             log.info("Function declaration h1:");
             log.info(""+bookMyReservation);
@@ -60,7 +63,7 @@ public class JustKhao {
             log.info(""+ResponseHandler.getContent(response));
             log.info(generator.getPropertyValuesJsonString(response));
 
-            generator.action(response,new JustKhao());
+            generator.action(response,justKhao);
 
 
         } catch (IOException e) {
@@ -77,5 +80,20 @@ public class JustKhao {
     public String bookMyReservation(String name , int numberOfPeople, String restaurantName, boolean cancel, String reserveDate) {
         log.info(name +":"+numberOfPeople+":"+restaurantName+":"+cancel);
         return "reserved";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Booking Reservation Function";
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.JAVAMETHOD;
+    }
+
+    @Override
+    public String getActionName() {
+        return "bookMyReservation";
     }
 }
