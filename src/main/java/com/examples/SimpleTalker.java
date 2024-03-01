@@ -1,4 +1,4 @@
-package com.simple;
+package com.examples;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;

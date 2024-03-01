@@ -6,10 +6,12 @@ import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.*;
 import com.google.cloud.vertexai.generativeai.*;
 import com.google.gson.Gson;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.util.*;
 
+@Log
 /**
  * Flight , Restaurant and Movie booking all in one go
  */
@@ -24,7 +26,7 @@ public class UdoKhaoDekho {
         String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, then i need to eat paneer butter masala with 4 people at Maharaja restaurant on 1st july and then i need watch Bahubali movie with my 2 friends on 4th july at 7pm show";
 
         String status = bookFlightAndDinner(projectId, location, modelName, promptText);
-        System.out.println(promptText+ " : "+status);
+        log.info(promptText+ " : "+status);
     }
 
     public static String bookFlightAndDinner(String projectId, String location, String modelName,String promptText) {
@@ -43,8 +45,8 @@ public class UdoKhaoDekho {
                     )
                     .build();
 
-            System.out.println("Function declaration Movie:");
-            System.out.println(movieFunction);
+            log.info("Function declaration Movie:");
+           // log.info(""+movieFunction);
 
             //Define Restaurant Properties
             Map<String, Type> dinnerProperties = new HashMap<>();
@@ -60,8 +62,8 @@ public class UdoKhaoDekho {
                     )
                     .build();
 
-            System.out.println("Function declaration Dinner:");
-            System.out.println(dinnerPropertiesFunction);
+            log.info("Function declaration Dinner:");
+            //log.info(""+dinnerPropertiesFunction);
 
             //Define Flight properties
             Map<String, Type> properties = new HashMap<>();
@@ -77,8 +79,8 @@ public class UdoKhaoDekho {
                     )
                     .build();
 
-            System.out.println("Function declaration Flight:");
-            System.out.println(getDetailsOfFlight);
+            log.info("Function declaration Flight:");
+           // log.info(""+getDetailsOfFlight);
 
 
 
@@ -98,30 +100,30 @@ public class UdoKhaoDekho {
                             .build();
             ChatSession chat = model.startChat();
 
-            System.out.println(String.format("Ask the question 1: %s", promptText));
+            log.info(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
             //this will populate values into the function automatically
-            System.out.println("\nPrint response 1 : ");
-            System.out.println(ResponseHandler.getContent(response));
+            log.info("\nPrint response 1 : ");
+           // log.info(""+ResponseHandler.getContent(response));
 
             //fetch the values and put in map
             Map<String,String> values =  getPropertyValues(response,(new ArrayList<>(properties.keySet())));
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 String propertyName = entry.getKey();
                 String propertyValue = entry.getValue();
-                System.out.println(propertyName + ": " + propertyValue);
+                log.info(propertyName + ": " + propertyValue);
             }
 
             //convert map to json
             Gson gson = new Gson();
             String jsonString = gson.toJson(values);
 
-            System.out.println(jsonString);
+            log.info(jsonString);
 
             //create pojo from the json
             FlightDetails flightDetails = gson.fromJson(jsonString, FlightDetails.class);
-            System.out.println(BookingHelper.bookFlight(flightDetails));
+            log.info("\n\n"+BookingHelper.bookFlight(flightDetails)+"\n\n");
             //Flight booking done
 
             //lets return something so that we can move on to next funciton, in real world scenario it will be booking status
@@ -134,21 +136,21 @@ public class UdoKhaoDekho {
             //call the second function for Dinner booking , i am so hungry :-)
             response = chat.sendMessage(content);
 
-            System.out.println("Print response content: ");
-            System.out.println(ResponseHandler.getContent(response));
+            log.info("Print response content: ");
+            //log.info(""+ResponseHandler.getContent(response));
 
             //fetch the restaurant details
             Map<String,String> restaurantValues =  getPropertyValues(response,(new ArrayList<>(dinnerProperties.keySet())));
             for (Map.Entry<String, String> entry : restaurantValues.entrySet()) {
                 String propertyName = entry.getKey();
                 String propertyValue = entry.getValue();
-                System.out.println(propertyName + ": " + propertyValue);
+                log.info(propertyName + ": " + propertyValue);
             }
 
             Gson restaurentGson = new Gson();
             String restaurentJsonString = restaurentGson.toJson(restaurantValues);
             //you have got the json string with all the details send this to restaurant booking system
-            System.out.println(restaurentJsonString);
+            log.info("\n\n Restaurent Reservation Details \n\n"+restaurentJsonString+"\n\n");
            //restaurant booking done
             //get the details from the booking system so that it can be send back to ai
 
@@ -161,21 +163,21 @@ public class UdoKhaoDekho {
             //call the second function for Dinner booking , i am so hungry :-)
             response = chat.sendMessage(content);
 
-            System.out.println("Print response content: ");
-            System.out.println(ResponseHandler.getContent(response));
+            log.info("Print response content: ");
+            //log.info(""+ResponseHandler.getContent(response));
             //Now call the 3rd function to watch the movie , Bahubali is my favorite
             //Fetch the movie details
             Map<String,String> movieValues =  getPropertyValues(response,(new ArrayList<>(movieProperties.keySet())));
             for (Map.Entry<String, String> entry : movieValues.entrySet()) {
                 String propertyName = entry.getKey();
                 String propertyValue = entry.getValue();
-                System.out.println(propertyName + ": " + propertyValue);
+                log.info(propertyName + ": " + propertyValue);
             }
 
             Gson movieValuesGSOn = new Gson();
             String movieJsonString = movieValuesGSOn.toJson(movieValues);
             //send this to movie  booking system
-            System.out.println(movieJsonString);
+            log.info("\n\nMovie Booking Details Here\n \n:"+movieJsonString+"\n\n");
 
         } catch (IOException e) {
             throw new RuntimeException(e);

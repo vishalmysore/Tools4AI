@@ -20,6 +20,13 @@ enhances the efficiency of the customer service workflow.
 | Submit a reimbursement request for the <span style="color:blue">**business**</span> trip <span style="color:blue">**expenses.**</span>                                                     | The AI system guides the user through the reimbursement request process, collecting necessary details such as expense receipts, dates, amounts, and purpose of expenditure. Once compiled, the system submits the reimbursement request to the appropriate department for processing. |
 
 
+
+Prompt prediction is a technique used to anticipate user actions based on their input prompts. For instance,
+if a user's prompt is "my car broke down," in addition to the action "bookTaxi," the AI system can predict a
+set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinner time). This predictive
+capability enhances the user experience by proactively suggesting relevant actions or services based on the
+context provided in the prompt.
+
 ## SETUP
 
 ```mvn clean install``` <br>
@@ -105,6 +112,51 @@ These are references which i have created using the above AIAction , this shows 
 ``` RecipeTasteAndDiet  ```  Execute the class for function chaining with 2 functions mapped Hashmap response <br>
 ``` MultiBot  ```  Run this class for function chaining with 2 functions Airline booking and restaurant booking<br>
 ``` UdoKhaoDekho  ```  3 functions Flight , Restaurant and Movie <br>
+
+## Actionable Prompts
+These are the example of actionable prompts , directly take action based on the prompts
+
+```public class MongoAction implements AIAction {``` 
+The MongoAction class implements the AIAction interface, indicating that it defines an action to be performed
+within an AI system. Specifically, this class is responsible for inserting data into a MongoDB database.
+Method within the MongoAction class will be automatically invoked when this action is triggered,
+typically in response to specific user prompts or interactions.
+
+## Predictable Prompts
+```
+@Predict 
+public class MongoAction implements AIAction { 
+``` 
+```@Predict```Annotation will make our action predictable ,By annotating the MongoAction class with @Predict,
+we are indicating that this action is predictable. This annotation instructs the AI system to automatically
+call the methods within the MongoAction class when it determines that the user prompt matches the action.
+In other words, if the input prompt provided by the user aligns with the behavior represented by the
+MongoAction, the AI system will invoke the corresponding method within MongoAction to execute the action of 
+inserting data into the MongoDB database. This predictive capability streamlines user interactions by 
+automatically executing relevant actions based on user prompts.
+
+```
+@Predict
+public class SendEmailAction implements AIAction {
+public void sendEmail(String recipient, String message) {
+// Logic to send an email to the specified recipient with the given message
+}
+}
+```
+This action is responsible for sending an email. When annotated with @Predict, the AI system will automatically
+call the execute method of SendEmailAction when it predicts that the user prompt is related to sending an email.
+
+```
+@Predict
+public class SearchAction implements AIAction {
+    public void search(String query) {
+        // Logic to perform a search with the specified query
+    }
+}
+
+```
+When annotated with @Predict, the AI system will call the execute method of SearchAction when it 
+predicts that the user prompt is related to searching for information.
 
 ## Advanced Reference Examples
 ``` Security - Guard Rails using Spring Security``` TBD <br>

@@ -1,12 +1,15 @@
-package com.external;
+package com.examples;
 
+import com.external.BlankAction;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
+import com.t4a.bridge.AIAction;
 import com.t4a.bridge.JavaMethodExecutor;
+import com.t4a.predict.PredictionLoader;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
@@ -17,16 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Uses open weather to get prediction
+ * This example does not require you to specify the action to take it will automatically detect the action
+ * to be taken based on list of prompts and predict accurately what needs to be done
  */
 @Log
-public class WeatherSearchExample {
+public class PromptPredictionExample {
     private String projectId = null;//"cookgptserver";
     private String location = null;//"us-central1";
     private String modelName = null;//"gemini-1.0-pro";
 
     private String promptText = null;//"Hey I am in Toronto do you think i can go out without jacket,  ";
-    public WeatherSearchExample(String[] args) throws Exception {
+    public PromptPredictionExample(String[] args) throws Exception {
         if(args.length < 1) {
             throw new Exception("provide args in this format projectId=<> location=<> modelName=<> promptText=<>");
         }
@@ -63,16 +67,17 @@ public class WeatherSearchExample {
     }
     public static void main(String[] args) throws Exception {
 
-        WeatherSearchExample sample = new WeatherSearchExample(args);
+        PromptPredictionExample sample = new PromptPredictionExample(args);
         sample.actionOnPrompt();
 
     }
     public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
+            AIAction predictedAction = PredictionLoader.getInstance(projectId, location,modelName).getPredictedAction(promptText);
+            log.info(predictedAction.getActionName());
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
-            HttpGetAction httpAction = new HttpGetAction();
 
-            FunctionDeclaration weatherFunciton = methodAction.buildFunciton(httpAction);
+            FunctionDeclaration weatherFunciton = methodAction.buildFunciton(predictedAction);
 
             log.info("Function declaration h1:");
             log.info("" + weatherFunciton);
@@ -103,13 +108,13 @@ public class WeatherSearchExample {
             log.info("" + ResponseHandler.getContent(response));
             log.info(methodAction.getPropertyValuesJsonString(response));
 
-            Object obj = methodAction.action(response, httpAction);
+            Object obj = methodAction.action(response, predictedAction);
             log.info(""+obj);
 
             Content content =
                     ContentMaker.fromMultiModalData(
                             PartMaker.fromFunctionResponse(
-                                    "getTemprature", Collections.singletonMap("temperature",obj)));
+                                    predictedAction.getActionName(), Collections.singletonMap(predictedAction.getActionName(),obj)));
 
 
             response = chat.sendMessage(content);
@@ -117,6 +122,8 @@ public class WeatherSearchExample {
             log.info("Print response content: ");
             log.info(""+ResponseHandler.getContent(response));
             log.info(ResponseHandler.getText(response));
+
+
 
 
         }

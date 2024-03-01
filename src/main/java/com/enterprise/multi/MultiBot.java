@@ -20,7 +20,7 @@ public class MultiBot {
             String location = "us-central1";
             String modelName = "gemini-1.0-pro";
 
-            String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, then i need to eat paneer butter masala with 4 people at Maharaja restaurant on 1st july";
+            String promptText = "My name is vishal i need to fly from toronto to bangalore on Indian Independence day, then i need to eat paneer butter masala with 4 people at Maharaja restaurant on Canada Independence day";
 
             String status = bookFlightAndDinner(projectId, location, modelName, promptText);
             System.out.println(promptText+ " : "+status);

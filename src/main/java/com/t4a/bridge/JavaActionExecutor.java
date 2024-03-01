@@ -6,6 +6,7 @@ import com.google.cloud.vertexai.api.Schema;
 import com.google.cloud.vertexai.api.Type;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
+import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
 
 import java.util.ArrayList;
@@ -33,9 +34,11 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
             return Type.NUMBER;
         } else if (type == boolean.class || type == Boolean.class) {
             return Type.BOOLEAN;
+        } else if(type.isArray()){
+            return Type.ARRAY;
         } else {
             return Type.OBJECT;
-        } //use default as Object
+        }
 
     }
 
@@ -115,11 +118,22 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                 propertyValues.put(propertyName, Boolean.valueOf(value.getBoolValue()));
             } else if (value.hasStringValue()) {
                 propertyValues.put(propertyName, value.getStringValue());
+            }else if(value.hasListValue()){
+                ListValue lv = value.getListValue();
+                List<Value> valueFromList = lv.getValuesList();
+                String[] args = new String[valueFromList.size()];
+                int count = 0;
+                for (Value v:valueFromList
+                ) {
+                    args[count] = v.getStringValue();
+                    count++;
+                }
+                propertyValues.put(propertyName,args);
             }
-            if (value.hasNumberValue()) {
+            else if (value.hasNumberValue()) {
                 if(getProperties().get(propertyName).equals(Type.INTEGER)) {
                     propertyValues.put(propertyName, Integer.valueOf((int)value.getNumberValue()));
-                }else{
+                } else {
                     propertyValues.put(propertyName, Double.valueOf(value.getNumberValue()));
                 }
             }

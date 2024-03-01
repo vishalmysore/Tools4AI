@@ -2,6 +2,7 @@ package com.external;
 
 import com.t4a.bridge.AIAction;
 import com.t4a.bridge.ActionType;
+import com.t4a.predict.Predict;
 import lombok.extern.java.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ import java.net.URL;
  */
 
 @Log
+@Predict
 public class HttpGetAction implements AIAction {
     public double getTemprature(String cityName) {
         double temperature = 0;

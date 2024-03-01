@@ -2,6 +2,7 @@ package com.enterprise.basic;
 
 import java.util.Objects;
 
+
 public class RestaurantPojo {
     String name ;
     int numberOfPeople;

@@ -7,6 +7,10 @@ public enum ActionType {
     HTTPPOST,
     TIBCO,
     SOLACE,
-    DATABASE
+    DATABASE,
+    HALLUCINATION,
+    BIAS,
+    FACT,
+    FILE
 
 }

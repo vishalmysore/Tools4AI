@@ -3,7 +3,6 @@ package com.t4a.bridge;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Type;
-import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 
 import java.lang.reflect.InvocationTargetException;
@@ -36,9 +35,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
 
 
 
-    private  String getValue(GenerateContentResponse response, String propertyName) {
-        return ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get(propertyName).getStringValue();
-    }
+
 
     public Map<String, Type> getProperties() {
         return properties;
