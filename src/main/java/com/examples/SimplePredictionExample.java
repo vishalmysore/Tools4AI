@@ -14,7 +14,7 @@ public class SimplePredictionExample {
         String location = "us-central1";
         String modelName = "gemini-1.0-pro";
         String preaction = "here is my prompt - ";
-        String action = "- what action do you think we should take insertNewEmployeeInDB , eatFood, sendMessageToTibco, sendMyCarForServicing, openJiraTicket, bookRestaurentReservation, bookMovieTicket, findRecipeOnInternet, getGrocery, reply back with two action only";
+        String action = "- what action do you think we should take insertNewEmployeeInDB , bookRentalCar, bookAirwayTicket, eatFood, sendMessageToTibco, sendMyCarForServicing, openJiraTicket, bookRestaurentReservation, bookMovieTicket, findRecipeOnInternet, getGrocery, reply back with one action only";
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             GenerateContentResponse response;
 
@@ -29,6 +29,13 @@ public class SimplePredictionExample {
 
             response = chatSession.sendMessage(preaction+"What is the recipe for Paneer Butter Masala?"+action);
             System.out.println(ResponseHandler.getText(response));
+
+            response = chatSession.sendMessage(preaction+"I need to go from Toronto to Bangalore?"+action);
+            System.out.println(ResponseHandler.getText(response));
+
+            response = chatSession.sendMessage(preaction+"I need to go from Toronto to Monreal?"+action);
+            System.out.println(ResponseHandler.getText(response));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

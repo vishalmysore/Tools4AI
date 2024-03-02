@@ -26,7 +26,7 @@ public class JustKhao implements AIAction {
         String location = "us-central1";
         String modelName = "gemini-1.0-pro";
 
-        String promptText = "can you book a dinner reseration for Vishal his family member and 4 other people at Maharaj on 15th august and make sure its cancellable, ";
+        String promptText = "can you book a dinner reseration for Vishal his family member and 4 other people at Maharaj on 1st august and make sure its not cancellable, ";
 
         String status = khao(projectId, location, modelName, promptText);
         log.info(promptText+ " : "+status);
