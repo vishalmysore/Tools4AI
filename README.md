@@ -31,9 +31,21 @@ context provided in the prompt.
 
 ## SETUP
 
+Download source and build from scratch
+
 ```mvn clean install``` <br>
 
 if you are using Intellij or eclipse make sure you set -parameters option for compiler
+
+Or use as maven dependency 
+```
+<dependency>
+  <groupId>com.t4a</groupId>
+  <artifactId>tools4ai</artifactId>
+  <version>0.7.1</version>
+</dependency>
+
+```
 
 ## GCLOUD
 Make sure you have gcloud project set up and have enabled vertex API
