@@ -1,5 +1,7 @@
 package com.t4a.bridge;
 
+import com.t4a.detect.DetectData;
+
 /**
  * Base class for AI Hallucination and Bias detection
  */
@@ -9,5 +11,5 @@ public interface DetectorAction extends AIAction{
         return "execute";
     }
 
-    boolean execute(String message)throws GuardRailException;
+    public boolean execute(DetectData dd) throws GuardRailException;
 }

@@ -16,7 +16,7 @@ public class FactDetector implements DetectorAction {
     }
 
     @Override
-    public boolean execute(String message) throws GuardRailException {
+    public boolean execute(DetectData dd)  throws GuardRailException {
         return false;
     }
 }

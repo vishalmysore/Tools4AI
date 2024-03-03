@@ -119,16 +119,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
             } else if (value.hasStringValue()) {
                 propertyValues.put(propertyName, value.getStringValue());
             }else if(value.hasListValue()){
-                ListValue lv = value.getListValue();
-                List<Value> valueFromList = lv.getValuesList();
-                String[] args = new String[valueFromList.size()];
-                int count = 0;
-                for (Value v:valueFromList
-                ) {
-                    args[count] = v.getStringValue();
-                    count++;
-                }
-                propertyValues.put(propertyName,args);
+                extractedList(propertyName, value, propertyValues);
             }
             else if (value.hasNumberValue()) {
                 if(getProperties().get(propertyName).equals(Type.INTEGER)) {
@@ -141,6 +132,42 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
         }
         return propertyValues;
+    }
+
+    private static void extractedList(String propertyName, Value value, Map<String, Object> propertyValues) {
+        ListValue lv = value.getListValue();
+        List<Value> valueFromList = lv.getValuesList();
+        if(valueFromList.size() >0) {
+            if(valueFromList.get(0).hasStringValue()) {
+                extractedString(propertyName, valueFromList, propertyValues);
+            } else if(valueFromList.get(0).hasBoolValue()) {
+                extractedBoolean(propertyName, valueFromList, propertyValues);
+            } else if(valueFromList.get(0).hasListValue()) {
+                extractedList(propertyName, valueFromList.get(0), propertyValues);
+            }
+        }
+    }
+
+    private static void extractedString(String propertyName, List<Value> valueFromList, Map<String, Object> propertyValues) {
+        String[] args = new String[valueFromList.size()];
+        int count = 0;
+        for (Value v: valueFromList
+        ) {
+            args[count] = v.getStringValue();
+            count++;
+        }
+        propertyValues.put(propertyName,args);
+    }
+
+    private static void extractedBoolean(String propertyName, List<Value> valueFromList, Map<String, Object> propertyValues) {
+        Boolean[] args = new Boolean[valueFromList.size()];
+        int count = 0;
+        for (Value v: valueFromList
+        ) {
+            args[count] = v.getBoolValue();
+            count++;
+        }
+        propertyValues.put(propertyName,args);
     }
 
     public String getPropertyValuesJsonString(GenerateContentResponse response) {
