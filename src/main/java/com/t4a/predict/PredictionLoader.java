@@ -5,7 +5,7 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import com.t4a.bridge.AIAction;
+import com.t4a.api.AIAction;
 import lombok.Getter;
 import lombok.extern.java.Log;
 

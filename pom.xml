@@ -6,7 +6,7 @@
 
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2</version>
 
     <name>Tools For Artificial Intelligence</name>
     <description>Connect Various Tools directly into AI LLM. This is 100% Java implementation of Large Action Model or LLM Agent</description>
@@ -163,7 +163,7 @@
                 </executions>
                 <configuration>
                     <!-- Specify the main class of your Java program -->
-                    <mainClass>com.external.WeatherSearchExample</mainClass>
+                    <mainClass>com.t4a.examples.WeatherSearchExample</mainClass>
                     <!-- Pass arguments to your Java program -->
                     <arguments>
                         <argument>projectId=cookgptserver</argument>
@@ -187,7 +187,7 @@
                     <archive>
                         <manifest>
                             <!-- Specify the main class for the executable JAR -->
-                            <mainClass>com.external.WeatherSearchExample</mainClass>
+                            <mainClass>com.t4a.examples.WeatherSearchExample</mainClass>
 
                         </manifest>
                     </archive>

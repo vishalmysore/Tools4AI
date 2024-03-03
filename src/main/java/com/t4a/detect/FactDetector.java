@@ -1,8 +1,8 @@
 package com.t4a.detect;
 
-import com.t4a.bridge.ActionType;
-import com.t4a.bridge.DetectorAction;
-import com.t4a.bridge.GuardRailException;
+import com.t4a.api.ActionType;
+import com.t4a.api.DetectorAction;
+import com.t4a.api.GuardRailException;
 
 public class FactDetector implements DetectorAction {
     @Override
