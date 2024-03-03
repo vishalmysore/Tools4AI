@@ -48,10 +48,8 @@ Or use as maven dependency
 ```
 check for latest version here 
 
-```
 https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
 
-```
 
 
 ## GCLOUD

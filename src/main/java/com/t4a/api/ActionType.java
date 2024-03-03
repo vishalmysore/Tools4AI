@@ -11,6 +11,6 @@ public enum ActionType {
     HALLUCINATION,
     BIAS,
     FACT,
-    FILE
+    FILE,SHELL
 
 }
