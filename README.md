@@ -40,12 +40,19 @@ if you are using Intellij or eclipse make sure you set -parameters option for co
 Or use as maven dependency 
 ```
 <dependency>
-  <groupId>com.t4a</groupId>
-  <artifactId>tools4ai</artifactId>
-  <version>0.7.1</version>
+    <groupId>io.github.vishalmysore</groupId>
+    <artifactId>tools4ai</artifactId>
+    <version>0.7.1</version>
 </dependency>
 
 ```
+check for latest version here 
+
+```
+https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
+
+```
+
 
 ## GCLOUD
 Make sure you have gcloud project set up and have enabled vertex API
