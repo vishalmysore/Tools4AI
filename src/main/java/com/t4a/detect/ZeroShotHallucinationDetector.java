@@ -104,4 +104,12 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
         }
         return res;
     }
+
+    public static void main(String[] args) throws GuardRailException {
+        DetectValues dv = new DetectValues();
+        dv.setResponse(sampleResponse);
+        ZeroShotHallucinationDetector detec = new ZeroShotHallucinationDetector();
+        detec.execute(dv);
+
+    }
 }
