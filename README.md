@@ -180,3 +180,8 @@ predicts that the user prompt is related to searching for information.
 ## Advanced prompt function calling
 ``` Can you check if my movie booking system can handle 50 reservations in 1 min ``` <br>
 ``` what happens if my cookgpt is giving only vegetarian recipes``` <br>
+
+## Response Validation
+Hallucination 
+Bias
+Fairness
