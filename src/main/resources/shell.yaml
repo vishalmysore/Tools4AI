@@ -1,0 +1,39 @@
+- scriptName: "test_script.cmd"
+  actionName: saveEmployeeName
+  description: This is a command which will save employee information
+
+- scriptName: "C:\\another\\path\\to\\ps_issue.cmd"
+  actionName: raiseTicketForProductionIssue
+  description: This script will be called when this is a production issue in application
+
+- scriptName: "D:\\scripts\\run_backup.sh"
+  actionName: runBackup
+  description: This script performs a backup of the database.
+
+- scriptName: "C:\\automation\\run_tests.py"
+  actionName: runAutomatedTests
+  description: This Python script executes automated tests for the application.
+
+- scriptName: "E:\\tools\\start_service.bat"
+  actionName: startService
+  description: This batch script starts the service on the server.
+- scriptName: "C:\\support\\restart_customer_portal.sh"
+  actionName: restartCustomerPortal
+  description: This script restarts the customer portal application to apply configuration changes.
+
+- scriptName: "D:\\car_service\\diagnose_engine.py"
+  actionName: diagnoseEngineIssues
+  description: This Python script diagnoses engine issues in the car service application.
+
+- scriptName: "E:\\monitoring\\alert_support_team.bat"
+  actionName: alertSupportTeam
+  description: This batch script sends an alert to the support team when a critical issue is detected in the system.
+
+- scriptName: "C:\\database\\backup_database.sh"
+  actionName: backupDatabase
+  description: This script performs a backup of the database to ensure data integrity.
+
+- scriptName: "D:\\security\\scan_system_vulnerabilities.sh"
+  actionName: scanSystemVulnerabilities
+  description: This shell script scans the system for vulnerabilities and reports findings to the security team.
+

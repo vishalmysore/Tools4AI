@@ -7,12 +7,17 @@ import lombok.*;
 @Setter
 @EqualsAndHashCode
 @ToString
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PredictOptions {
+    @NonNull
     private String clazzName;
+    @NonNull
     private String description;
+    @NonNull
     private String actionName;
+    @NonNull
     private String funName;
 
+    private String scriptPath;
 
 }

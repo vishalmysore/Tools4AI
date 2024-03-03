@@ -4,6 +4,7 @@ import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Type;
 import com.google.gson.Gson;
+import com.t4a.action.shell.ShellAction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -56,6 +57,10 @@ public class JavaMethodExecutor extends JavaActionExecutor {
     }
 
     public FunctionDeclaration buildFunciton(AIAction action) {
+        if(action.getActionType().equals(ActionType.SHELL)) {
+            ShellAction shellAction = (ShellAction)action;
+            return buildFunction(action.getClass().getName(),shellAction.getDefaultExecutorMethodName(),action.getActionName(),action.getDescription());
+        }else
         return buildFunction(action.getClass().getName(),action.getActionName(),action.getActionName(),action.getDescription());
     }
 
@@ -92,7 +97,8 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             System.out.println("Class not found: " + className);
         }
     }
-    public Object action(GenerateContentResponse response, Object instance) throws InvocationTargetException, IllegalAccessException {
+    public Object action(GenerateContentResponse response, AIAction instance) throws InvocationTargetException, IllegalAccessException {
+
         Map<String, Object> propertyValuesMap = getPropertyValuesMap(response);
         String[] parameterNames = Arrays.stream(method.getParameters())
                 .map(p -> p.getName())
@@ -105,6 +111,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         for (int i = 0; i < parameterNames.length; i++) {
             parameterValues[i] = propertyValuesMap.get(parameterNames[i]);
         }
+
 
         // Invoke the method with arguments
         Object obj = method.invoke(instance, parameterValues);

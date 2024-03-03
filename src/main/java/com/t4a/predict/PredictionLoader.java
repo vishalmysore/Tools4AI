@@ -5,14 +5,22 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.t4a.action.shell.ShellAction;
 import com.t4a.api.AIAction;
+import com.t4a.api.ActionType;
 import lombok.Getter;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @Log
 public class PredictionLoader {
@@ -51,9 +59,17 @@ public class PredictionLoader {
             throw new RuntimeException(e);
         }
         String actionName = ResponseHandler.getText(response);
-        String actionClazzName = predictions.get(actionName).getClazzName();
+        PredictOptions options = predictions.get(actionName);
+        String actionClazzName = options.getClazzName();
         try {
             AIAction action = (AIAction)Class.forName(actionClazzName).getDeclaredConstructor().newInstance();
+            if(action.getActionType() == ActionType.SHELL) {
+                ShellAction shellAction = (ShellAction)action;
+                shellAction.setActionName(options.getActionName());
+                shellAction.setDescription(options.getDescription());
+                shellAction.setScriptPath(options.getScriptPath());
+                return shellAction;
+            }
             return action;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
@@ -73,69 +89,52 @@ public class PredictionLoader {
         if(predictionLoader == null) {
             predictionLoader = new PredictionLoader(projectId,location, modelName);
             predictionLoader.processCP();
+            predictionLoader.loadShellCommands(null);
         }
         return predictionLoader;
     }
 
+    public static PredictionLoader getInstance(String projectId, String location, String modelName, URL shellFileURL) {
+        if(predictionLoader == null) {
+            predictionLoader = new PredictionLoader(projectId,location, modelName);
+            predictionLoader.processCP();
+            predictionLoader.loadShellCommands(shellFileURL);
+        }
+        return predictionLoader;
+    }
     public static void main(String[] args) {
         //PredictionLoader processor = new PredictionLoader();
         //processor.processCP();
 
     }
 
+    public void loadShellCommands(URL shellURL)  {
+        ShellPredictionLoader shellLoader = new ShellPredictionLoader();
+        try {
+            shellLoader.load(predictions,actionNameList);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public void processCP() {
-        String basePackage = ""; // Specify the base package for scanning
-        Set<Class<?>> annotatedClasses = scanClasspath(basePackage);
-
-        // Process the annotated classes
-        for (Class<?> clazz : annotatedClasses) {
-            // Do something with the annotated class
-            log.info("Found annotated class: " + clazz.getName());
-        }
-    }
-
-    private  Set<Class<?>> scanClasspath(String basePackage) {
-        Set<Class<?>> annotatedClasses = new HashSet<>();
-        String classpath = System.getProperty("java.class.path");
-        String[] paths = classpath.split(File.pathSeparator);
-
-        for (String path : paths) {
-            File file = new File(path);
-            if (file.isDirectory()) {
-                scanDirectory(file, basePackage, annotatedClasses);
+        ClassPathScanningCandidateComponentProvider provider =
+                new ClassPathScanningCandidateComponentProvider(false);
+        provider.addIncludeFilter(new AnnotationTypeFilter(Predict.class));
+        Set<BeanDefinition> beanDefs = provider
+                .findCandidateComponents("com");
+        beanDefs.stream().forEach(beanDefinition -> {
+            try {
+                addAction(Class.forName(beanDefinition.getBeanClassName()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-        }
-
-        return annotatedClasses;
+        });
     }
 
-    private  void scanDirectory(File directory, String packageName, Set<Class<?>> annotatedClasses) {
-        File[] files = directory.listFiles(file -> file.isDirectory() || file.getName().endsWith(".class"));
 
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    if(packageName.length() >1)
-                    scanDirectory(file, packageName + "." + file.getName(), annotatedClasses);
-                    else
-                        scanDirectory(file, file.getName(), annotatedClasses);
-                } else {
-                    String finalFileName = file.getName().replace(".class", "");
-                    String className = packageName + "."+ finalFileName;
-                    try {
-                        Class<?> clazz = Class.forName(className);
-                        if (clazz.isAnnotationPresent(Predict.class)) {
-                            annotatedClasses.add(clazz);
-                            addAction(clazz);
-                        }
-                    } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException |
-                             InstantiationException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
+
+
+
 
     public  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         AIAction instance = (AIAction)clazz.getDeclaredConstructor().newInstance();
