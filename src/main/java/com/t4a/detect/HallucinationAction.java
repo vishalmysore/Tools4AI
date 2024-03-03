@@ -1,8 +1,10 @@
 package com.t4a.detect;
 
 import com.google.cloud.vertexai.VertexAI;
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
+import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.t4a.bridge.AIAction;
 import com.t4a.bridge.ActionType;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,7 @@ public class HallucinationAction implements AIAction {
     private String context;
 
 
-    public List<HallucinationQA> askQuestions(String[] questions) {
+    public List<HallucinationQA> askQuestions(String questions[]) {
         List<HallucinationQA> haList = new ArrayList<HallucinationQA>();
 
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -36,11 +38,26 @@ public class HallucinationAction implements AIAction {
 
             for (String question : questions
             ) {
-                log.info(question);
-              //  GenerateContentResponse response = chatSession.sendMessage(question);
-               // log.info(ResponseHandler.getText(response));
+                try {
+
+                    log.info(question);
+                    GenerateContentResponse response = chatSession.sendMessage(question);
+                    String answer = ResponseHandler.getText(response);
+                    response = chatSession.sendMessage("Look at both paragraphs what % of truth is there in the first paragraph based on the 2nd paragraph, Paragraph 1- "+context+" - Paragraph 2 -"+answer+" - provide your answer in just percentage and nothing else");
+                    String truth =  ResponseHandler.getText(response);
+                    log.info(truth);
+                    HallucinationQA hallu = new HallucinationQA(question,answer,context,truth);
+                    haList.add(hallu);
+
+                }catch (Exception e) {
+                    log.severe(e.getMessage());
+                }
 
             }
+        } catch (Exception e) {
+            log.severe(e.getMessage());
+            e.printStackTrace();
+
         }
         return haList;
     }

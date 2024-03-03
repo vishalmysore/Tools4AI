@@ -16,7 +16,7 @@ public class BiasDetector implements DetectorAction {
     }
 
     @Override
-    public boolean execute(DetectData dd) throws GuardRailException {
-        return false;
+    public DetectValueRes execute(DetectValues dd) throws GuardRailException {
+        return null;
     }
 }

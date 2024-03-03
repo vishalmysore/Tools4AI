@@ -5,13 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@NoArgsConstructor
+import java.util.List;
+
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class DetectData {
-    private String prompt;
-    private String context;
-    private String response;
-    private String additionalData;
+public class DetectValueRes {
+    private List<HallucinationQA> hallucinationList;
 }
