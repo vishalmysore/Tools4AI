@@ -29,7 +29,7 @@ public class ShellAction implements AIAction {
     private String scriptPath;
     @NonNull
     private String actionName;
-    private String EXECUTEShell ="executeShell";
+
 
     public  void executeShell(String arguments[]) throws IOException, InterruptedException {
         scriptPath = loadScript(scriptPath);
@@ -105,7 +105,7 @@ public class ShellAction implements AIAction {
         }
     }
     public String getDefaultExecutorMethodName() {
-        return EXECUTEShell;
+        return "executeShell";
     }
     @Override
     public String getDescription() {

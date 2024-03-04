@@ -20,7 +20,7 @@ import java.net.URL;
 
 @Log
 @Predict
-public class HttpGetAction implements AIAction {
+public class CustomHttpGetAction implements AIAction {
     public double getTemprature(String cityName) {
         double temperature = 0;
         String urlStr = "https://geocoding-api.open-meteo.com/v1/search?name="+cityName+"&count=1&language=en&format=json";
@@ -96,7 +96,7 @@ public class HttpGetAction implements AIAction {
     }
 
     public static void main(String[] args) {
-        HttpGetAction action = new HttpGetAction();
+        CustomHttpGetAction action = new CustomHttpGetAction();
         action.getTemprature("Toronto");
 
     }

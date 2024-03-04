@@ -1,0 +1,47 @@
+{
+  "endpoints": [
+    {
+      "actionName": "getUserDetails",
+      "description" : " this will fetch User details from the user inventory corporate application",
+      "url": "https://api.example.com/users/",
+      "type": "GET",
+      "input_object": [
+      {
+        "name": "userId",
+        "type": "path_parameter",
+        "description": "User ID"
+      }
+      ],
+
+      "output_object": {
+        "type": "json",
+        "description": "User object"
+      },
+      "auth_interface": {
+        "type": "Bearer Token",
+        "description": "Authentication token required"
+      }
+    },
+    {
+      "actionName": "getRTTemp",
+      "url": "https://api.example.com/temperature",
+      "description" : " this will get real time temperature from the weather api",
+      "type": "GET",
+      "input_object":[
+        {
+          "name": "locationId",
+          "type": "query_parameter",
+          "description": "Location ID"
+      }
+      ],
+      "output_object": {
+        "type": "json",
+        "description": "Real-time temperature data"
+      },
+      "auth_interface": {
+        "type": "API Key",
+        "description": "API key required"
+      }
+    }
+  ]
+}

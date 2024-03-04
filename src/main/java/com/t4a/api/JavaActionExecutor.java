@@ -42,6 +42,22 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
     }
 
+    public Type mapType(String type) {
+        if (type.equalsIgnoreCase("String")) {
+            return Type.STRING;
+        } else if (type.equalsIgnoreCase("int")) {
+            return Type.INTEGER;
+        } else if (type.equalsIgnoreCase("num")) {
+            return Type.NUMBER;
+        } else if (type.equalsIgnoreCase("boolean")) {
+            return Type.BOOLEAN;
+        } else if(type.equalsIgnoreCase("array")){
+            return Type.ARRAY;
+        } else {
+            return Type.OBJECT;
+        }
+
+    }
     /**
      * Create Gemini Schema object this will be used to create funciton
      * @param properties

@@ -22,6 +22,9 @@ import java.util.Map;
 /**
  * This example does not require you to specify the action to take it will automatically detect the action
  * to be taken based on list of prompts and predict accurately what needs to be done
+ * 1) java PromptPredictionExample projectId=cookgptserver location=us-central1 modelName=gemini-1.0-pro promptText="Hey I am in Toronto do you think i can go out without jacket"
+ * 2) java PromptPredictionExample projectId=cookgptserver location=us-central1 modelName=gemini-1.0-pro promptText="I am an employee my name is Vishal Mysore , I need to save my info"
+ * 3) java PromptPredictionExample projectId=cookgptserver location=us-central1 modelName=gemini-1.0-pro promptText="My Name is Vishal I live in Toronto, My friends name is Vinod and He lives in Balaghat , please save this information"
  */
 @Log
 public class PromptPredictionExample {

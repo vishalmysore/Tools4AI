@@ -3,8 +3,7 @@ package com.t4a.api;
 public enum ActionType {
     JAVACLASS,
     JAVAMETHOD,
-    HTTPGET,
-    HTTPPOST,
+    HTTP,
     TIBCO,
     SOLACE,
     DATABASE,

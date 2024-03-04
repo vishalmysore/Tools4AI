@@ -7,7 +7,7 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
 import com.t4a.action.BlankAction;
-import com.t4a.action.http.HttpGetAction;
+import com.t4a.action.http.CustomHttpGetAction;
 import com.t4a.api.JavaMethodExecutor;
 import lombok.extern.java.Log;
 
@@ -72,7 +72,7 @@ public class WeatherSearchExample {
     public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
-            HttpGetAction httpAction = new HttpGetAction();
+            CustomHttpGetAction httpAction = new CustomHttpGetAction();
 
             FunctionDeclaration weatherFunciton = methodAction.buildFunciton(httpAction);
 

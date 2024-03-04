@@ -17,7 +17,6 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -89,26 +88,16 @@ public class PredictionLoader {
         if(predictionLoader == null) {
             predictionLoader = new PredictionLoader(projectId,location, modelName);
             predictionLoader.processCP();
-            predictionLoader.loadShellCommands(null);
+            predictionLoader.loadShellCommands();
+            predictionLoader.loadHttpCommands();
         }
         return predictionLoader;
     }
 
-    public static PredictionLoader getInstance(String projectId, String location, String modelName, URL shellFileURL) {
-        if(predictionLoader == null) {
-            predictionLoader = new PredictionLoader(projectId,location, modelName);
-            predictionLoader.processCP();
-            predictionLoader.loadShellCommands(shellFileURL);
-        }
-        return predictionLoader;
-    }
-    public static void main(String[] args) {
-        //PredictionLoader processor = new PredictionLoader();
-        //processor.processCP();
 
-    }
 
-    public void loadShellCommands(URL shellURL)  {
+
+    private void loadShellCommands()  {
         ShellPredictionLoader shellLoader = new ShellPredictionLoader();
         try {
             shellLoader.load(predictions,actionNameList);
@@ -116,6 +105,15 @@ public class PredictionLoader {
             throw new RuntimeException(e);
         }
     }
+    private void loadHttpCommands()  {
+        HttpRestPredictionLoader httpLoader = new HttpRestPredictionLoader();
+        try {
+            httpLoader.load(predictions,actionNameList);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void processCP() {
         ClassPathScanningCandidateComponentProvider provider =
                 new ClassPathScanningCandidateComponentProvider(false);
@@ -136,7 +134,7 @@ public class PredictionLoader {
 
 
 
-    public  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         AIAction instance = (AIAction)clazz.getDeclaredConstructor().newInstance();
         String actionName = instance.getActionName();
         PredictOptions options = new PredictOptions(clazz.getName(),instance.getDescription(),instance.getActionName(),instance.getActionName());

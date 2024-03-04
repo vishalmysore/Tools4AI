@@ -1,7 +1,7 @@
 package com.t4a.predict;
 
 import com.t4a.action.shell.ShellAction;
-import com.t4a.examples.shell.ShellTest;
+import com.t4a.api.ActionType;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.yaml.snakeyaml.Yaml;
@@ -21,9 +21,7 @@ public class ShellPredictionLoader {
     private  String yamlFile = "shell.yaml";
     private URL resourceUrl = null;
 
-    public ShellPredictionLoader(URL resourceUrl) {
-        this.resourceUrl = resourceUrl;
-    }
+
 
     public void load(Map<String,PredictOptions> predictions,StringBuffer actionNameList) throws URISyntaxException {
 
@@ -34,7 +32,7 @@ public class ShellPredictionLoader {
 
     public  void loadYamlFile(Map<String,PredictOptions> predictions,StringBuffer actionNameList) throws URISyntaxException {
         if(resourceUrl == null)
-        resourceUrl = ShellTest.class.getClassLoader().getResource(yamlFile);
+        resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
         if (resourceUrl == null) {
             throw new IllegalArgumentException("File not found: " + yamlFile);
@@ -53,6 +51,7 @@ public class ShellPredictionLoader {
                 String description = scriptInfo.get("description");
                 PredictOptions options = new PredictOptions(ShellAction.class.getName(),description,actionName,actionName);
                 options.setScriptPath(scriptName);
+                options.setActionType(ActionType.SHELL);
                 actionNameList.append(actionName+",");
                 predictions.put(actionName,options);
             }
