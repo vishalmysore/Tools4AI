@@ -6,13 +6,13 @@ import lombok.extern.java.Log;
 import java.util.HashMap;
 import java.util.Map;
 @Log
-public class ShowActions {
+public class ShowActionsExample {
     private String projectId = null;//"cookgptserver";
     private String location = null;//"us-central1";
     private String modelName = null;//"gemini-1.0-pro";
 
     private String promptText = null;//"Hey I am in Toronto do you think i can go out without jacket,  ";
-    public ShowActions(String[] args) throws Exception {
+    public ShowActionsExample(String[] args) throws Exception {
         if(args.length < 1) {
             throw new Exception("provide args in this format projectId=<> location=<> modelName=<> promptText=<>");
         }
@@ -49,7 +49,7 @@ public class ShowActions {
     }
     public static void main(String[] args) throws Exception {
 
-        ShowActions sample = new ShowActions(args);
+        ShowActionsExample sample = new ShowActionsExample(args);
         sample.showActionList();
 
     }

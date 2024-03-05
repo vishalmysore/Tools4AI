@@ -30,6 +30,8 @@ public class ShellAction implements AIAction {
     @NonNull
     private String actionName;
 
+    private String parameterNames;
+
 
     public  void executeShell(String arguments[]) throws IOException, InterruptedException {
         scriptPath = loadScript(scriptPath);

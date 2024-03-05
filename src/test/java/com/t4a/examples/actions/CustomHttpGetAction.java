@@ -1,4 +1,4 @@
-package com.t4a.action.http;
+package com.t4a.examples.actions;
 
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
@@ -21,7 +21,7 @@ import java.net.URL;
 @Log
 @Predict
 public class CustomHttpGetAction implements AIAction {
-    public double getTemprature(String cityName) {
+    public double getTemperature(String cityName) {
         double temperature = 0;
         String urlStr = "https://geocoding-api.open-meteo.com/v1/search?name="+cityName+"&count=1&language=en&format=json";
         String weatherURlStr = "https://api.open-meteo.com/v1/forecast?latitude=";
@@ -97,13 +97,13 @@ public class CustomHttpGetAction implements AIAction {
 
     public static void main(String[] args) {
         CustomHttpGetAction action = new CustomHttpGetAction();
-        action.getTemprature("Toronto");
+        action.getTemperature("Toronto");
 
     }
 
     @Override
     public String getActionName() {
-        return "getTemprature";
+        return "getTemperature";
     }
 
     @Override

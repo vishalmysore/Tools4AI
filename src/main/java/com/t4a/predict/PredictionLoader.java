@@ -5,6 +5,7 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.t4a.action.http.GenericHttpAction;
 import com.t4a.action.shell.ShellAction;
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
@@ -17,9 +18,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Log
 public class PredictionLoader {
@@ -50,6 +49,32 @@ public class PredictionLoader {
 
     }
 
+    public List<AIAction> getPredictedAction(String prompt, int num)  {
+        GenerateContentResponse response = null;
+        List<AIAction> actionList = new ArrayList<AIAction>();
+        try {
+            response = chat.sendMessage(buildPrompt(prompt,num));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String actionNameListStr = ResponseHandler.getText(response);
+        String[] actionNames = actionNameListStr.split(",");
+        if(!(actionNames.length >1))
+            actionNames = actionNameListStr.split("\n");
+        // Iterate over each action name
+        for (String actionName : actionNames) {
+            // Trim the action name to remove leading/trailing spaces
+            actionName = actionName.trim();
+
+            // Get the action and add it to the action list
+            AIAction aiAction = getAiAction(actionName);
+            actionList.add(aiAction);
+        }
+        return actionList;
+
+    }
+
+
     public AIAction getPredictedAction(String prompt)  {
         GenerateContentResponse response = null;
         try {
@@ -58,6 +83,11 @@ public class PredictionLoader {
             throw new RuntimeException(e);
         }
         String actionName = ResponseHandler.getText(response);
+        return getAiAction(actionName);
+
+    }
+
+    private AIAction getAiAction(String actionName) {
         PredictOptions options = predictions.get(actionName);
         String actionClazzName = options.getClazzName();
         try {
@@ -67,7 +97,21 @@ public class PredictionLoader {
                 shellAction.setActionName(options.getActionName());
                 shellAction.setDescription(options.getDescription());
                 shellAction.setScriptPath(options.getScriptPath());
+                shellAction.setParameterNames(options.getShellParameterNames());
                 return shellAction;
+            } else if (action.getActionType() == ActionType.HTTP) {
+               if(action instanceof GenericHttpAction) {
+                   GenericHttpAction genericHttpAction = (GenericHttpAction)action;
+                   genericHttpAction.setType(options.getHttpType());
+                   genericHttpAction.setActionName(options.getActionName());
+                   genericHttpAction.setDescription(options.getDescription());
+                   genericHttpAction.setAuthInterface(options.getHttpAuthInterface());
+                   genericHttpAction.setUrl(options.getHttpUrl());
+                   genericHttpAction.setInputObjects(options.getHttpInputObjects());
+                   genericHttpAction.setOutputObject(options.getHttpOutputObject());
+                   return genericHttpAction;
+
+               }
             }
             return action;
         } catch (InstantiationException e) {
@@ -81,7 +125,6 @@ public class PredictionLoader {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static PredictionLoader getInstance(String projectId, String location, String modelName) {
@@ -97,12 +140,13 @@ public class PredictionLoader {
 
 
 
+
     private void loadShellCommands()  {
         ShellPredictionLoader shellLoader = new ShellPredictionLoader();
         try {
             shellLoader.load(predictions,actionNameList);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            log.warning(e.getMessage());
         }
     }
     private void loadHttpCommands()  {
@@ -110,19 +154,26 @@ public class PredictionLoader {
         try {
             httpLoader.load(predictions,actionNameList);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            log.warning(e.getMessage());
         }
     }
 
     public void processCP() {
+
+
         ClassPathScanningCandidateComponentProvider provider =
-                new ClassPathScanningCandidateComponentProvider(false);
+                new ClassPathScanningCandidateComponentProvider(true);
         provider.addIncludeFilter(new AnnotationTypeFilter(Predict.class));
         Set<BeanDefinition> beanDefs = provider
-                .findCandidateComponents("com");
+                .findCandidateComponents("*");
         beanDefs.stream().forEach(beanDefinition -> {
             try {
-                addAction(Class.forName(beanDefinition.getBeanClassName()));
+                Class actionCLAZZ = Class.forName(beanDefinition.getBeanClassName());
+                if (AIAction.class.isAssignableFrom(actionCLAZZ)) {
+                    log.info("Class " + actionCLAZZ + " implements AIAction");
+                    addAction(actionCLAZZ);
+                }
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

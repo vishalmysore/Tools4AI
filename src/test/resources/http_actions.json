@@ -23,7 +23,7 @@
       }
     },
     {
-      "actionName": "getRTTemp",
+      "actionName": "somethingNotVeryUseful",
       "url": "https://api.example.com/temperature",
       "description" : " this will get real time temperature from the weather api",
       "type": "GET",

@@ -18,7 +18,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class ShellPredictionLoader {
 
-    private  String yamlFile = "shell.yaml";
+    private  String yamlFile = "shell_actions.yaml";
     private URL resourceUrl = null;
 
 
@@ -48,9 +48,11 @@ public class ShellPredictionLoader {
             for (Map<String, String> scriptInfo : data) {
                 String scriptName = scriptInfo.get("scriptName");
                 String actionName = scriptInfo.get("actionName");
+                String parameterNames = scriptInfo.get("parameters");
                 String description = scriptInfo.get("description");
                 PredictOptions options = new PredictOptions(ShellAction.class.getName(),description,actionName,actionName);
                 options.setScriptPath(scriptName);
+                options.setShellParameterNames(parameterNames);
                 options.setActionType(ActionType.SHELL);
                 actionNameList.append(actionName+",");
                 predictions.put(actionName,options);

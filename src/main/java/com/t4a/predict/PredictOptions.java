@@ -31,5 +31,6 @@ public class PredictOptions {
 
     private ActionType actionType;
     private String scriptPath;
+    private String shellParameterNames;
 
 }

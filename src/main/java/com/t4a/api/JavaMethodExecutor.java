@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.t4a.action.http.GenericHttpAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.action.shell.ShellAction;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Log
 public class JavaMethodExecutor extends JavaActionExecutor {
     private final Map<String, Type> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
@@ -24,6 +26,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
 
     private Class<?> clazz ;
     private Method method;
+    private AIAction action;
     public JavaMethodExecutor() {
 
     }
@@ -64,10 +67,16 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
+    private FunctionDeclaration buildFunction(ShellAction action, String methodName, String funName, String discription) {
+        mapMethod(action);
+        generatedFunction = getBuildFunction(funName, discription);
+        return generatedFunction;
+    }
     public FunctionDeclaration buildFunciton(AIAction action) {
+        this.action = action;
         if(action.getActionType().equals(ActionType.SHELL)) {
             ShellAction shellAction = (ShellAction)action;
-            return buildFunction(action.getClass().getName(),shellAction.getDefaultExecutorMethodName(),action.getActionName(),action.getDescription());
+            return buildFunction(shellAction,shellAction.getDefaultExecutorMethodName(),action.getActionName(),action.getDescription());
         } if(action.getActionType().equals(ActionType.HTTP)) {
             GenericHttpAction httpAction = (GenericHttpAction)action;
             return buildFunction(httpAction,httpAction.getDefaultExecutorMethodName(),httpAction.getActionName(),httpAction.getDescription());
@@ -80,6 +89,14 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         for (InputParameter parameter : inputParameterList) {
             if(!parameter.hasDefaultValue())
               properties.put(parameter.getName(), mapType(parameter.getType()));
+        }
+
+    }
+    private void mapMethod(ShellAction action) {
+        String nameList =action.getParameterNames();
+        String[] names = nameList.split(",");
+        for (String name : names) {
+                properties.put(name, mapType("String"));
         }
 
     }
@@ -106,16 +123,21 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                         properties.put(parameters[i].getName(), mapType(parameters[i].getType()));
                     }
 
-                    System.out.println("Method arguments for " + methodName + ": " + properties);
+                    log.info("Method arguments for " + methodName + ": " + properties);
                     return;
                 }
             }
 
-            System.out.println("Method not found: " + methodName);
+            log.severe("Method not found: " + methodName);
         } catch (ClassNotFoundException e) {
-            System.out.println("Class not found: " + className);
+            log.severe("Class not found: " + className);
         }
     }
+
+    public AIAction getAction() {
+        return action;
+    }
+
     public Object action(GenerateContentResponse response, AIAction instance) throws InvocationTargetException, IllegalAccessException {
 
         Map<String, Object> propertyValuesMap = getPropertyValuesMap(response);
@@ -125,6 +147,25 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                  return action.executeHttpRequest(propertyValuesMap);
 
             } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else  if(instance.getActionType().equals(ActionType.SHELL)) {
+            ShellAction action = (ShellAction) instance;
+            try {
+                String paramNamesStr = action.getParameterNames();
+                String[] paramNamesArray = paramNamesStr.split(",");
+                String[] paraNamesToPassToShell = new String[paramNamesArray.length];
+                for (int i = 0; i < paramNamesArray.length; i++) {
+                    String s = paramNamesArray[i];
+                    paramNamesArray[i] = (String)propertyValuesMap.get(s);
+                    log.info(paramNamesArray[i]);
+
+                }
+                action.executeShell(paramNamesArray);
+                return "Executed "+action.getActionName();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } else {

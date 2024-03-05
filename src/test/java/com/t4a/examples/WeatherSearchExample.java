@@ -7,7 +7,7 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
 import com.t4a.action.BlankAction;
-import com.t4a.action.http.CustomHttpGetAction;
+import com.t4a.examples.actions.CustomHttpGetAction;
 import com.t4a.api.JavaMethodExecutor;
 import lombok.extern.java.Log;
 
