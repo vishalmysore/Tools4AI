@@ -8,6 +8,7 @@ import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.Value;
+import lombok.extern.java.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Map;
 /**
  * This is the base class for all the bridges will implement common functionality
  */
+@Log
 public abstract class JavaActionExecutor implements AIActionExecutor {
 
 
@@ -127,6 +129,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
      */
     public Map<String, Object> getPropertyValuesMap(GenerateContentResponse response) {
         List<String> propertyNames = new ArrayList<>(getProperties().keySet());
+        log.info(" Trying to parse "+ResponseHandler.getContent(response));
         Map<String, Object> propertyValues = new HashMap<>();
         for (String propertyName : propertyNames) {
             Value value = ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get(propertyName);

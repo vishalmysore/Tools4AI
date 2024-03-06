@@ -28,13 +28,15 @@ public class PredictionLoader {
     private StringBuffer actionNameList = new StringBuffer();
     private static PredictionLoader predictionLoader =null;
 
-    private String PREACTIONCMD = "here is my prompt - ";
-    private String ACTIONCMD = "- what action do you think we should take ";
+    private final String PREACTIONCMD = "here is my prompt - ";
+    private final  String ACTIONCMD = "- what action do you think we should take ";
 
-    private String POSTACTIONCMD = " - reply back with ";
-    private String NUMACTION = " action only";
+    private final  String POSTACTIONCMD = " - reply back with ";
+    private final  String NUMACTION = " action only";
+
+    private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     private ChatSession chat;
-
+    private ChatSession chatExplain;
     private PredictionLoader(String projectId, String location, String modelName) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
@@ -44,7 +46,13 @@ public class PredictionLoader {
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
+            GenerativeModel modelExplain =
+                    GenerativeModel.newBuilder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
             chat = model.startChat();
+            chatExplain = modelExplain.startChat();
         }
 
     }
@@ -87,7 +95,21 @@ public class PredictionLoader {
 
     }
 
+    public String explainAction(String prompt, String action)  {
+        GenerateContentResponse response = null;
+        try {
+            response = chatExplain.sendMessage("explain why this action "+action+" is appropriate for this command "+prompt+" out of all these actions "+actionNameList);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  ResponseHandler.getText(response);
+
+
+    }
+
     private AIAction getAiAction(String actionName) {
+        log.info(" Trying to load "+actionName);
         PredictOptions options = predictions.get(actionName);
         String actionClazzName = options.getClazzName();
         try {
@@ -202,8 +224,12 @@ public class PredictionLoader {
     }
 
     private String buildPrompt(String prompt, int number) {
-        String query = PREACTIONCMD+prompt+ACTIONCMD+actionNameList.toString()+POSTACTIONCMD+number +NUMACTION;
+        String append = NUMACTION;
+        if(number > 1)
+            append = NUMACTION_MULTIPROMPT;
+        String query = PREACTIONCMD+prompt+ACTIONCMD+actionNameList.toString()+POSTACTIONCMD+number +append;
         log.info(query);
         return query;
     }
+
 }

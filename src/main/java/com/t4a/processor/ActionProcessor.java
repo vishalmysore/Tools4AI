@@ -20,11 +20,12 @@ import java.util.Collections;
 import java.util.List;
 
 @Log
-public class ActionProcessor {
-    public Object processSingleAction(String projectId, String location, String modelName, String promptText) throws IOException, InvocationTargetException, IllegalAccessException {
+public class ActionProcessor implements AIProcessor{
+    public Object processSingleAction(String projectId, String location, String modelName, String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             AIAction predictedAction = PredictionLoader.getInstance(projectId, location, modelName).getPredictedAction(promptText);
             log.info(predictedAction.getActionName());
+            explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance(projectId, location, modelName).explainAction(promptText,predictedAction.getActionName()));
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
              methodAction.buildFunciton(predictedAction);
@@ -58,9 +59,12 @@ public class ActionProcessor {
 
             log.info("\nPrint response 1 : ");
             log.info("" + ResponseHandler.getContent(response));
-            log.info(methodAction.getPropertyValuesJsonString(response));
+            log.info(" Human Validation Proceed " +" funciton "+predictedAction.getActionName()+" params "+methodAction.getPropertyValuesJsonString(response));
 
-            Object obj = methodAction.action(response, predictedAction);
+            Object obj = null;
+            FeedbackLoop feedbackFromHuman = humanVerification.allow(promptText,predictedAction.getActionName(),methodAction.getPropertyValuesMap(response));
+            if(feedbackFromHuman.isAIResponseValid())
+                obj = methodAction.action(response, predictedAction);
             log.info("" + obj);
 
             Content content =
@@ -80,15 +84,15 @@ public class ActionProcessor {
         }
     }
 
-    public Object processSingleAction(String projectId, String location, String modelName, String promptText, HumanInLoop humanValidate) throws IOException, InvocationTargetException, IllegalAccessException {
-        return processSingleAction(projectId,location,modelName,promptText);
-    }
-
-    public Object processSingleAction(String projectId, String location, String modelName, String promptText, HumanInLoop humanValidate, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
-        return processSingleAction(projectId,location,modelName,promptText);
+    public Object processSingleAction(String projectId, String location, String modelName, String promptText) throws IOException, InvocationTargetException, IllegalAccessException {
+        return processSingleAction(projectId,location,modelName,promptText, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 
     public List<Object> processMultipleAction(String projectId, String location, String modelName, String promptText, int num) throws IOException, InvocationTargetException, IllegalAccessException {
+        return processMultipleAction(projectId,location,modelName,promptText, num,new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
+
+    public List<Object> processMultipleAction(String projectId, String location, String modelName, String promptText, int num,HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
         List<Object> restulList = new ArrayList<Object>();
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             List<AIAction> predictedActionList = PredictionLoader.getInstance(projectId, location, modelName).getPredictedAction(promptText, num);
@@ -110,13 +114,9 @@ public class ActionProcessor {
                 //add the function to the tool
 
                 toolBuilder.addFunctionDeclarations(methodAction.getGeneratedFunction());
+                javaMethodExecutorList.add(methodAction);
             }
-            JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
-            BlankAction blankAction = new BlankAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunciton(blankAction);
-            log.info("Function declaration h1:");
-            log.info("" + additionalQuestionFun);
-            toolBuilder.addFunctionDeclarations(additionalQuestionFun);
+
             Tool tool = toolBuilder.build();
 
 
@@ -129,13 +129,17 @@ public class ActionProcessor {
 
             ChatSession chat = model.startChat();
 
+            log.info(String.format("Ask the question 1: %s", promptText));
+            GenerateContentResponse response = chat.sendMessage(promptText);
+
             for (JavaMethodExecutor methodExecutor:javaMethodExecutorList
                  ) {
-                log.info(String.format("Ask the question 1: %s", promptText));
-                GenerateContentResponse response = chat.sendMessage(promptText);
 
-                log.info("\nPrint response 1 : ");
+
+                log.info("Print response content: ");
                 log.info("" + ResponseHandler.getContent(response));
+                String result = ResponseHandler.getText(response);
+                restulList.add(result);
 
                 log.info(methodExecutor.getPropertyValuesJsonString(response));
 
@@ -150,10 +154,8 @@ public class ActionProcessor {
 
                 response = chat.sendMessage(content);
 
-                log.info("Print response content: ");
-                log.info("" + ResponseHandler.getContent(response));
-                String result = ResponseHandler.getText(response);
-                restulList.add(result);
+
+
 
             }
 
