@@ -36,7 +36,7 @@ public class JustKhao implements AIAction {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             JavaMethodExecutor generator = new JavaMethodExecutor();
             JustKhao justKhao = new JustKhao();
-            FunctionDeclaration bookMyReservation = generator.buildFunciton(justKhao);
+            FunctionDeclaration bookMyReservation = generator.buildFunction(justKhao);
 
             log.info("Function declaration h1:");
             log.info(""+bookMyReservation);

@@ -1,15 +1,17 @@
 package com.t4a.api;
 
+/**
+ * All Types of actions implemented so far
+ */
 public enum ActionType {
     JAVACLASS,
     JAVAMETHOD,
     HTTP,
-    TIBCO,
-    SOLACE,
-    DATABASE,
+
     HALLUCINATION,
     BIAS,
     FACT,
-    FILE,SHELL
+    FILE,SHELL,
+    EXTEND
 
 }

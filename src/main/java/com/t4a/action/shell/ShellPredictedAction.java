@@ -1,7 +1,7 @@
 package com.t4a.action.shell;
 
-import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
+import com.t4a.api.PredictedAIAction;
 import lombok.*;
 import lombok.extern.java.Log;
 
@@ -13,7 +13,26 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * base class to execute shell commands
+ * <pre>
+ * Base class to execute shell commands , these configuration are part of shell_action.yaml. Shell commands can be used
+ * to trigger any shell or CMD actions in real time based on the prompt
+ *
+ *
+ *  - scriptName: "test_script.cmd"
+ *   actionName: saveEmployeeName
+ *   parameters: employeeName,employeeLocation
+ *   description: This is a command which will save employee information
+ *
+ *
+ * In this case the function and method name is  saveEmployeeName and the parameters are  employeeName and employeeLocation
+ * If there is a prompt like this "Hey Vishal joined my company and he is placed in Toronto"
+ *
+ * then AI will call back script associated with saveEmployeeName (in this case  test_script.cmd) with array of parameters
+ * the first value will be Vishal and then second value will be Toronto.
+ *
+ * You can provide any number of parameters and they will be passed as array in exactly same order
+ *</pre>
+ * @see com.t4a.predict.ShellPredictionLoader
  */
 @NoArgsConstructor
 
@@ -21,7 +40,7 @@ import java.net.URL;
 @Setter
 @Log
 @RequiredArgsConstructor
-public class ShellAction implements AIAction {
+public class ShellPredictedAction implements PredictedAIAction {
 
     @NonNull
     private String description;
@@ -92,7 +111,7 @@ public class ShellAction implements AIAction {
 
     public  String loadFromClasspath(String fileName) {
         // Load from classpath
-        URL resourceUrl = ShellAction.class.getClassLoader().getResource(fileName);
+        URL resourceUrl = ShellPredictedAction.class.getClassLoader().getResource(fileName);
 
         if (resourceUrl != null) {
             File f = null;

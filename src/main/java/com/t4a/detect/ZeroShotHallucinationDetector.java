@@ -80,7 +80,7 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
             HallucinationAction questionAction = new HallucinationAction(projectId, location, modelName, sampleResponse);
 
             //FileWriteAction action = new FileWriteAction();
-            FunctionDeclaration questionActionFun = methodAction.buildFunciton(questionAction);
+            FunctionDeclaration questionActionFun = methodAction.buildFunction(questionAction);
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(questionActionFun)
                     .build();

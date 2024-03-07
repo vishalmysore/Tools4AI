@@ -9,6 +9,9 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Create a POJO Object from the response object
+ */
 public class JavaClassExecutor extends JavaActionExecutor {
     private Map<String, Type> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;

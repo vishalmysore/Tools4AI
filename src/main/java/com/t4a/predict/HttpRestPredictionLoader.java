@@ -4,31 +4,32 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.t4a.action.http.GenericHttpAction;
+import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.api.ActionType;
 
-import java.io.*;
-import java.net.URISyntaxException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class HttpRestPredictionLoader {
+public class HttpRestPredictionLoader {
     private  String yamlFile = "http_actions.json";
     private URL resourceUrl = null;
-    public void load(Map<String,PredictOptions> predictions, StringBuffer actionNameList) throws URISyntaxException {
+    public void load(Map<String,PredictOptions> predictions, StringBuffer actionNameList) throws LoaderException {
 
         try {
             parseConfig(predictions,actionNameList);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new LoaderException(e);
         }
 
 
     }
-    public  List<GenericHttpAction> parseConfig(Map<String,PredictOptions> predictions, StringBuffer actionNameList) throws IOException {
+    public  List<HttpPredictedAction> parseConfig(Map<String,PredictOptions> predictions, StringBuffer actionNameList) throws IOException {
         if(resourceUrl == null)
             resourceUrl = HttpRestPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -36,7 +37,7 @@ class HttpRestPredictionLoader {
             throw new IllegalArgumentException("File not found: " + yamlFile);
         }
         Gson gson = new Gson();
-        List<GenericHttpAction> actions = new ArrayList<>();
+        List<HttpPredictedAction> actions = new ArrayList<>();
 
         try (InputStream inputStream = resourceUrl.openStream();
              InputStreamReader reader = new InputStreamReader(inputStream)){
@@ -66,7 +67,7 @@ class HttpRestPredictionLoader {
                 JsonObject outputObject = endpoint.getAsJsonObject("output_object");
                 JsonObject authInterface = endpoint.getAsJsonObject("auth_interface");
 
-                PredictOptions option = new PredictOptions(GenericHttpAction.class.getName(),description,actionName,actionName);
+                PredictOptions option = new PredictOptions(HttpPredictedAction.class.getName(),description,actionName,actionName);
                 option.setActionType(ActionType.HTTP);
                 option.setHttpUrl(url);
                 option.setHttpType(type);

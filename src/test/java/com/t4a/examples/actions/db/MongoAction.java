@@ -1,4 +1,4 @@
-package com.t4a.action.db;
+package com.t4a.examples.actions.db;
 
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;

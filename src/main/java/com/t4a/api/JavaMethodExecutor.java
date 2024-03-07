@@ -4,9 +4,11 @@ import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Type;
 import com.google.gson.Gson;
-import com.t4a.action.http.GenericHttpAction;
+import com.t4a.action.ExtendedPredictedAction;
+import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
-import com.t4a.action.shell.ShellAction;
+import com.t4a.action.shell.ShellPredictedAction;
+import com.t4a.predict.LoaderException;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
@@ -18,6 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This is one of the main classes which is part of processing logic. IT does alll the mapping of actions to
+ * predicted options and creates the instance of action class. It is also responsible for invoking the correct action
+ * and pass back the response.
+ */
 @Log
 public class JavaMethodExecutor extends JavaActionExecutor {
     private final Map<String, Type> properties = new HashMap<>();
@@ -62,29 +69,38 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
-    private FunctionDeclaration buildFunction(GenericHttpAction action, String methodName, String funName, String discription) {
+    private FunctionDeclaration buildFunction(HttpPredictedAction action, String methodName, String funName, String discription) {
         mapMethod(action);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
-    private FunctionDeclaration buildFunction(ShellAction action, String methodName, String funName, String discription) {
+    private FunctionDeclaration buildFunction(ShellPredictedAction action, String methodName, String funName, String discription) {
         mapMethod(action);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
-    public FunctionDeclaration buildFunciton(AIAction action) {
+
+    /**
+     * Take the AIAction class and based on the type it returns a FunctionDeclaration for Gemini
+     * @param action
+     * @return
+     */
+    public FunctionDeclaration buildFunction(AIAction action) {
         this.action = action;
         if(action.getActionType().equals(ActionType.SHELL)) {
-            ShellAction shellAction = (ShellAction)action;
+            ShellPredictedAction shellAction = (ShellPredictedAction)action;
             return buildFunction(shellAction,shellAction.getDefaultExecutorMethodName(),action.getActionName(),action.getDescription());
-        } if(action.getActionType().equals(ActionType.HTTP)) {
-            GenericHttpAction httpAction = (GenericHttpAction)action;
+        } else if(action.getActionType().equals(ActionType.HTTP)) {
+            HttpPredictedAction httpAction = (HttpPredictedAction)action;
             return buildFunction(httpAction,httpAction.getDefaultExecutorMethodName(),httpAction.getActionName(),httpAction.getDescription());
+        } else if(action.getActionType().equals(ActionType.EXTEND))  {
+            ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
+            return extendedPredictedAction.buildFunction();
         }
         else
         return buildFunction(action.getClass().getName(),action.getActionName(),action.getActionName(),action.getDescription());
     }
-    private void mapMethod(GenericHttpAction action) {
+    private void mapMethod(HttpPredictedAction action) {
         List<InputParameter> inputParameterList =action.getInputObjects();
         for (InputParameter parameter : inputParameterList) {
             if(!parameter.hasDefaultValue())
@@ -92,7 +108,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         }
 
     }
-    private void mapMethod(ShellAction action) {
+    private void mapMethod(ShellPredictedAction action) {
         String nameList =action.getParameterNames();
         String[] names = nameList.split(",");
         for (String name : names) {
@@ -102,7 +118,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
     }
 
     /**
-     * Convert metod to map with name and value ( needs --parameter to be set at compiler to work )
+     * Convert method to map with name and value ( needs --parameter to be set at compiler to work )
      * @param className
      * @param methodName
      */
@@ -138,11 +154,21 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         return action;
     }
 
+    /**
+     * This method invokes the action based on the type of the action. It gets the values for the input params
+     * from the prompt and populates it for the action
+     * @param response
+     * @param instance
+     * @return
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+
     public Object action(GenerateContentResponse response, AIAction instance) throws InvocationTargetException, IllegalAccessException {
 
         Map<String, Object> propertyValuesMap = getPropertyValuesMap(response);
         if(instance.getActionType().equals(ActionType.HTTP)) {
-         GenericHttpAction action = (GenericHttpAction) instance;
+         HttpPredictedAction action = (HttpPredictedAction) instance;
             try {
                  return action.executeHttpRequest(propertyValuesMap);
 
@@ -150,7 +176,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                 throw new RuntimeException(e);
             }
         } else  if(instance.getActionType().equals(ActionType.SHELL)) {
-            ShellAction action = (ShellAction) instance;
+            ShellPredictedAction action = (ShellPredictedAction) instance;
             try {
                 String paramNamesStr = action.getParameterNames();
                 String[] paramNamesArray = paramNamesStr.split(",");
@@ -166,6 +192,14 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } if(instance.getActionType().equals(ActionType.EXTEND)) {
+            ExtendedPredictedAction action = (ExtendedPredictedAction) instance;
+            try {
+                return action.extendedExecute(propertyValuesMap);
+
+            } catch (LoaderException e) {
                 throw new RuntimeException(e);
             }
         } else {

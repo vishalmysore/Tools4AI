@@ -1,4 +1,4 @@
-package com.t4a.action.db;
+package com.t4a.examples;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

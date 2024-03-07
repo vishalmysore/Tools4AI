@@ -1,6 +1,5 @@
 package com.t4a.examples.basic;
 
-import com.t4a.api.AITools;
 import lombok.extern.java.Log;
 
 import java.io.IOException;

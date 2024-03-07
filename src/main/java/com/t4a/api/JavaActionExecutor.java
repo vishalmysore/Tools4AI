@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is the base class for all the bridges will implement common functionality
+ * This is the base class for all the java based executors with common functionality
  */
 @Log
 public abstract class JavaActionExecutor implements AIActionExecutor {
@@ -44,6 +44,11 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
     }
 
+    /**
+     * Map String to Gemini type
+     * @param type
+     * @return
+     */
     public Type mapType(String type) {
         if (type.equalsIgnoreCase("String")) {
             return Type.STRING;
@@ -132,19 +137,22 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
         log.info(" Trying to parse "+ResponseHandler.getContent(response));
         Map<String, Object> propertyValues = new HashMap<>();
         for (String propertyName : propertyNames) {
-            Value value = ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get(propertyName);
-            if (value.hasBoolValue()) {
-                propertyValues.put(propertyName, Boolean.valueOf(value.getBoolValue()));
-            } else if (value.hasStringValue()) {
-                propertyValues.put(propertyName, value.getStringValue());
-            }else if(value.hasListValue()){
-                extractedList(propertyName, value, propertyValues);
-            }
-            else if (value.hasNumberValue()) {
-                if(getProperties().get(propertyName).equals(Type.INTEGER)) {
-                    propertyValues.put(propertyName, Integer.valueOf((int)value.getNumberValue()));
-                } else {
-                    propertyValues.put(propertyName, Double.valueOf(value.getNumberValue()));
+            if(ResponseHandler.getContent(response).getPartsList().size() > 0) {
+                Value value = ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get(propertyName);
+                if (value != null) {
+                    if (value.hasBoolValue()) {
+                        propertyValues.put(propertyName, Boolean.valueOf(value.getBoolValue()));
+                    } else if (value.hasStringValue()) {
+                        propertyValues.put(propertyName, value.getStringValue());
+                    } else if (value.hasListValue()) {
+                        extractedList(propertyName, value, propertyValues);
+                    } else if (value.hasNumberValue()) {
+                        if (getProperties().get(propertyName).equals(Type.INTEGER)) {
+                            propertyValues.put(propertyName, Integer.valueOf((int) value.getNumberValue()));
+                        } else {
+                            propertyValues.put(propertyName, Double.valueOf(value.getNumberValue()));
+                        }
+                    }
                 }
             }
 

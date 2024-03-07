@@ -76,18 +76,18 @@ public class PromptPredictionExample {
     }
     public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            AIAction predictedAction = PredictionLoader.getInstance(projectId, location,modelName).getPredictedAction(promptText);
+            AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
             log.info(predictedAction.getActionName());
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
-            FunctionDeclaration weatherFunciton = methodAction.buildFunciton(predictedAction);
+            FunctionDeclaration weatherFunciton = methodAction.buildFunction(predictedAction);
 
             log.info("Function declaration h1:");
             log.info("" + weatherFunciton);
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunciton(blankAction);
+            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
             log.info("Function declaration h1:");
             log.info("" + additionalQuestionFun);
             //add the function to the tool

@@ -74,14 +74,14 @@ public class WeatherSearchExample {
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
             CustomHttpGetAction httpAction = new CustomHttpGetAction();
 
-            FunctionDeclaration weatherFunciton = methodAction.buildFunciton(httpAction);
+            FunctionDeclaration weatherFunciton = methodAction.buildFunction(httpAction);
 
             log.info("Function declaration h1:");
             log.info("" + weatherFunciton);
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunciton(blankAction);
+            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
             log.info("Function declaration h1:");
             log.info("" + additionalQuestionFun);
             //add the function to the tool

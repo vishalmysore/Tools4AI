@@ -1,6 +1,6 @@
 package com.t4a.examples.shell;
 
-import com.t4a.action.shell.ShellAction;
+import com.t4a.action.shell.ShellPredictedAction;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ public class ShellTest {
             // Get the absolute path of the file
             File file = new File(filePath);
             String absolutePath = file.getAbsolutePath();
-            ShellAction action = new ShellAction("This is action to run shelll command", absolutePath,"testMyScript");
+            ShellPredictedAction action = new ShellPredictedAction("This is action to run shelll command", absolutePath,"testMyScript");
             action.executeShell(args);
             // Output the absolute path
             System.out.println("Absolute path of the file: " + absolutePath);

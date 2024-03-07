@@ -1,4 +1,4 @@
-package com.t4a.api;
+package com.t4a.examples.basic;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
@@ -7,6 +7,10 @@ import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.t4a.api.ActionType;
+import com.t4a.api.GuardRailException;
+import com.t4a.api.GuardRails;
+import com.t4a.api.JavaClassExecutor;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,7 +31,7 @@ public class AITools {
 
     }
 
-    public Object action(ActionType type,GuardRails guard, Map<String,Object> arguments) throws GuardRailException {
+    public Object action(ActionType type, GuardRails guard, Map<String,Object> arguments) throws GuardRailException {
         guard.validateRequest((String)arguments.get("promptText"));
         if (type.equals(ActionType.JAVACLASS)) {
             // Extract arguments from the map

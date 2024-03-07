@@ -19,23 +19,45 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * <pre>
+ * The main processor class, can execute single action or multiple action in sequence
+ * - based on prompt can predict and trigger action
+ * - based on prompt can predict and trigger multiple actions sequentially
+ * - based on prompt can predict and trigger multiple actions parallely
+ * - Can take HumanInLoop object and wait for Human Validation
+ * - Can take ExplainDecision Object and provide why the decision was taken by AI
+ *
+ * </pre>
+ */
 @Log
 public class ActionProcessor implements AIProcessor{
-    public Object processSingleAction(String projectId, String location, String modelName, String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
-        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            AIAction predictedAction = PredictionLoader.getInstance(projectId, location, modelName).getPredictedAction(promptText);
+
+    /**
+     * Process single action based on prediction
+     * @param promptText
+     * @param humanVerification
+     * @param explain
+     * @return
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
+            AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
             log.info(predictedAction.getActionName());
-            explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance(projectId, location, modelName).explainAction(promptText,predictedAction.getActionName()));
+            explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText,predictedAction.getActionName()));
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
-             methodAction.buildFunciton(predictedAction);
+             methodAction.buildFunction(predictedAction);
 
             log.info("Function declaration h1:");
             log.info("" + methodAction.getGeneratedFunction());
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunciton(blankAction);
+            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
             log.info("Function declaration h1:");
             log.info("" + additionalQuestionFun);
             //add the function to the tool
@@ -47,7 +69,7 @@ public class ActionProcessor implements AIProcessor{
 
             GenerativeModel model =
                     GenerativeModel.newBuilder()
-                            .setModelName(modelName)
+                            .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))
                             .build();
@@ -84,18 +106,27 @@ public class ActionProcessor implements AIProcessor{
         }
     }
 
-    public Object processSingleAction(String projectId, String location, String modelName, String promptText) throws IOException, InvocationTargetException, IllegalAccessException {
-        return processSingleAction(projectId,location,modelName,promptText, new LoggingHumanDecision(), new LogginggExplainDecision());
+    /**
+     * Process Multiple actions sequentially based on prediction
+     *
+     * @param promptText
+     * @return
+     * @throws IOException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public Object processSingleAction(String promptText) throws IOException, InvocationTargetException, IllegalAccessException {
+        return processSingleAction(promptText, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 
-    public List<Object> processMultipleAction(String projectId, String location, String modelName, String promptText, int num) throws IOException, InvocationTargetException, IllegalAccessException {
-        return processMultipleAction(projectId,location,modelName,promptText, num,new LoggingHumanDecision(), new LogginggExplainDecision());
+    public List<Object> processMultipleAction(String promptText, int num) throws IOException, InvocationTargetException, IllegalAccessException {
+        return processMultipleAction(promptText, num,new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 
-    public List<Object> processMultipleAction(String projectId, String location, String modelName, String promptText, int num,HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+    public List<Object> processMultipleAction(String promptText, int num,HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
         List<Object> restulList = new ArrayList<Object>();
-        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            List<AIAction> predictedActionList = PredictionLoader.getInstance(projectId, location, modelName).getPredictedAction(promptText, num);
+        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
+            List<AIAction> predictedActionList = PredictionLoader.getInstance().getPredictedAction(promptText, num);
             List<JavaMethodExecutor> javaMethodExecutorList = new ArrayList<>();
             Tool.Builder toolBuilder = Tool.newBuilder();
 
@@ -104,7 +135,7 @@ public class ActionProcessor implements AIProcessor{
                 log.info(predictedAction.getActionName());
                 JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
-                methodAction.buildFunciton(predictedAction);
+                methodAction.buildFunction(predictedAction);
 
                 log.info("Function declaration h1:");
                 log.info("" + methodAction.getGeneratedFunction());
@@ -122,7 +153,7 @@ public class ActionProcessor implements AIProcessor{
 
             GenerativeModel model =
                     GenerativeModel.newBuilder()
-                            .setModelName(modelName)
+                            .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))
                             .build();

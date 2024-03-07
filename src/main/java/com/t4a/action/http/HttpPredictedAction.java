@@ -2,8 +2,8 @@ package com.t4a.action.http;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
+import com.t4a.api.PredictedAIAction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,12 +21,46 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * <pre>
+ * This is a Generic Http Action Class , it will be built from the config file. executeHttpRequest is the main functionality
+ * which will be automatically called by the processor. This method will decide whether its post or get and based on the the method
+ * type the specific method will be executed
+ *
+ * <code>
+ *  "endpoints": [
+ *     {
+ *       "actionName": "getUserDetails",
+ *       "description" : " this will fetch User details from the user inventory corporate application",
+ *       "url": "https://api.example.com/users/",
+ *       "type": "GET",
+ *       "input_object": [
+ *       {
+ *         "name": "userId",
+ *         "type": "path_parameter",
+ *         "description": "User ID"
+ *       }
+ *       ],
+ *
+ *       "output_object": {
+ *         "type": "json",
+ *         "description": "User object"
+ *       },
+ *       "auth_interface": {
+ *         "type": "Bearer Token",
+ *         "description": "Authentication token required"
+ *       }
+ *     },
+ *     </code>
+ *  </pre>
+ *@see com.t4a.predict.HttpRestPredictionLoader
+ */
 
 @Getter
 @Setter
 @Log
 @NoArgsConstructor
-public class GenericHttpAction implements AIAction {
+public final class HttpPredictedAction implements PredictedAIAction {
     private String actionName;
     private String url;
     private String type;
@@ -36,7 +70,7 @@ public class GenericHttpAction implements AIAction {
     private String description;
     private  final HttpClient client = HttpClientBuilder.create().build();
     private final Gson gson = new Gson();
-    public GenericHttpAction(String actionName, String url, String type,   List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
+    public HttpPredictedAction(String actionName, String url, String type, List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
         this.actionName = actionName;
         this.url = url;
         this.type = type;
@@ -97,6 +131,32 @@ public class GenericHttpAction implements AIAction {
         // Handle response...
         return null;
     }
+
+    /**
+     * <pre>
+     * THis method will be automatically called by the processor , the params are populated by AI directly
+     * for example if the prompt was "hey hows the weather in Toronto on Sunday , 8th Sep" and your inputParams are
+     * <code>
+     *     "input_object":[
+     *         {
+     *           "name": "city",
+     *           "type": "query_parameter",
+     *           "description": "City Name"
+     *       },
+     *       {
+     *                 "name": "date",
+     *                 "type": "query_parameter",
+     *                 "description": "date"
+     *       }
+     *
+     * </code>
+     * Then those params will get automatically mapped
+     *
+     *</pre>
+     * @param params
+     * @return
+     * @throws IOException
+     */
     public  String executeHttpRequest(Map<String, Object> params) throws IOException {
         for (InputParameter parameter : inputObjects) {
             if(parameter.hasDefaultValue())
@@ -126,7 +186,7 @@ public class GenericHttpAction implements AIAction {
 
     @Override
     public String toString() {
-        return "GenericHttpAction{" +
+        return "HttpPredictedAction{" +
                 "actionName='" + actionName + '\'' +
                 ", url='" + url + '\'' +
                 ", type='" + type + '\'' +

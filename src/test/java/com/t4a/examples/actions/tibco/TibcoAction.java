@@ -1,4 +1,4 @@
-package com.t4a.action.tibco;
+package com.t4a.examples.actions.tibco;
 
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;

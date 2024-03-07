@@ -1,5 +1,5 @@
 - scriptName: "test_script.cmd"
-  actionName: saveEmployeeName
+  actionName: saveEmployeeInformation
   parameters: employeeName,employeeLocation
   description: This is a command which will save employee information
 

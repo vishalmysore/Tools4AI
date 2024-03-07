@@ -7,7 +7,7 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
 import com.t4a.action.BlankAction;
-import com.t4a.action.http.GenericHttpAction;
+import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.api.JavaMethodExecutor;
 import lombok.extern.java.Log;
@@ -70,7 +70,7 @@ public class GenericHtppTest {
     public void actionOnPrompt(String[] args) throws IOException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
-            GenericHttpAction httpAction = new GenericHttpAction();
+            HttpPredictedAction httpAction = new HttpPredictedAction();
             httpAction.setActionName("getTemperature");
             httpAction.setUrl("https://geocoding-api.open-meteo.com/v1/search");
             httpAction.setType("GET");
@@ -86,14 +86,14 @@ public class GenericHtppTest {
             parameters.add(format);
             httpAction.setInputObjects(parameters);
             httpAction.setDescription("get temperature in real time");
-            FunctionDeclaration weatherFunciton = methodAction.buildFunciton(httpAction);
+            FunctionDeclaration weatherFunciton = methodAction.buildFunction(httpAction);
 
             log.info("Function declaration h1:");
             log.info("" + weatherFunciton);
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunciton(blankAction);
+            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
             log.info("Function declaration h1:");
             log.info("" + additionalQuestionFun);
             //add the function to the tool

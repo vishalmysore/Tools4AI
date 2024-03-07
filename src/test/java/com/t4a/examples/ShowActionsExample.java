@@ -55,6 +55,6 @@ public class ShowActionsExample {
     }
 
     private void showActionList() {
-        log.info(PredictionLoader.getInstance(projectId,location,modelName).getActionNameList().toString());
+        log.info(PredictionLoader.getInstance().getActionNameList().toString());
     }
 }
