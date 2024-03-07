@@ -29,7 +29,7 @@ public class ActionProcessorExample {
         //hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see
 
         log.info("\n\n==== Multi Command 2 =====\n\n");
-        List<Object> results1 = processor.processMultipleAction("Hey I am in Toronto do you think i can go out without jacket, my friends name is Vinod he lives in Balaghat, please save this information locally",2);
+        List<Object> results1 = processor.processMultipleAction("Hey I am in Toronto do you think i can go out without jacket, my friends name is Vinod he lives in Balaghat, please save his name locally",2);
         for (Object resultObj:results1
         ) {
             log.info((String)resultObj);

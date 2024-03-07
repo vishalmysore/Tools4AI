@@ -49,10 +49,11 @@ Or use as maven dependency
 </dependency>
 
 ```
-check for latest version here 
+check for latest version here  https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
 
-https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
+## JavaDocs
 
+Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools4ai/latest/index.html
 
 
 ## GCLOUD
