@@ -1,3 +1,6 @@
+# Rapid Start
+Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam 
+
 # Tools4AI
 Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integraetion with enterprise 
 Java applications.
