@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <pre>
@@ -197,6 +198,19 @@ public final class HttpPredictedAction implements PredictedAIAction {
                 ", client=" + client +
                 ", gson=" + gson +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HttpPredictedAction that = (HttpPredictedAction) o;
+        return Objects.equals(actionName, that.actionName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(actionName);
     }
 }
 

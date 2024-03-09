@@ -1,7 +1,7 @@
 package com.t4a.predict;
 
 import com.t4a.action.shell.ShellPredictedAction;
-import com.t4a.api.ActionType;
+import com.t4a.api.AIAction;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.yaml.snakeyaml.Yaml;
@@ -36,7 +36,7 @@ public class ShellPredictionLoader {
 
 
 
-    public void load(Map<String,PredictOptions> predictions,StringBuffer actionNameList) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList) throws LoaderException {
 
         try {
             loadYamlFile(predictions,actionNameList);
@@ -47,7 +47,7 @@ public class ShellPredictionLoader {
 
     }
 
-    public  void loadYamlFile(Map<String,PredictOptions> predictions,StringBuffer actionNameList) throws URISyntaxException {
+    public  void loadYamlFile(Map<String,AIAction> predictions,StringBuffer actionNameList) throws URISyntaxException {
         if(resourceUrl == null)
         resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -67,12 +67,17 @@ public class ShellPredictionLoader {
                 String actionName = scriptInfo.get("actionName");
                 String parameterNames = scriptInfo.get("parameters");
                 String description = scriptInfo.get("description");
-                PredictOptions options = new PredictOptions(ShellPredictedAction.class.getName(),description,actionName,actionName);
-                options.setScriptPath(scriptName);
-                options.setShellParameterNames(parameterNames);
-                options.setActionType(ActionType.SHELL);
+
+
+                ShellPredictedAction shellAction = new ShellPredictedAction();
+                shellAction.setActionName(actionName);
+                shellAction.setScriptPath(scriptName);
+                shellAction.setParameterNames(parameterNames);
+                shellAction.setDescription(description);
+
+
                 actionNameList.append(actionName+",");
-                predictions.put(actionName,options);
+                predictions.put(actionName,shellAction);
             }
 
 

@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.t4a.action.http.HttpMethod;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
-import com.t4a.api.ActionType;
+import com.t4a.api.AIAction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +20,7 @@ import java.util.Map;
 public class HttpRestPredictionLoader {
     private  String yamlFile = "http_actions.json";
     private URL resourceUrl = null;
-    public void load(Map<String,PredictOptions> predictions, StringBuffer actionNameList) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList) throws LoaderException {
 
         try {
             parseConfig(predictions,actionNameList);
@@ -29,7 +30,7 @@ public class HttpRestPredictionLoader {
 
 
     }
-    public  List<HttpPredictedAction> parseConfig(Map<String,PredictOptions> predictions, StringBuffer actionNameList) throws IOException {
+    public  void parseConfig(Map<String,AIAction> predictions, StringBuffer actionNameList) throws IOException {
         if(resourceUrl == null)
             resourceUrl = HttpRestPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -37,7 +38,7 @@ public class HttpRestPredictionLoader {
             throw new IllegalArgumentException("File not found: " + yamlFile);
         }
         Gson gson = new Gson();
-        List<HttpPredictedAction> actions = new ArrayList<>();
+        //List<HttpPredictedAction> actions = new ArrayList<>();
 
         try (InputStream inputStream = resourceUrl.openStream();
              InputStreamReader reader = new InputStreamReader(inputStream)){
@@ -67,19 +68,20 @@ public class HttpRestPredictionLoader {
                 JsonObject outputObject = endpoint.getAsJsonObject("output_object");
                 JsonObject authInterface = endpoint.getAsJsonObject("auth_interface");
 
-                PredictOptions option = new PredictOptions(HttpPredictedAction.class.getName(),description,actionName,actionName);
-                option.setActionType(ActionType.HTTP);
-                option.setHttpUrl(url);
-                option.setHttpType(type);
-                option.setHttpAuthInterface(authInterface);
-                option.setHttpInputObjects(inputObjects);
-                option.setHttpOutputObject(outputObject);
+
+                HttpPredictedAction httpPredictedAction = new HttpPredictedAction();
+
+                httpPredictedAction.setUrl(url);
+                httpPredictedAction.setType(HttpMethod.valueOf(type));
+                httpPredictedAction.setAuthInterface(authInterface);
+                httpPredictedAction.setInputObjects(inputObjects);
+                httpPredictedAction.setOutputObject(outputObject);
                 actionNameList.append(actionName+", ");
-                predictions.put(actionName,option);
+                predictions.put(actionName,httpPredictedAction);
 ;
             }
 
-            return actions;
+
         }
     }
 

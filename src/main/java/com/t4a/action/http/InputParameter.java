@@ -1,8 +1,6 @@
 package com.t4a.action.http;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Maps to Input parameter in the config file, this is the input which will be sent to HTTP request
@@ -10,6 +8,8 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
+@ToString
+@NoArgsConstructor
 public class InputParameter {
     /**
      * Name of the input will be used as is in the request for http
@@ -21,7 +21,9 @@ public class InputParameter {
     private String type;
     private String description;
     private String defaultValue;
+    private ParamLocation location;
 
+    private String requestBodyJson;
     public InputParameter(String name, String type, String description) {
         this.name = name;
         this.type = type;
@@ -32,13 +34,5 @@ public class InputParameter {
         return defaultValue!= null;
     }
 
-    @Override
-    public String toString() {
-        return "InputParameter{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", description='" + description + '\'' +
-                ", defaultValue='" + defaultValue + '\'' +
-                '}';
-    }
+
 }

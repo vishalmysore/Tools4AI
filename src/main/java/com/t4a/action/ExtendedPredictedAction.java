@@ -3,7 +3,6 @@ package com.t4a.action;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.t4a.api.ActionType;
 import com.t4a.api.PredictedAIAction;
-import com.t4a.predict.ExtendedPredictOptions;
 import com.t4a.predict.LoaderException;
 
 import java.util.Map;
@@ -19,7 +18,7 @@ import java.util.Map;
  * ActivateLoader annotation and call the getExtendedActions which will then return the action name and ExtendedPredictOptions
  *
  *
- * @see com.t4a.predict.ExtendedPredictOptions
+
  * @see com.t4a.predict.ExtendedPredictionLoader
  */
 public abstract class ExtendedPredictedAction implements PredictedAIAction {
@@ -41,25 +40,7 @@ public abstract class ExtendedPredictedAction implements PredictedAIAction {
      */
     public abstract Object extendedExecute(Map<String,Object> params) throws LoaderException;
 
-    /**
-     * <pre>
-     * This will be the first method which gets called when the action is being built by prediction loader
-     * The extended predicted options can be used to map the class level parameters
-     * <code>
-     * if(action.getActionType() == ActionType.EXTEND) {
-     *                     ExtendedPredictedAction shellAction = (ExtendedPredictedAction)action;
-     *                     shellAction.mapParams((ExtendedPredictOptions)options);
-     *                     return shellAction;
-     *                 }
-     *
-     * </code>
-     *
-     * You need to make sure this action is usable state after this method is executed
-     * </pre>
-     * @see com.t4a.predict.PredictionLoader
-     * @param options
-     */
-    public abstract void mapParams(ExtendedPredictOptions options);
+   
 
     /**
      * <pre>

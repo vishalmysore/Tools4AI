@@ -2,10 +2,12 @@
   "endpoints" : [
     {
       "swaggerurl": "https://fakerestapi.azurewebsites.net/swagger/v1/swagger.json",
+      "baseurl": "https://fakerestapi.azurewebsites.net/",
       "id": "fakerestapi"
     },
     {
       "swaggerurl": "https://petstore3.swagger.io/api/v3/openapi.json",
+      "baseurl": "https://petstore3.swagger.io/",
       "id": "petstore"
     }
   ]

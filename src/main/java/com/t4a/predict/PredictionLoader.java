@@ -6,7 +6,6 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.t4a.action.ExtendedPredictedAction;
-import com.t4a.action.http.HttpMethod;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.api.AIAction;
@@ -33,7 +32,7 @@ import java.util.*;
 public class PredictionLoader {
 
     @Getter
-    private Map<String,PredictOptions> predictions = new HashMap<String,PredictOptions>();
+    private Map<String,AIAction> predictions = new HashMap<String,AIAction>();
     private StringBuffer actionNameList = new StringBuffer();
     private static PredictionLoader predictionLoader =null;
 
@@ -167,47 +166,27 @@ public class PredictionLoader {
 
     private AIAction getAiAction(String actionName) {
         log.info(" Trying to load "+actionName);
-        PredictOptions options = predictions.get(actionName);
-        String actionClazzName = options.getClazzName();
-        try {
-            AIAction action = (AIAction)Class.forName(actionClazzName).getDeclaredConstructor().newInstance();
+        AIAction action = predictions.get(actionName);
+
+
             if(action.getActionType() == ActionType.SHELL) {
                 ShellPredictedAction shellAction = (ShellPredictedAction)action;
-                shellAction.setActionName(options.getActionName());
-                shellAction.setDescription(options.getDescription());
-                shellAction.setScriptPath(options.getScriptPath());
-                shellAction.setParameterNames(options.getShellParameterNames());
+
                 return shellAction;
             } else if (action.getActionType() == ActionType.HTTP) {
                if(action instanceof HttpPredictedAction) {
                    HttpPredictedAction genericHttpAction = (HttpPredictedAction)action;
-                   genericHttpAction.setType(HttpMethod.valueOf(options.getHttpType()));
-                   genericHttpAction.setActionName(options.getActionName());
-                   genericHttpAction.setDescription(options.getDescription());
-                   genericHttpAction.setAuthInterface(options.getHttpAuthInterface());
-                   genericHttpAction.setUrl(options.getHttpUrl());
-                   genericHttpAction.setInputObjects(options.getHttpInputObjects());
-                   genericHttpAction.setOutputObject(options.getHttpOutputObject());
+
                    return genericHttpAction;
 
                }  if(action.getActionType() == ActionType.EXTEND) {
                     ExtendedPredictedAction shellAction = (ExtendedPredictedAction)action;
-                    shellAction.mapParams((ExtendedPredictOptions)options);
+
                     return shellAction;
                 }
             }
             return action;
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+
     }
 
     public static PredictionLoader getInstance() {
@@ -216,6 +195,7 @@ public class PredictionLoader {
             predictionLoader.processCP();
             predictionLoader.loadShellCommands();
             predictionLoader.loadHttpCommands();
+            predictionLoader.loadSwaggerHttpActions();
 
         }
         return predictionLoader;
@@ -229,6 +209,14 @@ public class PredictionLoader {
         ShellPredictionLoader shellLoader = new ShellPredictionLoader();
         try {
             shellLoader.load(predictions,actionNameList);
+        } catch (LoaderException e) {
+            log.warning(e.getMessage());
+        }
+    }
+    private void loadSwaggerHttpActions() {
+        SwaggerPredictionLoader httpLoader = new SwaggerPredictionLoader();
+        try {
+            httpLoader.load(predictions,actionNameList);
         } catch (LoaderException e) {
             log.warning(e.getMessage());
         }
@@ -275,7 +263,7 @@ public class PredictionLoader {
     private  void loadFromLoader(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ExtendedPredictionLoader instance = (ExtendedPredictionLoader)clazz.getDeclaredConstructor().newInstance();
         try {
-            Map<String,ExtendedPredictOptions> extendedPredictOptionsMap = instance.getExtendedActions();
+            Map<String, ExtendedPredictedAction> extendedPredictOptionsMap = instance.getExtendedActions();
             for (String key : extendedPredictOptionsMap.keySet()) {
                 log.info(" names "+actionNameList);
                 actionNameList.append(key).append(",");
@@ -293,12 +281,12 @@ public class PredictionLoader {
     private  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         AIAction instance = (AIAction)clazz.getDeclaredConstructor().newInstance();
         String actionName = instance.getActionName();
-        PredictOptions options = new PredictOptions(clazz.getName(),instance.getDescription(),instance.getActionName(),instance.getActionName());
+
         actionNameList.append(actionName+",");
-        predictions.put(actionName,options);
+        predictions.put(actionName,instance);
     }
 
-    public Map<String, PredictOptions> getPredictions() {
+    public Map<String, AIAction> getPredictions() {
         return predictions;
     }
 
