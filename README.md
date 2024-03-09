@@ -1,3 +1,13 @@
+<div align="center">
+  <a href="https://www.linkedin.com/posts/vishalrow_ai-appdevelopment-actions-activity-7171302152101900288-64qg?utm_source=share&utm_medium=member_desktop">
+    <img src="tools4ai.png"  width="300" height="300">
+  </a>
+</div>
+<p align="center">
+    <img  src=" https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fvishalmysore%2Ftools4ai&countColor=black&style=flat%22" />
+    <a target="_blank" href="https://github.com/vishalmyore/tools4ai"><img src="https://img.shields.io/github/stars/vishalmysore/tools4ai?color=black" /></a>    
+</p>
+
 # Rapid Start
 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam 
 
@@ -45,7 +55,7 @@ Or use as maven dependency
 <dependency>
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.7</version>
 </dependency>
 
 ```
@@ -181,14 +191,150 @@ public class SearchAction implements AIAction {
 When annotated with @Predict, the AI system will call the execute method of SearchAction when it 
 predicts that the user prompt is related to searching for information.
 
-## Advanced Reference Examples
-``` Security - Guard Rails using Spring Security``` TBD <br>
-``` Application Checkout and monitoring using with Gemini - Prompt - Check if my restaurant system is up and running and able to book the reservation``` TBD <br>
-``` Validation with Prompt  - Prompt - What happened the the flight booking i made whats the status?```TBD <br>
+## Prediction Loaders
 
-## Advanced prompt function calling
-``` Can you check if my movie booking system can handle 50 reservations in 1 min ``` <br>
-``` what happens if my cookgpt is giving only vegetarian recipes``` <br>
+### Java Prediction Loaders
+
+All the classes implementing ```AIAction``` interfaces and having annotation ```@Predict``` are added to prediction list
+```AIAction``` is integral to creating all AI-related actions, with each action implemented as a function adhering to the principles of functional programming. The function's name should be descriptive, aligning closely with the action it performs
+```@Predict``` Annotation: This annotation ensures that the AIAction object is included in our prediction list. While not mandatory, it's advisable to mark all actions with @Predict for automatic execution. However, for highly customized actions like deleting records or canceling reservations, omitting this annotation might be preferable to prevent automatic execution.
+
+```getActionName()``` Method: This method returns the descriptive name of the primary function within the class. It's crucial to name this function accurately, as AI utilizes semantic mapping at runtime to correlate the function.
+
+```
+@Predict
+public class SimpleAction implements AIAction {
+
+    public String whatFoodDoesThisPersonLike(String name) {
+        return "Paneer Butter Masala";
+    }
+
+    @Override
+    public String getActionName() {
+        return "whatFoodDoesThisPersonLike";
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.JAVAMETHOD;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Provide person's name and find out their food preferences.";
+    }
+}
+
+```
+
+So prompt like ```Hey Vishal is coming to my house for dinner``` will automatically trigger method ```whatFoodDoesThisPersonLike``` with ```name``` Vishal
+
+### Shell Prediction Loader  
+
+The prediction loader is responsible for loading command scripts, shell scripts, Python scripts, or any other
+type of script from configuration files. It utilizes the actionName field from the configuration to map to 
+prompts in real-time. Here's an example configuration entry: 
+
+```
+- scriptName: "test_script.cmd"
+  actionName: saveEmployeeInformation
+  parameters: employeeName,employeeLocation
+  description: This is a command which will save employee information
+ ```
+During runtime, the prediction loader dynamically extracts parameters from the prompt. Subsequently, it invokes 
+the corresponding script based on the action name. Upon execution, the script processes the parameters and 
+generates a result, which is then sent back to the AI system.  Finally, the AI system formulates a response based on the received result and provides feedback accordingly.
+User: "Hey, Bahubali joined the IFC and we are so happy."
+
+In this prompt:
+
+"Hey" serves as a casual greeting.
+"Bahubali" represents the name of the new joiner, which needs to be extracted as a parameter.
+"joined the IFC" implies an action, where the specifics of the action need to be determined. "IFC" is the name of the organization.
+"we are so happy" provides additional context but doesn't directly affect the action to be taken.
+The AI system first matches the user's intent with a list of all available actions. In this case, it selects the "saveEmployeeInformation" action as the best match. Then, it maps the parameters accordingly: "Bahubali" as the employee's name and "IFC" as the organization's name. This allows the AI system to accurately understand and execute the user's request.
+
+### Swagger Prediction Loader  
+<img src="restapi.png" >
+
+The Swagger Prediction Loader is capable of directly loading HTTP endpoints as predictions, enabling automatic
+execution of commands that semantically match the endpoints with extracted parameters. The screenshot provided
+is from https://fakerestapi.azurewebsites.net/index.html, included as an example. Each endpoint within this 
+API is converted to an ```HttpPredictedAction``` and dynamically added to the prediction list in real-time by the 
+```SwaggerPredictionLoader.``` 
+
+This seamless integration allows for streamlined execution of commands based on the available HTTP endpoints.
+**Parsing Swagger/OpenAPI Specification:** The Swagger Prediction Loader reads the Swagger/OpenAPI specification file, which describes the available endpoints, their methods (e.g., GET, POST), parameters, and other details.
+
+**Endpoint Extraction:** The loader extracts each endpoint from the specification, along with its associated metadata such as method, path, parameters, etc.
+
+**Action Mapping:** For each endpoint, the loader creates an HttpPredictedAction object. This action represents the corresponding HTTP operation (e.g., GET, POST) that clients can perform on the endpoint.
+
+**Parameter Extraction:** The loader extracts parameters defined for each endpoint, such as query parameters, path parameters, headers, etc.
+
+**Action Configuration:** The extracted parameters are configured within the HttpPredictedAction object, allowing for dynamic parameterization during execution. Parameters may be mapped to placeholders within the endpoint URL or included in the request body, headers, etc., as specified by the endpoint definition.
+
+**Addition to Prediction List:** Finally, the HttpPredictedAction objects are added to the prediction list, making them available for automatic execution based on user prompts. Users can invoke actions by providing prompts that match the semantic intent of the mapped endpoints, and the system will execute the corresponding HTTP operation with the extracted parameters.
+
+In essence, the Swagger Prediction Loader leverages the structure and metadata defined in the Swagger/OpenAPI
+specification to dynamically create HttpPredictedAction objects, allowing for seamless integration of HTTP
+endpoints into the prediction system
+
+### Http Prediction Loader
+
+```HttpPredictionLoader``` is responsible for loading the manual http endpoint configuration which look something like this 
+
+```{
+  "endpoints": [
+    {
+      "actionName": "getUserDetails",
+      "description" : " this will fetch User details from the user inventory corporate application",
+      "url": "https://api.example.com/users/",
+      "type": "GET",
+      "input_object": [
+      {
+        "name": "userId",
+        "type": "path_parameter",
+        "description": "User ID"
+      }
+      ],
+
+      "output_object": {
+        "type": "json",
+        "description": "User object"
+      },
+      "auth_interface": {
+        "type": "Bearer Token",
+        "description": "Authentication token required"
+      }
+    },
+```
+For the manual definition of HTTP endpoints using a configuration file like the one provided, the process involves specifying each endpoint along with its associated details such as action name, description, URL, HTTP method (type), input parameters, output object, and authentication interface. Here's how the mapping process occurs:
+
+**Configuration File Parsing:** The application parses the configuration file to extract each endpoint definition along with its metadata.
+
+**Endpoint Mapping:** For each endpoint defined in the configuration file, an HttpPredictedAction object is created to represent the corresponding HTTP operation.
+
+**Action Configuration:** The metadata provided in the configuration file is used to configure the HttpPredictedAction object:
+
+**Action Name:** Specifies the name of the action, which serves as a unique identifier.  
+**Description:** Provides a brief description of what the action does or its purpose.  
+**URL:** Defines the endpoint URL to which the HTTP request will be sent.  
+**HTTP Method (Type):** Specifies the HTTP method (e.g., GET, POST) to be used for the request.  
+**Input Parameters:** Describes the input parameters required for the HTTP request, such as path parameters, query parameters, etc.  
+**Output Object:** Defines the format and structure of the response expected from the endpoint.  
+**Authentication Interface:** Specifies the authentication mechanism required to access the endpoint, along with any necessary credentials.  
+**Parameter Extraction:** The input parameters defined for each endpoint are extracted and configured within the HttpPredictedAction object.  
+
+**Addition to Prediction List:** Finally, the HttpPredictedAction objects representing the manually defined endpoints are added to the prediction list, making them available for automatic execution based on user prompts.
+
+This approach allows for flexibility in defining HTTP endpoints outside of a Swagger/OpenAPI specification, enabling the manual configuration of endpoints to suit specific application requirements.
+
+### Extended Prediction Loader
+The ```ExtendedPredictionLoader``` offers a mechanism for creating custom prediction loaders. While Shell, HTTP, and Java Methods are supported by default, there may arise situations or use cases necessitating a custom set of actions. It's important to note the distinction between custom actions and ```ExtendedPredictedAction.``` Custom actions can be created by implementing the AIAction class, while ExtendedPredictedAction have their own loading mechanism. These actions are already present in the prediction list by default and cannot be predicted again.
+
+To create custom implementations of ExtendedPredictionLoader, you need to annotate the loader class with ```@ActivateLoader.``` Prediction loader will then identify all classes with this annotation and call the ```getExtendedActions()``` method. This method should return the action names along with their corresponding ExtendedPredictOptions, allowing for the seamless integration of custom actions into the prediction system.
+
 
 ## Response Validation
 
@@ -218,3 +364,13 @@ By employing a simple yet effective Zero Shot technique, this method offers a st
 
 ### Bias
 Fairness
+
+
+## Advanced Reference Examples
+``` Security - Guard Rails using Spring Security``` TBD <br>
+``` Application Checkout and monitoring using with Gemini - Prompt - Check if my restaurant system is up and running and able to book the reservation``` TBD <br>
+``` Validation with Prompt  - Prompt - What happened the the flight booking i made whats the status?```TBD <br>
+
+## Advanced prompt function calling
+``` Can you check if my movie booking system can handle 50 reservations in 1 min ``` <br>
+``` what happens if my cookgpt is giving only vegetarian recipes``` <br>

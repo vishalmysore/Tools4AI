@@ -196,4 +196,9 @@ public class ActionProcessor implements AIProcessor{
 
         }
     }
+
+    public List<Object> processMultipleActionWithoutFail(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+        PredictionLoader.getInstance().getPredictedActionMultiStep(promptText);
+        return null;
+    }
 }

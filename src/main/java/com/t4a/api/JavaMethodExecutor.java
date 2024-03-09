@@ -222,7 +222,9 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                 obj = method.invoke(instance, parameterValues);
             }catch (Exception e) {
                 log.warning("could not invoke method returning values"+e.getMessage());
-                obj = e.getMessage();
+            }
+            if(obj == null) {
+                obj = "{failed}";
             }
             return obj;
         }

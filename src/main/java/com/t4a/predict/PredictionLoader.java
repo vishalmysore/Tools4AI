@@ -6,6 +6,7 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.t4a.action.ExtendedPredictedAction;
+import com.t4a.action.http.HttpMethod;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.api.AIAction;
@@ -138,6 +139,19 @@ public class PredictionLoader {
 
     }
 
+    public String getPredictedActionMultiStep(String prompt)  {
+        GenerateContentResponse response = null;
+        try {
+            response = chat.sendMessage(buildPromptMultiStep(prompt));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String actionName = ResponseHandler.getText(response);
+        log.info(actionName);
+        return actionName;
+
+    }
+
     public String explainAction(String prompt, String action)  {
         GenerateContentResponse response = null;
         try {
@@ -167,7 +181,7 @@ public class PredictionLoader {
             } else if (action.getActionType() == ActionType.HTTP) {
                if(action instanceof HttpPredictedAction) {
                    HttpPredictedAction genericHttpAction = (HttpPredictedAction)action;
-                   genericHttpAction.setType(options.getHttpType());
+                   genericHttpAction.setType(HttpMethod.valueOf(options.getHttpType()));
                    genericHttpAction.setActionName(options.getActionName());
                    genericHttpAction.setDescription(options.getDescription());
                    genericHttpAction.setAuthInterface(options.getHttpAuthInterface());
@@ -299,6 +313,10 @@ public class PredictionLoader {
         String query = PREACTIONCMD+prompt+ACTIONCMD+actionNameList.toString()+POSTACTIONCMD+number +append;
         log.info(query);
         return query;
+    }
+
+    private String buildPromptMultiStep(String prompt) {
+        return "break down this prompt into multiple prompts and associated action in comma separated list , this is your prompt - "+prompt+" - action list is here -"+actionNameList+" you will provide the result in this format - sub-prompt,action. If not action matches the sub-prompt please put blankAction";
     }
 
 }

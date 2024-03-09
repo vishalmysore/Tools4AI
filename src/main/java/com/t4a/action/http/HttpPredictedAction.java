@@ -63,14 +63,14 @@ import java.util.Map;
 public final class HttpPredictedAction implements PredictedAIAction {
     private String actionName;
     private String url;
-    private String type;
+    private HttpMethod type;
     List<InputParameter> inputObjects;
     private JsonObject outputObject;
     private JsonObject authInterface;
     private String description;
     private  final HttpClient client = HttpClientBuilder.create().build();
     private final Gson gson = new Gson();
-    public HttpPredictedAction(String actionName, String url, String type, List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
+    public HttpPredictedAction(String actionName, String url, HttpMethod type, List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
         this.actionName = actionName;
         this.url = url;
         this.type = type;

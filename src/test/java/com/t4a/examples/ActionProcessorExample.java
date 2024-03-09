@@ -18,22 +18,24 @@ public class ActionProcessorExample {
         log.info(result);
 
         log.info("==== Multi Command =====");
-        List<Object> results = processor.processMultipleAction("Hey I am in Delhi do you think i can go out without jacket, also save the temperature and City location in file",2);
+        List<Object> results = processor.processMultipleAction("hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see",2);
         for (Object resultObj:results
              ) {
             log.info((String)resultObj);
 
         }
 
-        //Hey I am in Toronto do you think i can go out without jacket, my friends name is Vinod he lives in Balaghat, please save this information locally
-        //hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see
+        String p1 = "Hey I am in Toronto do you think i can go out without jacket. My friends name is Vinod he lives in Balaghat, please save this information about my friend";
+        String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see";
 
-        log.info("\n\n==== Multi Command 2 =====\n\n");
-        List<Object> results1 = processor.processMultipleAction("Hey I am in Toronto do you think i can go out without jacket, my friends name is Vinod he lives in Balaghat, please save his name locally",2);
+       /* log.info("\n\n==== Multi Command 2 =====\n\n");
+        List<Object> results1 = processor.processMultipleAction(p2,2);
         for (Object resultObj:results1
         ) {
             log.info((String)resultObj);
 
-        }
+        }*/
+       // String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see. and then send this information to flight booking system";
+        //processor.processMultipleActionWithoutFail(p2,null,null);
     }
 }
