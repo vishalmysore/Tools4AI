@@ -4,6 +4,7 @@ import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Type;
 import com.google.gson.Gson;
+import com.t4a.action.ExtendedInputParameter;
 import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
@@ -69,12 +70,17 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
-    private FunctionDeclaration buildFunction(HttpPredictedAction action, String methodName, String funName, String discription) {
+    private FunctionDeclaration buildFunction(HttpPredictedAction action,  String funName, String discription) {
         mapMethod(action);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
-    private FunctionDeclaration buildFunction(ShellPredictedAction action, String methodName, String funName, String discription) {
+    private FunctionDeclaration buildFunction(ExtendedPredictedAction action,  String funName, String discription) {
+        mapMethod(action);
+        generatedFunction = getBuildFunction(funName, discription);
+        return generatedFunction;
+    }
+    private FunctionDeclaration buildFunction(ShellPredictedAction action, String funName, String discription) {
         mapMethod(action);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
@@ -89,13 +95,13 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         this.action = action;
         if(action.getActionType().equals(ActionType.SHELL)) {
             ShellPredictedAction shellAction = (ShellPredictedAction)action;
-            return buildFunction(shellAction,shellAction.getDefaultExecutorMethodName(),action.getActionName(),action.getDescription());
+            return buildFunction(shellAction,action.getActionName(),action.getDescription());
         } else if(action.getActionType().equals(ActionType.HTTP)) {
             HttpPredictedAction httpAction = (HttpPredictedAction)action;
-            return buildFunction(httpAction,httpAction.getDefaultExecutorMethodName(),httpAction.getActionName(),httpAction.getDescription());
+            return buildFunction(httpAction,httpAction.getActionName(),httpAction.getDescription());
         } else if(action.getActionType().equals(ActionType.EXTEND))  {
             ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
-            return extendedPredictedAction.buildFunction();
+            return buildFunction(extendedPredictedAction,extendedPredictedAction.getActionName(),extendedPredictedAction.getDescription());
         }
         else
         return buildFunction(action.getClass().getName(),action.getActionName(),action.getActionName(),action.getDescription());
@@ -105,6 +111,14 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         for (InputParameter parameter : inputParameterList) {
             if(!parameter.hasDefaultValue())
               properties.put(parameter.getName(), mapType(parameter.getType()));
+        }
+
+    }
+    private void mapMethod(ExtendedPredictedAction action) {
+        List<ExtendedInputParameter> inputParameterList =action.getInputParameters();
+        for (ExtendedInputParameter parameter : inputParameterList) {
+            if(!parameter.hasDefaultValue())
+                properties.put(parameter.getName(), mapType(parameter.getType()));
         }
 
     }

@@ -1,10 +1,10 @@
 package com.t4a.action;
 
-import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.t4a.api.ActionType;
 import com.t4a.api.PredictedAIAction;
 import com.t4a.predict.LoaderException;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,14 +22,14 @@ import java.util.Map;
  * @see com.t4a.predict.ExtendedPredictionLoader
  */
 public abstract class ExtendedPredictedAction implements PredictedAIAction {
+
+    public abstract List<ExtendedInputParameter> getInputParameters();
     @Override
     public final ActionType getActionType() {
         return ActionType.EXTEND;
     }
 
-    public final String getDefaultExecutorMethodName() {
-        return "extendedExecute";
-    }
+
 
 
     /**
@@ -42,31 +42,5 @@ public abstract class ExtendedPredictedAction implements PredictedAIAction {
 
    
 
-    /**
-     * <pre>
-     * This is the second method called during the function creation of the Gemini
-     * you can use the class level params to build the function
-     * <code>
-     *     FunctionDeclaration functionDeclaration = FunctionDeclaration.newBuilder()
-     *                     .setName("getRecipeTaste")
-     *                     .setDescription("provide the taste of recipe based on name")
-     *                     .setParameters(
-     *                             Schema.newBuilder()
-     *                                     .setType(Type.OBJECT)
-     *                                     .putProperties("recipe", Schema.newBuilder()
-     *                                             .setType(Type.STRING)
-     *                                             .setDescription("recipe")
-     *                                             .build()
-     *                                     )
-     *                                     .addRequired("recipe")
-     *                                     .build()
-     *                     )
-     *                     .build();
-     * </code>
-     * </pre>
-     *
-     * @return
-     */
-    public abstract FunctionDeclaration buildFunction();
 
 }

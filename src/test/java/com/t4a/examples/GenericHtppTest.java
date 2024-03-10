@@ -11,6 +11,7 @@ import com.t4a.action.http.HttpMethod;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.api.JavaMethodExecutor;
+import com.t4a.predict.PredictionLoader;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
@@ -19,47 +20,12 @@ import java.util.*;
 
 @Log
 public class GenericHtppTest {
-    private String projectId = null;//"cookgptserver";
-    private String location = null;//"us-central1";
-    private String modelName = null;//"gemini-1.0-pro";
 
 
 
-    private String promptText = null;//"Hey I am in Toronto do you think i can go out without jacket,  ";
+    private String promptText = "Hey I am in Toronto do you think i can go out without jacket,  ";
     public GenericHtppTest(String[] args) throws Exception {
-        if(args.length < 1) {
-            throw new Exception("provide args in this format projectId=<> location=<> modelName=<> promptText=<>");
-        }
-        Map<String, String> argumentsMap = new HashMap<>();
-        for (String arg : args) {
-            // Split the argument into key and value using '=' as delimiter
-            String[] parts = arg.split("=");
 
-            // Ensure that the argument is correctly formatted with key and value
-            if (parts.length == 2) {
-                // Extract key and value
-                String key = parts[0];
-                String value = parts[1];
-
-                // Store key-value pair in the map
-                argumentsMap.put(key, value);
-            } else {
-                // Handle invalid arguments
-                log.info("Invalid argument: " + arg);
-            }
-        }
-
-        // Access values using the keys
-        this.projectId = argumentsMap.get("projectId");
-        this.location = argumentsMap.get("location");
-        this.modelName = argumentsMap.get("modelName");
-        this.promptText = argumentsMap.get("promptText");
-
-        // Print the extracted values
-        log.info("projectId: " + projectId);
-        log.info("location: " + location);
-        log.info("modelName: " + modelName);
-        log.info("promptText: " + promptText);
     }
     public static void main(String[] args) throws Exception {
 
@@ -69,7 +35,7 @@ public class GenericHtppTest {
     }
 
     public void actionOnPrompt(String[] args) throws IOException {
-        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
+        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
             HttpPredictedAction httpAction = new HttpPredictedAction();
             httpAction.setActionName("getTemperature");
@@ -79,8 +45,8 @@ public class GenericHtppTest {
             InputParameter countparameter = new InputParameter("count","String","count");
             List<InputParameter> parameters = new ArrayList<InputParameter>();
 
-            InputParameter language = new InputParameter();
-            InputParameter format = new InputParameter();
+            InputParameter language = new InputParameter("language","String","name of the city");
+            InputParameter format = new InputParameter("format","String","name of the city");
             parameters.add(cityParameter);
             parameters.add(countparameter);
             parameters.add(language);
@@ -105,7 +71,7 @@ public class GenericHtppTest {
 
             GenerativeModel model =
                     GenerativeModel.newBuilder()
-                            .setModelName(modelName)
+                            .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))
                             .build();

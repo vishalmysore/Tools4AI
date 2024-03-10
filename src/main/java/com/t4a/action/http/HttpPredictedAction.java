@@ -80,9 +80,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
         this.authInterface = authInterface;
         this.description = description;
     }
-    public String getDefaultExecutorMethodName() {
-        return "executeHttpRequest";
-    }
+
     private  String executeHttpGet(Map<String, Object> parameters) {
         // Construct the query string from parameters
         StringBuilder queryString = new StringBuilder();
@@ -163,7 +161,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
             if(parameter.hasDefaultValue())
                 params.put(parameter.getName(), parameter.getDefaultValue());
         }
-        if ("GET".equals(getType())) {
+        if (HttpMethod.GET == getType()) {
             return executeHttpGet(params);
         } else if ("POST".equals(getType())) {
             return executeHttpPost(params);

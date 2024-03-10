@@ -144,7 +144,7 @@ public class SwaggerPredictionLoader {
                                         inputParameter.setRequestBodyJson(jsonString);
                                     } else {
                                         // Return the schema directly
-                                        log.info(mediaType.getSchema().toString());
+                                        log.info("Schema not found for "+actionName+" "+jsonURL);
                                     }
                                 }
                             }
@@ -152,18 +152,39 @@ public class SwaggerPredictionLoader {
 
                     }
                     } else {
-                        log.info("nothing found for "+actionName);
+                        log.info("nothing found for "+actionName+" it could be direct call without parameters");
                     }
                     inputParameters.add(inputParameter);
                     httpAction.setInputObjects(inputParameters);
 
-                    predictions.put(actionName,httpAction);
-                    actionNameList.append(","+actionName);
+                    if(predictions.containsKey(actionName)) {
+                        log.info(actionName+" is present");
+                        actionName = getModifiedActionName(httpAction);
+                        log.info(actionName+" is new the name ");
+                    }
+                    if(predictions.containsKey(actionName)) {
+                        log.warning("cannot put action as its already there "+actionName);
+                    }else {
+                        predictions.put(actionName, httpAction);
+                        actionNameList.append("," + actionName);
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String getModifiedActionName(HttpPredictedAction httpAction) {
+        String actionName = httpAction.getActionName();
+        List<InputParameter> params =  httpAction.getInputObjects();
+        actionName = actionName +"_With";
+        for (InputParameter param:params
+             ) {
+            actionName = actionName+"_"+param.getName();
+
+        }
+        return actionName;
     }
     private static Schema<?> resolveSchema(OpenAPI openAPI, String ref) {
         // Extract the reference key

@@ -125,9 +125,7 @@ public class ShellPredictedAction implements PredictedAIAction {
             return "File not found in classpath: " + fileName;
         }
     }
-    public String getDefaultExecutorMethodName() {
-        return "executeShell";
-    }
+
     @Override
     public String getDescription() {
         return description;
