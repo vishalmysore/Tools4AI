@@ -17,18 +17,19 @@ public class TestBridge {
 
         TestBridge bridge = new TestBridge();
 
-        String promptText = "can you book a dinner reseration for Vishal and 4 other people at Maharaj on 15th august and make sure its cancellable";
-        String status = bridge.testJavaClass(projectId, location, modelName, promptText);
-        log.info(promptText+ " : "+status);
+      //  String promptText = "can you book a dinner reseration for Vishal and 4 other people at Maharaj on 15th august and make sure its cancellable";
+     //  String status = bridge.testJavaClass(projectId, location, modelName, promptText);
+     //   log.info(promptText+ " : "+status);
 
-        promptText = "can you book a dinner reseration for Vishal and his family of 4 at Maharaj on Indian Independence day and make sure its cancellable";
-        status = bridge.testJavaClass(projectId, location, modelName, promptText);
+        String promptText  = "can you book a dinner reseration in name of Vishal and his family of 4 at Maharaj restaurant on Indian Independence day and make sure its cancellable";
+        String status = bridge.testJavaClass(projectId, location, modelName, promptText);
         log.info(promptText+ " : "+status);
     }
     public String testJavaClass(String projectId, String location, String modelName,String promptText){
 
         AITools tools = new AITools(projectId,location,modelName);
-        RestaurantPojo pojo = (RestaurantPojo)tools.actionClass(promptText,"com.enterprise.basic.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
+        Object pojo = tools.actionClass(promptText,"com.t4a.examples.basic.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
+        System.out.println(pojo);
         return pojo.toString();
     }
 }

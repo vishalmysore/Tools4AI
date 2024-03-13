@@ -23,7 +23,7 @@ public class InputParameter {
     private String defaultValue;
     private ParamLocation location;
 
-    private String requestBodyJson;
+
     public InputParameter(String name, String type, String description) {
         this.name = name;
         this.type = type;

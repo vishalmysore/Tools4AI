@@ -70,6 +70,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
     private JsonObject authInterface;
     private String description;
     private  final HttpClient client = HttpClientBuilder.create().build();
+    private String requestBodyJson;
     private final Gson gson = new Gson();
     public HttpPredictedAction(String actionName, String url, HttpMethod type, List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
         this.actionName = actionName;
@@ -103,7 +104,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
             if (entity != null) {
                 // Convert response entity to JSON string
                 String jsonResponse = EntityUtils.toString(entity);
-                System.out.println("Response: " + jsonResponse);
+                log.info("Response: " + jsonResponse);
                 // Further processing of jsonResponse...
                 return jsonResponse;
             }

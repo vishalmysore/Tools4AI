@@ -141,7 +141,7 @@ public class SwaggerPredictionLoader {
                                         // Resolve $ref if present
                                         String jsonString = JsonUtils.convertClassObjectToJsonString(resolveSchema(openAPI, mediaType.getSchema().get$ref()));
                                       //  log.info(jsonString + " for "+ actionName);
-                                        inputParameter.setRequestBodyJson(jsonString);
+                                        httpAction.setRequestBodyJson(jsonString);
                                     } else {
                                         // Return the schema directly
                                         log.info("Schema not found for "+actionName+" "+jsonURL);

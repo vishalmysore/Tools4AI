@@ -48,7 +48,7 @@ public class AITools {
     public  Object actionClass(String promptText,String className, String funName, String description) {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             JavaClassExecutor generator = new JavaClassExecutor();
-            FunctionDeclaration bookMyReservation = generator.buildFunction(className,funName,description);
+            FunctionDeclaration bookMyReservation = generator.buildFunctionFromClass(className,funName,description);
 
             System.out.println("Function declaration h1:");
             System.out.println(bookMyReservation);
@@ -73,7 +73,8 @@ public class AITools {
 
             System.out.println("\nPrint response 1 : ");
             System.out.println(ResponseHandler.getContent(response));
-           String jsonString = generator.getPropertyValuesJsonString(response);
+           String jsonString = generator.getPropertyValuesMapMap(response);
+            System.out.println(jsonString);
 
             return generator.action(response,jsonString);
 
@@ -81,6 +82,7 @@ public class AITools {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 

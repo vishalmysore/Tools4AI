@@ -11,11 +11,11 @@ import java.util.List;
 public class ActionProcessorExample {
     public static void main(String[] args) throws IOException, InvocationTargetException, IllegalAccessException {
         ActionProcessor processor = new ActionProcessor();
-        String result = (String)processor.processSingleAction("Hey I am in Toronto do you think i can go out without jacket");
+/*        String result = (String)processor.processSingleAction("Hey I am in Toronto do you think i can go out without jacket");
         log.info(result);
 
         result = (String)processor.processSingleAction("Hey I am in Toronto my name is Vishal Can you save this info");
-        log.info(result);
+        log.info(result);*/
 
         log.info("==== Multi Command =====");
         List<Object> results = processor.processMultipleAction("hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see",2);

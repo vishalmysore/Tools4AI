@@ -7,6 +7,7 @@ import com.google.cloud.vertexai.api.Type;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.google.protobuf.ListValue;
+import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import lombok.extern.java.Log;
 
@@ -65,11 +66,37 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
         }
 
     }
+
+
     /**
      * Create Gemini Schema object this will be used to create funciton
-     * @param properties
+     *
      * @return
      */
+    protected Schema getBuildForJson(Map<String,Object> mapOfMapsForJason) {
+        Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
+
+        for (Map.Entry<String, Object> entry : mapOfMapsForJason.entrySet()) {
+            String property = entry.getKey();
+            Object value = entry.getValue();
+            Type type = mapType(value.getClass());
+
+            Schema.Builder propertySchemaBuilder = Schema.newBuilder()
+                    .setType(type)
+                    .setDescription(property);
+
+            if(type == Type.OBJECT) {
+                log.info(property);
+                Map<String,Object> mapOfMapsForJasonRecursive = (Map<String,Object>)value;
+                propertySchemaBuilder.putProperties(property,getBuildForJson(mapOfMapsForJasonRecursive));
+            }
+            Schema propertySchema= propertySchemaBuilder.build();
+            schemaBuilder.putProperties(property, propertySchema)
+                    .addRequired(property);
+        }
+
+        return schemaBuilder.build();
+    }
     protected Schema getBuild(Map<String, Type> properties) {
         Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
 
@@ -81,6 +108,9 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                     .setType(type)
                     .setDescription(property)
                     .build();
+            if(type == Type.OBJECT) {
+                log.info(property);
+            }
 
             schemaBuilder.putProperties(property, propertySchema)
                     .addRequired(property);
@@ -125,7 +155,62 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                 )
                 .build();
     }
+    protected FunctionDeclaration getBuildFunction(Map<String,Object> mapOfMapsForJason,String funName, String discription) {
+        return FunctionDeclaration.newBuilder()
+                .setName(funName)
+                .setDescription(discription)
+                .setParameters(
+                        getBuildForJson(mapOfMapsForJason)
+                )
+                .build();
+    }
 
+    public  Map<String, Object> protobufToMap(Map<String, Value> protobufMap) {
+        Map<String, Object> resultMap = new HashMap<>();
+        for (Map.Entry<String, Value> entry : protobufMap.entrySet()) {
+            String key = entry.getKey();
+            Value value = entry.getValue();
+            Object convertedValue = convertValue(value);
+            resultMap.put(key, convertedValue);
+        }
+        return resultMap;
+    }
+
+    private  Object convertValue(Value value) {
+        switch (value.getKindCase()) {
+            case NULL_VALUE:
+                return null;
+            case NUMBER_VALUE:
+                return value.getNumberValue();
+            case STRING_VALUE:
+                return value.getStringValue();
+            case BOOL_VALUE:
+                return value.getBoolValue();
+            case STRUCT_VALUE:
+                Struct struct = value.getStructValue();
+                Map<String, Object> structMap = new HashMap<>();
+                for (Map.Entry<String, Value> entry : struct.getFieldsMap().entrySet()) {
+                    structMap.put(entry.getKey(), convertValue(entry.getValue()));
+                }
+                return structMap;
+            case LIST_VALUE:
+                return value.getListValue().getValuesList().stream()
+                        .map(this::convertValue)
+                        .toArray();
+            case KIND_NOT_SET:
+                return null;
+        }
+        return null;
+    }
+
+
+    public String getPropertyValuesMapMap(GenerateContentResponse response) {
+        Map<String, Value> map = ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap();
+        Map<String, Object> resultMap =  protobufToMap(map);
+        Gson gson = new Gson();
+        return gson.toJson(resultMap);
+
+    }
     /**
      * Fetches the values populated by gemini into the function , this will get mapped to a MAP
      * which can then converted to json or invoke method or make http call

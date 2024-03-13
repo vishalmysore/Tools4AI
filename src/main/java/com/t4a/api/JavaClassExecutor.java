@@ -2,6 +2,7 @@ package com.t4a.api;
 
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.Schema;
 import com.google.cloud.vertexai.api.Type;
 import com.google.gson.Gson;
 
@@ -58,12 +59,68 @@ public class JavaClassExecutor extends JavaActionExecutor {
             System.out.println("Field Name: " + entry.getKey() + ", Field Type: " + entry.getValue());
         }
     }
+
+    public  Schema mapClassToFun(String className, String funName, String discription) throws ClassNotFoundException {
+
+        Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
+
+
+        Class childpojoClass = Class.forName(className);;
+
+        // Create a Map to store field names and types
+
+
+        // Get all the declared fields of the POJO class
+        Field[] fields = childpojoClass.getDeclaredFields();
+
+        // Iterate over the fields
+        for (Field field : fields) {
+            // Get the name of the field
+            String fieldName = field.getName();
+
+            // Get the type of the field
+            Type fieldType = mapType(field.getType());
+            Schema.Builder propertySchemaBuilder = Schema.newBuilder()
+                    .setType(fieldType)
+                    .setDescription("");
+            if(fieldType == Type.OBJECT) {
+                propertySchemaBuilder.putProperties(fieldName, mapClassToFun(field.getType().getName(),funName,discription));
+                schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
+                        .addRequired(fieldName);
+            } else{
+
+
+            schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
+                    .addRequired(fieldName);
+                properties.put(fieldName,fieldType);
+            }
+        }
+
+        Schema sc =  schemaBuilder.build();
+        return sc;
+
+    }
+
     public FunctionDeclaration buildFunction(String className, String funName, String discription) throws ClassNotFoundException {
         mapClass(className);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
 
+    public FunctionDeclaration buildFunctionFromClass(String className, String funName, String discription) throws ClassNotFoundException {
+        Schema schema  =mapClassToFun(className,funName, discription);
+        pojoClass = Class.forName(className);
+        generatedFunction = FunctionDeclaration.newBuilder()
+                .setName(funName)
+                .setDescription(discription)
+                .setParameters(schema).build();
+        return generatedFunction;
+    }
+    public FunctionDeclaration buildFunction(Map<String,Object> mapOfMapsForJason, String funName, String discription) throws ClassNotFoundException {
+
+        generatedFunction = getBuildFunction(mapOfMapsForJason,funName, discription);
+        return generatedFunction;
+    }
     @Override
     public Map<String, Type> getProperties() {
         return properties;
