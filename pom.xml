@@ -6,7 +6,7 @@
 
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.7.7</version>
+    <version>0.7.8</version>
 
     <name>Tools For Artificial Intelligence</name>
     <description>Connect Various Tools directly into AI LLM. This is 100% Java implementation of Large Action Model or LLM Agent</description>
