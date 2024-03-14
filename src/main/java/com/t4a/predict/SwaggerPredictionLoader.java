@@ -1,5 +1,6 @@
 package com.t4a.predict;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -141,7 +142,12 @@ public class SwaggerPredictionLoader {
                                         // Resolve $ref if present
                                         String jsonString = JsonUtils.convertClassObjectToJsonString(resolveSchema(openAPI, mediaType.getSchema().get$ref()));
                                       //  log.info(jsonString + " for "+ actionName);
+                                        ObjectMapper objectMapper = new ObjectMapper();
+                                        Map<String, Object> map = objectMapper.readValue(jsonString, Map.class);
                                         httpAction.setRequestBodyJson(jsonString);
+                                        httpAction.setJsonMap(map);
+                                        httpAction.setHasJson(true);
+
                                     } else {
                                         // Return the schema directly
                                         log.info("Schema not found for "+actionName+" "+jsonURL);

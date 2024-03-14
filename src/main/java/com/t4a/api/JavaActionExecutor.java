@@ -55,6 +55,8 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
             return Type.STRING;
         } else if (type.equalsIgnoreCase("int")) {
             return Type.INTEGER;
+        } else if (type.equalsIgnoreCase("integer")) {
+            return Type.INTEGER;
         } else if (type.equalsIgnoreCase("num")) {
             return Type.NUMBER;
         } else if (type.equalsIgnoreCase("boolean")) {
@@ -204,11 +206,10 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
     }
 
 
-    public String getPropertyValuesMapMap(GenerateContentResponse response) {
+    public Map<String, Object> getPropertyValuesMapMap(GenerateContentResponse response) {
         Map<String, Value> map = ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap();
         Map<String, Object> resultMap =  protobufToMap(map);
-        Gson gson = new Gson();
-        return gson.toJson(resultMap);
+        return resultMap;
 
     }
     /**

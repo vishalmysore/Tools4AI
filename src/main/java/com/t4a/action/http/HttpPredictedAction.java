@@ -13,11 +13,15 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -62,6 +66,7 @@ import java.util.Objects;
 @Log
 @NoArgsConstructor
 public final class HttpPredictedAction implements PredictedAIAction {
+    private Map<String, Object> jsonMap;
     private String actionName;
     private String url;
     private HttpMethod type;
@@ -71,6 +76,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
     private String description;
     private  final HttpClient client = HttpClientBuilder.create().build();
     private String requestBodyJson;
+    private boolean hasJson;
     private final Gson gson = new Gson();
     public HttpPredictedAction(String actionName, String url, HttpMethod type, List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
         this.actionName = actionName;
@@ -82,29 +88,46 @@ public final class HttpPredictedAction implements PredictedAIAction {
         this.description = description;
     }
 
-    private  String executeHttpGet(Map<String, Object> parameters) {
-        // Construct the query string from parameters
-        StringBuilder queryString = new StringBuilder();
-        for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-            if (queryString.length() > 0) {
-                queryString.append("&");
+    public  String replacePlaceholders(String url, Map<String, Object> placeholderValues) throws UnsupportedEncodingException {
+        for (Map.Entry<String, Object> entry : placeholderValues.entrySet()) {
+            String placeholder = "{" + entry.getKey() + "}";
+            String value = String.valueOf(entry.getValue());
+            value = URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+            url = url.replace(placeholder, value);
+        }
+        return url;
+    }
+
+    private  String executeHttpGet(Map<String, Object> parameters) throws UnsupportedEncodingException {
+
+        if(url.indexOf("{") != -1) {
+           url = replacePlaceholders(url,parameters);
+        }
+        else {
+            // Construct the query string from parameters
+            StringBuilder queryString = new StringBuilder();
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                if (queryString.length() > 0) {
+                    queryString.append("&");
+                }
+                queryString.append(entry.getKey()).append("=").append(entry.getValue());
             }
-            queryString.append(entry.getKey()).append("=").append(entry.getValue());
-        }
 
-        // Append the query string to the URL
-        if (queryString.length() > 0) {
-            url += "?" + queryString.toString();
-        }
+            // Append the query string to the URL
+            if (queryString.length() > 0) {
+                url += "?" + queryString.toString();
+            }
 
+        }
         try {
+            log.info("sending request to "+url);
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 // Convert response entity to JSON string
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("Response: " + jsonResponse);
+                log.info("Response: from Url "+url+" is " + jsonResponse);
                 // Further processing of jsonResponse...
                 return jsonResponse;
             }
@@ -125,11 +148,13 @@ public final class HttpPredictedAction implements PredictedAIAction {
 
         // Execute HTTP POST request using the provided URL and JSON payload
         HttpPost request = new HttpPost(url);
-        request.setEntity(new StringEntity(jsonPayload));
+        request.setEntity(new StringEntity(jsonPayload, ContentType.APPLICATION_JSON));
 
         HttpResponse response = client.execute(request);
         // Handle response...
-        return null;
+       String respStr =  EntityUtils.toString(response.getEntity());
+       log.info("Response from url "+url+" is "+respStr);
+       return respStr;
     }
 
     /**
@@ -164,7 +189,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
         }
         if (HttpMethod.GET == getType()) {
             return executeHttpGet(params);
-        } else if ("POST".equals(getType())) {
+        } else if (HttpMethod.POST == getType()) {
             return executeHttpPost(params);
         } else {
             return null;

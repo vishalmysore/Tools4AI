@@ -73,10 +73,10 @@ public class AITools {
 
             System.out.println("\nPrint response 1 : ");
             System.out.println(ResponseHandler.getContent(response));
-           String jsonString = generator.getPropertyValuesMapMap(response);
-            System.out.println(jsonString);
+           //String jsonString = generator.getPropertyValuesMapMap(response);
+            //System.out.println(jsonString);
 
-            return generator.action(response,jsonString);
+            return generator.action(response,"");
 
 
         } catch (IOException e) {

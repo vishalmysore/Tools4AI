@@ -80,16 +80,15 @@ public class JavaClassExecutor extends JavaActionExecutor {
 
             // Get the type of the field
             Type fieldType = mapType(field.getType());
-            Schema.Builder propertySchemaBuilder = Schema.newBuilder()
-                    .setType(fieldType)
-                    .setDescription("");
+
             if(fieldType == Type.OBJECT) {
-                propertySchemaBuilder.putProperties(fieldName, mapClassToFun(field.getType().getName(),funName,discription));
-                schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
+                schemaBuilder.putProperties(fieldName, mapClassToFun(field.getType().getName(),funName,discription))
                         .addRequired(fieldName);
             } else{
 
-
+                Schema.Builder propertySchemaBuilder = Schema.newBuilder()
+                        .setType(fieldType)
+                        .setDescription(fieldName);
             schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
                     .addRequired(fieldName);
                 properties.put(fieldName,fieldType);

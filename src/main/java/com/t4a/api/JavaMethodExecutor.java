@@ -71,8 +71,18 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         return generatedFunction;
     }
     private FunctionDeclaration buildFunction(HttpPredictedAction action,  String funName, String discription) {
-        mapMethod(action);
-        generatedFunction = getBuildFunction(funName, discription);
+        if(action.isHasJson()) {
+            if (discription == null)
+                discription = funName;
+            generatedFunction = getBuildFunction(action.getJsonMap(),funName,discription);
+        }
+        else {
+            mapMethod(action);
+            if (discription == null)
+                discription = funName;
+            generatedFunction = getBuildFunction(funName, discription);
+        }
+
         return generatedFunction;
     }
     private FunctionDeclaration buildFunction(ExtendedPredictedAction action,  String funName, String discription) {
@@ -183,6 +193,9 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         Map<String, Object> propertyValuesMap = getPropertyValuesMap(response);
         if(instance.getActionType().equals(ActionType.HTTP)) {
          HttpPredictedAction action = (HttpPredictedAction) instance;
+         if(propertyValuesMap.keySet().size() <1) {
+             propertyValuesMap = getPropertyValuesMapMap(response);
+         }
             try {
                  return action.executeHttpRequest(propertyValuesMap);
 
