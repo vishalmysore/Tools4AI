@@ -169,7 +169,8 @@ public class PredictionLoader {
                 response = chat.sendMessage(buildPrompt(prompt, 1));
                 actionName = ResponseHandler.getText(response);
             }else if (AIPlatform.OPENAI == aiProvider) {
-                actionName = openAiChatModel.generate(buildPrompt(prompt, 1));
+                actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1));
+                actionName = actionName.replace("()","");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -344,6 +345,29 @@ public class PredictionLoader {
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
         String query = PREACTIONCMD+prompt+ACTIONCMD+actionNameList.toString()+POSTACTIONCMD+number +append;
+        log.info(query);
+        return query;
+    }
+    private String getModifiedActionName(StringBuffer stringBuffer) {
+        String[] functionNames = stringBuffer.toString().split(",");
+
+        // StringBuilder to build the modified string
+        StringBuilder modifiedString = new StringBuilder();
+
+        // Append '()' to each function name and append them to the modifiedString
+        for (String functionName : functionNames) {
+            modifiedString.append(functionName).append("(),");
+        }
+        if (modifiedString.length() > 0) {
+            modifiedString.setLength(modifiedString.length() - 1);
+        }
+        return modifiedString.toString();
+    }
+    private String buildPromptForOpenAI(String prompt, int number) {
+        String append = NUMACTION;
+        if(number > 1)
+            append = NUMACTION_MULTIPROMPT;
+        String query = PREACTIONCMD+prompt+ACTIONCMD+getModifiedActionName(actionNameList)+POSTACTIONCMD+number +append;
         log.info(query);
         return query;
     }
