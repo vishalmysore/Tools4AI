@@ -6,7 +6,7 @@
 
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.7.8</version>
+    <version>0.7.9</version>
 
     <name>Tools For Artificial Intelligence</name>
     <description>Connect Various Tools directly into AI LLM. This is 100% Java implementation of Large Action Model or LLM Agent</description>
@@ -61,6 +61,7 @@
                 <type>pom</type>
                 <version>26.29.0</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -125,6 +126,33 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <version>6.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j</artifactId>
+            <version>0.27.1</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-local-ai</artifactId>
+            <version>0.27.1</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai</artifactId>
+            <version>0.27.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-hugging-face</artifactId>
+            <version>0.27.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-vertex-ai</artifactId>
+            <version>0.27.1</version>
         </dependency>
 
     </dependencies>

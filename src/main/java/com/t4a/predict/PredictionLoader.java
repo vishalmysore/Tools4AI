@@ -2,6 +2,7 @@ package com.t4a.predict;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
+import com.google.cloud.vertexai.api.Type;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
@@ -10,6 +11,8 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.Getter;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -39,6 +42,7 @@ public class PredictionLoader {
     private final String PREACTIONCMD = "here is my prompt - ";
     private final  String ACTIONCMD = "- what action do you think we should take ";
 
+    private final String OPEN_AIPRMT = "here is your prompt - prompt_str - here is you action- action_name(params_values) - what parameter should you pass to this function. give comma separated name=values only and nothing else";
     private final  String POSTACTIONCMD = " - reply back with ";
     private final  String NUMACTION = " action only";
 
@@ -48,6 +52,8 @@ public class PredictionLoader {
     private String projectId;
     private String location;
     private String modelName;
+    private ChatLanguageModel openAiChatModel;
+    private String openAiKey;
     private PredictionLoader() {
         initProp();
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -65,6 +71,9 @@ public class PredictionLoader {
                             .build();
             chat = model.startChat();
             chatExplain = modelExplain.startChat();
+        }
+        if(openAiKey!=null) {
+            openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
         }
 
     }
@@ -90,11 +99,12 @@ public class PredictionLoader {
             projectId = prop.getProperty("projectId").trim();
             location = prop.getProperty("location").trim();
             modelName = prop.getProperty("modelName").trim();
-
+            openAiKey = prop.getProperty("openAiKey").trim();
             // Use the properties
             log.info("projectId: " + projectId);
             log.info("location: " + location);
             log.info("modelName: " + modelName);
+          //  log.info("openAiKey: " + openAiKey);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,18 +134,53 @@ public class PredictionLoader {
         return actionList;
 
     }
+    public  String getCommaSeparatedKeys(Map<String, ?> map) {
+        StringBuilder builder = new StringBuilder();
+        for (String key : map.keySet()) {
+            if (builder.length() > 0) {
+                builder.append(", ");
+            }
+            builder.append(key);
+        }
+        return builder.toString();
+    }
+    public String getActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Type> params)  {
+        String prmpt = OPEN_AIPRMT.replace("prompt_str",prompt);
+        prmpt = prmpt.replace("action_name",action.getActionName());
+        String realParms = getCommaSeparatedKeys(params);
+        prmpt = prmpt.replace("params_values",realParms);
+        log.info(prmpt);
+        return openAiChatModel.generate(prmpt);
+    }
 
-
-    public AIAction getPredictedAction(String prompt)  {
+    public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Type> params,String result)  {
+        String prmpt = OPEN_AIPRMT.replace("prompt_str",prompt);
+        prmpt = prmpt.replace("action_name",action.getActionName());
+        prmpt = prmpt.replace("params_values",getCommaSeparatedKeys(params));
+        prmpt = prmpt + " - result after the action has been executed is here "+result+" provide a proper response";
+        log.info(prmpt);
+        return openAiChatModel.generate(prmpt);
+    }
+    public AIAction getPredictedAction(String prompt,AIPlatform aiProvider)  {
         GenerateContentResponse response = null;
+        String actionName = null;
         try {
-            response = chat.sendMessage(buildPrompt(prompt,1));
+            if(AIPlatform.GEMINI == aiProvider) {
+                response = chat.sendMessage(buildPrompt(prompt, 1));
+                actionName = ResponseHandler.getText(response);
+            }else if (AIPlatform.OPENAI == aiProvider) {
+                actionName = openAiChatModel.generate(buildPrompt(prompt, 1));
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String actionName = ResponseHandler.getText(response);
+
         return getAiAction(actionName);
 
+    }
+
+    public AIAction getPredictedAction(String prompt)  {
+       return getPredictedAction(prompt,AIPlatform.GEMINI);
     }
 
     public String getPredictedActionMultiStep(String prompt)  {

@@ -16,10 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This is one of the main classes which is part of processing logic. IT does alll the mapping of actions to
@@ -116,13 +113,39 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         else
         return buildFunction(action.getClass().getName(),action.getActionName(),action.getActionName(),action.getDescription());
     }
-    private void mapMethod(HttpPredictedAction action) {
+    public void mapMethod(HttpPredictedAction action) {
         List<InputParameter> inputParameterList =action.getInputObjects();
         for (InputParameter parameter : inputParameterList) {
             if(!parameter.hasDefaultValue())
               properties.put(parameter.getName(), mapType(parameter.getType()));
         }
 
+    }
+
+    public void mapMethod(AIAction action) {
+        this.action = action;
+        if(action.getActionType().equals(ActionType.SHELL)) {
+            ShellPredictedAction shellAction = (ShellPredictedAction)action;
+            mapMethod(shellAction);
+        } else if(action.getActionType().equals(ActionType.HTTP)) {
+            HttpPredictedAction httpAction = (HttpPredictedAction)action;
+            if(httpAction.isHasJson()) {
+                //covert Json to properties
+                Map<String,Object> map = httpAction.getJsonMap();
+                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    String key = entry.getKey();
+                    Object value = entry.getValue();
+                    properties.put(key, mapType(value.getClass()));
+                }
+
+            }
+            else {
+                mapMethod(httpAction);
+            }
+        } else if(action.getActionType().equals(ActionType.EXTEND))  {
+            ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
+            mapMethod(extendedPredictedAction);
+        }
     }
     private void mapMethod(ExtendedPredictedAction action) {
         List<ExtendedInputParameter> inputParameterList =action.getInputParameters();
@@ -256,6 +279,71 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             return obj;
         }
     }
+    public Object action(String params, AIAction instance) throws InvocationTargetException, IllegalAccessException {
 
+        Map<String, Object> propertyValuesMap = getPropertyValuesMap(params);
+        if(instance.getActionType().equals(ActionType.HTTP)) {
+            HttpPredictedAction action = (HttpPredictedAction) instance;
+
+            try {
+                return action.executeHttpRequest(propertyValuesMap);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else  if(instance.getActionType().equals(ActionType.SHELL)) {
+            ShellPredictedAction action = (ShellPredictedAction) instance;
+            try {
+                String paramNamesStr = action.getParameterNames();
+                String[] paramNamesArray = paramNamesStr.split(",");
+                String[] paraNamesToPassToShell = new String[paramNamesArray.length];
+                for (int i = 0; i < paramNamesArray.length; i++) {
+                    String s = paramNamesArray[i];
+                    paramNamesArray[i] = (String)propertyValuesMap.get(s);
+                    log.info(paramNamesArray[i]);
+
+                }
+                action.executeShell(paramNamesArray);
+                return "Executed "+action.getActionName();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } if(instance.getActionType().equals(ActionType.EXTEND)) {
+            ExtendedPredictedAction action = (ExtendedPredictedAction) instance;
+            try {
+                return action.extendedExecute(propertyValuesMap);
+
+            } catch (LoaderException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            String[] parameterNames = Arrays.stream(method.getParameters())
+                    .map(p -> p.getName())
+                    .toArray(String[]::new);
+
+            // Create an array to hold the parameter values
+            Object[] parameterValues = new Object[parameterNames.length];
+
+            // Populate the parameter values from the map based on parameter names
+            for (int i = 0; i < parameterNames.length; i++) {
+                parameterValues[i] = propertyValuesMap.get(parameterNames[i]);
+            }
+
+
+            // Invoke the method with arguments
+            Object obj = null;
+            try {
+                obj = method.invoke(instance, parameterValues);
+            }catch (Exception e) {
+                log.warning("could not invoke method returning values"+e.getMessage());
+            }
+            if(obj == null) {
+                obj = "{failed}";
+            }
+            return obj;
+        }
+    }
 
 }

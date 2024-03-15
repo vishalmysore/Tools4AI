@@ -6,10 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-public class ShellTest {
+public class ShellTester {
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        URL resourceUrl = ShellTest.class.getClassLoader().getResource("test_script.cmd");
+        URL resourceUrl = ShellTester.class.getClassLoader().getResource("test_script.cmd");
         if (resourceUrl != null) {
             // Convert URL to file path
             String filePath = resourceUrl.getFile();

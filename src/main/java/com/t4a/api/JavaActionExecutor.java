@@ -11,10 +11,7 @@ import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
 import lombok.extern.java.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This is the base class for all the java based executors with common functionality
@@ -211,6 +208,26 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
         Map<String, Object> resultMap =  protobufToMap(map);
         return resultMap;
 
+    }
+
+    public Map<String, Object> getPropertyValuesMap(String responseFromAI) {
+        List<String> dataList = Arrays.asList(responseFromAI.split(","));
+        // Create a new Map to store key-value pairs
+        Map<String, Object> map = new HashMap<>();
+
+        // Iterate through the list and parse each entry to populate the map
+        for (String data : dataList) {
+            // Split each entry by '=' to separate key and value
+            String[] parts = data.split("=");
+            if (parts.length == 2) {
+                String key = parts[0];
+                Object value = parts[1]; // Object type allows for flexibility
+                map.put(key, value);
+            } else {
+                log.warning("Invalid entry: " + data);
+            }
+        }
+        return map;
     }
     /**
      * Fetches the values populated by gemini into the function , this will get mapped to a MAP

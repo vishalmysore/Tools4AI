@@ -4,8 +4,8 @@ import lombok.extern.java.Log;
 
 import java.io.IOException;
 @Log
-public class TestBridge {
-    public TestBridge(){
+public class BridgeTester {
+    public BridgeTester(){
 
     }
     public static void main(String[] args) throws IOException {
@@ -15,7 +15,7 @@ public class TestBridge {
         String location = "us-central1";
         String modelName = "gemini-1.0-pro";
 
-        TestBridge bridge = new TestBridge();
+        BridgeTester bridge = new BridgeTester();
 
       //  String promptText = "can you book a dinner reseration for Vishal and 4 other people at Maharaj on 15th august and make sure its cancellable";
      //  String status = bridge.testJavaClass(projectId, location, modelName, promptText);
