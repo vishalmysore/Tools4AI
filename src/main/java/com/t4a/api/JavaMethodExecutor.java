@@ -145,6 +145,8 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         } else if(action.getActionType().equals(ActionType.EXTEND))  {
             ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
             mapMethod(extendedPredictedAction);
+        } else if(action.getActionType().equals(ActionType.JAVAMETHOD)){
+            mapMethod(action.getClass().getName(),action.getActionName());
         }
     }
     private void mapMethod(ExtendedPredictedAction action) {

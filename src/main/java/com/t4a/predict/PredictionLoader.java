@@ -164,20 +164,42 @@ public class PredictionLoader {
     public AIAction getPredictedAction(String prompt,AIPlatform aiProvider)  {
         GenerateContentResponse response = null;
         String actionName = null;
+        AIAction action = null;
         try {
             if(AIPlatform.GEMINI == aiProvider) {
                 response = chat.sendMessage(buildPrompt(prompt, 1));
                 actionName = ResponseHandler.getText(response);
+                action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
                 actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1));
                 actionName = actionName.replace("()","");
+                action = getAiAction(actionName);
+                if(action == null) {
+                    log.info("action not found , trying again");
+                    actionName = fetchActionNameFromList(actionName);
+                    log.info("action name "+actionName);
+                    action = getAiAction(actionName);
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        return getAiAction(actionName);
+        return action;
 
+    }
+
+    public String fetchActionNameFromList(String actionName) {
+        String namesArray[] = actionNameList.toString().split(",");
+        String realName = null;
+        for (String name:namesArray
+             ) {
+            if(name.equalsIgnoreCase(actionName))
+            {
+                 realName = name;
+            }
+        }
+        return realName;
     }
 
     public AIAction getPredictedAction(String prompt)  {
@@ -213,24 +235,26 @@ public class PredictionLoader {
     private AIAction getAiAction(String actionName) {
         log.info(" Trying to load "+actionName);
         AIAction action = predictions.get(actionName);
+        if(action != null) {
 
-
-            if(action.getActionType() == ActionType.SHELL) {
-                ShellPredictedAction shellAction = (ShellPredictedAction)action;
+            if (action.getActionType() == ActionType.SHELL) {
+                ShellPredictedAction shellAction = (ShellPredictedAction) action;
 
                 return shellAction;
             } else if (action.getActionType() == ActionType.HTTP) {
-               if(action instanceof HttpPredictedAction) {
-                   HttpPredictedAction genericHttpAction = (HttpPredictedAction)action;
+                if (action instanceof HttpPredictedAction) {
+                    HttpPredictedAction genericHttpAction = (HttpPredictedAction) action;
 
-                   return genericHttpAction;
+                    return genericHttpAction;
 
-               }  if(action.getActionType() == ActionType.EXTEND) {
-                    ExtendedPredictedAction shellAction = (ExtendedPredictedAction)action;
+                }
+                if (action.getActionType() == ActionType.EXTEND) {
+                    ExtendedPredictedAction shellAction = (ExtendedPredictedAction) action;
 
                     return shellAction;
                 }
             }
+        }
             return action;
 
     }
