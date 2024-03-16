@@ -154,12 +154,8 @@ public class PredictionLoader {
     }
 
     public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Type> params,String result)  {
-        String prmpt = OPEN_AIPRMT.replace("prompt_str",prompt);
-        prmpt = prmpt.replace("action_name",action.getActionName());
-        prmpt = prmpt.replace("params_values",getCommaSeparatedKeys(params));
-        prmpt = prmpt + " - result after the action has been executed is here "+result+" provide a proper response";
-        log.info(prmpt);
-        return openAiChatModel.generate(prmpt);
+
+        return openAiChatModel.generate(prompt+" result "+result);
     }
     public AIAction getPredictedAction(String prompt,AIPlatform aiProvider)  {
         GenerateContentResponse response = null;
