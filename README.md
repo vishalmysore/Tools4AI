@@ -363,10 +363,19 @@ Cumulative Evaluation: These individual scores are then aggregated to derive a c
 By employing a simple yet effective Zero Shot technique, this method offers a streamlined approach to detect potential hallucinations in LLM-generated content, contributing to the reliability and trustworthiness of AI-generated outputs.
 
 ### Bias
-Fairness
+### Fairness
+
 
 
 ## Advanced Reference Examples
+
+This will do a google search and return the result can be combined with multiaction  
+```
+ActionProcessor processor = new ActionProcessor();
+String news = (String)processor.processSingleAction("can you search the web for Indian news");
+
+```
+Guard Rails with Spring security 
 ``` Security - Guard Rails using Spring Security``` TBD <br>
 ``` Application Checkout and monitoring using with Gemini - Prompt - Check if my restaurant system is up and running and able to book the reservation``` TBD <br>
 ``` Validation with Prompt  - Prompt - What happened the the flight booking i made whats the status?```TBD <br>

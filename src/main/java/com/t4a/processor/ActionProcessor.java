@@ -35,13 +35,10 @@ public class ActionProcessor implements AIProcessor{
 
     /**
      * Process single action based on prediction
-     * @param promptText
+     * @param promptText prompt
      * @param humanVerification
      * @param explain
      * @return
-     * @throws IOException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
      */
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain)  {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
