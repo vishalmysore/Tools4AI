@@ -54,6 +54,8 @@ public class PredictionLoader {
     private String modelName;
     private ChatLanguageModel openAiChatModel;
     private String openAiKey;
+    @Getter
+    private String serperKey;
     private PredictionLoader() {
         initProp();
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -94,17 +96,30 @@ public class PredictionLoader {
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
             Properties prop = new Properties();
             prop.load(inputStream);
-
             // Read properties
-            projectId = prop.getProperty("projectId").trim();
-            location = prop.getProperty("location").trim();
-            modelName = prop.getProperty("modelName").trim();
-            openAiKey = prop.getProperty("openAiKey").trim();
+            projectId = prop.getProperty("projectId");
+            if(projectId != null)
+                projectId = projectId.trim();
+            location = prop.getProperty("location");
+            if(location != null)
+                location = location.trim();
+            modelName = prop.getProperty("modelName");
+            if(modelName != null)
+                    modelName = modelName.trim();
+            openAiKey = prop.getProperty("openAiKey");
+            if(openAiKey != null)
+                openAiKey = openAiKey.trim();
+            serperKey = prop.getProperty("serperKey");
+            if(serperKey == null || serperKey.trim().length() <1) {
+                serperKey = System.getProperty("serperKey");
+            }
+            if(serperKey != null)
+                serperKey = serperKey.trim();
             // Use the properties
             log.info("projectId: " + projectId);
             log.info("location: " + location);
             log.info("modelName: " + modelName);
-          //  log.info("openAiKey: " + openAiKey);
+            log.info("serperKey: " + serperKey);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -11,5 +11,6 @@ import java.util.Map;
  * </p>
  */
 public interface HumanInLoop {
-    public FeedbackLoop allow(String promptText, String methodName, Map<String,Object> params) ;
+    public FeedbackLoop allow(String promptText, String methodName, Map<String, Object> params) ;
+    public FeedbackLoop allow(String promptText, String methodName, String params) ;
 }

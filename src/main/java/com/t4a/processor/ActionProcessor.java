@@ -43,7 +43,7 @@ public class ActionProcessor implements AIProcessor{
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      */
-    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain)  {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
             log.info(predictedAction.getActionName());
@@ -103,6 +103,15 @@ public class ActionProcessor implements AIProcessor{
             return result;
 
 
+        } catch (IOException e) {
+            log.severe(e.getMessage());
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            log.severe(e.getMessage());
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            log.severe(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 

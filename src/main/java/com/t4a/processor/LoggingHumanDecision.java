@@ -12,12 +12,26 @@ import java.util.Map;
 public class LoggingHumanDecision implements HumanInLoop{
     @Override
     public FeedbackLoop allow(String promptText, String methodName, Map<String, Object> params) {
+
         log.info(" Do you allow "+methodName+" for "+promptText);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
             log.info("Key: " + key + ", Value: " + value);
         }
+        return new FeedbackLoop() {
+
+            @Override
+            public boolean isAIResponseValid() {
+                return true;
+            }
+        };
+    }
+    @Override
+    public FeedbackLoop allow(String promptText, String methodName, String params) {
+
+        log.info(" Do you allow "+methodName+" for "+promptText);
+
         return new FeedbackLoop() {
 
             @Override
