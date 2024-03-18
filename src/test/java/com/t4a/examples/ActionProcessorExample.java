@@ -10,8 +10,8 @@ import java.lang.reflect.InvocationTargetException;
 public class ActionProcessorExample {
     public static void main(String[] args) throws IOException, InvocationTargetException, IllegalAccessException {
         ActionProcessor processor = new ActionProcessor();
-        String result = (String)processor.processSingleAction("post a book to http post 'harry poster and problem rat' with id 978 by author vishal");
-        log.info(result);
+       //String result = (String)processor.processSingleAction("search google for best paces to see in toronto");
+       // log.info(result);
 
 /*        result = (String)processor.processSingleAction("Hey I am in Toronto my name is Vishal Can you save this info");
         log.info(result);*/
@@ -34,7 +34,12 @@ public class ActionProcessorExample {
             log.info((String)resultObj);
 
         }*/
-       // String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see. and then send this information to flight booking system";
+         String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see. and then send this information to flight booking system";
         //processor.processMultipleActionWithoutFail(p2,null,null);
+        String noFailPrmt = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see";
+        String processed = processor.processMultipleActionDynamically("hey I am in Toronto do you think i can go out without jacket",null,null);
+        log.info(processed);
     }
+
+
 }

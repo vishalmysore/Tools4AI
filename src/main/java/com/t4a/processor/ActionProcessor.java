@@ -6,10 +6,13 @@ import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
+import com.google.gson.Gson;
 import com.t4a.action.BlankAction;
 import com.t4a.api.AIAction;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
+import com.t4a.processor.chain.Prompt;
+import com.t4a.processor.chain.SubPrompt;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
@@ -203,8 +206,82 @@ public class ActionProcessor implements AIProcessor{
         }
     }
 
-    public List<Object> processMultipleActionWithoutFail(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
-        PredictionLoader.getInstance().getPredictedActionMultiStep(promptText);
-        return null;
+    public String processMultipleActionDynamically(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+        String jsonPrompts = PredictionLoader.getInstance().getPredictedActionMultiStep(promptText);
+        log.info(jsonPrompts);
+        int startIndex = jsonPrompts.indexOf("{");
+        int endIndex = jsonPrompts.lastIndexOf("}");
+        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+            // Extract the JSON substring
+            jsonPrompts = jsonPrompts.substring(startIndex, endIndex + 1);
+            System.out.println("Extracted JSON substring:");
+            System.out.println(jsonPrompts);
+        } else {
+            System.out.println("Error: Unable to find valid JSON substring.");
+        }
+        Gson gson = new Gson();
+        Prompt prompt = gson.fromJson(jsonPrompts, Prompt.class);
+
+        // Process subprompts
+        for (SubPrompt subprompt : prompt.getPrmpt()) {
+            recurrProcessPrompt(subprompt, prompt);
+        }
+
+        String json =  gson.toJson(prompt);
+        return PredictionLoader.getInstance().getMultiStepResult(json);
+    }
+
+    private  SubPrompt recurrProcessPrompt(SubPrompt subprompt, Prompt prompt) {
+        String depdendentResult = null;
+        if(subprompt.canBeExecutedParallely()){
+            return processSubprompt(subprompt,depdendentResult);
+        } else {
+            String dependid = subprompt.getDepend_on().trim();
+            if(dependid.contains(",")) {
+              String[] depedsplit = dependid.split(",");
+                for (String depedentID:depedsplit
+                     ) {
+                    getDependent(subprompt, prompt, depedentID);
+                }
+
+            } else {
+                depdendentResult =  getDependent(subprompt, prompt, dependid).getResult();
+            }
+            return processSubprompt(subprompt,depdendentResult);
+        }
+    }
+
+    private SubPrompt getDependent(SubPrompt subprompt, Prompt prompt, String dependid) {
+        SubPrompt tempsubPrompt = new SubPrompt();
+        tempsubPrompt.setId(dependid);
+        tempsubPrompt= prompt.getPrmpt().get(prompt.getPrmpt().indexOf(tempsubPrompt));
+        if(!tempsubPrompt.isProcessed())
+           return recurrProcessPrompt(tempsubPrompt, prompt);
+        return tempsubPrompt;
+    }
+
+
+    private  SubPrompt processSubprompt(SubPrompt sub,String depdendentResult) {
+
+        if(!sub.isProcessed()){
+            sub.setProcessed(true);
+        }
+        try {
+            sub.setResult((String)processSingleAction(sub.getSubprompt()+" here is additional information "+depdendentResult));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        log.info("processing "+sub);
+        // Perform processing logic here
+        return sub;
+    }
+
+    private static boolean hasProcessed(String id) {
+        // Dummy implementation to simulate processing
+        return true;
     }
 }

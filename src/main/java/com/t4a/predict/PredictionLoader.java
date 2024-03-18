@@ -49,6 +49,7 @@ public class PredictionLoader {
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     private ChatSession chat;
     private ChatSession chatExplain;
+    private ChatSession chatMulti;
     private String projectId;
     private String location;
     private String modelName;
@@ -71,8 +72,15 @@ public class PredictionLoader {
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
+            GenerativeModel multiCommand =
+                    GenerativeModel.newBuilder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
+
             chat = model.startChat();
             chatExplain = modelExplain.startChat();
+            chatMulti = multiCommand.startChat();
         }
         if(openAiKey!=null) {
             openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
@@ -217,16 +225,27 @@ public class PredictionLoader {
        return getPredictedAction(prompt,AIPlatform.GEMINI);
     }
 
-    public String getPredictedActionMultiStep(String prompt)  {
+    public String getMultiStepResult(String json) {
         GenerateContentResponse response = null;
         try {
-            response = chat.sendMessage(buildPromptMultiStep(prompt));
+            response = chatMulti.sendMessage("look at the json string - "+json+" -  provide the information inside json in plain english language which is understandable");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String actionName = ResponseHandler.getText(response);
-        log.info(actionName);
-        return actionName;
+        String nlpans = ResponseHandler.getText(response);
+        log.info(nlpans);
+        return nlpans;
+    }
+    public String getPredictedActionMultiStep(String prompt)  {
+        GenerateContentResponse response = null;
+        try {
+            response = chatMulti.sendMessage(buildPromptMultiStep(prompt));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String subprompts = ResponseHandler.getText(response);
+        log.info(subprompts);
+        return subprompts;
 
     }
 
@@ -408,7 +427,7 @@ public class PredictionLoader {
     }
 
     private String buildPromptMultiStep(String prompt) {
-        return "break down this prompt into multiple prompts and associated action in comma separated list , this is your prompt - "+prompt+" - action list is here -"+actionNameList+" you will provide the result in this format - sub-prompt,action. If not action matches the sub-prompt please put blankAction";
+        return "break down this prompt into multiple logical prompts in this json format { prmpt : [ { id:unique_id,subprompt:'',depend_on=id} ] }- "+prompt+" - just give JSON and dont put any characters ";
     }
 
 }
