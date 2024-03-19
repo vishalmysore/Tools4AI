@@ -1,7 +1,6 @@
 package com.t4a.action;
 
-import com.t4a.api.AIAction;
-import com.t4a.api.ActionType;
+import com.t4a.api.JavaMethodAction;
 import com.t4a.predict.Predict;
 import com.t4a.predict.PredictionLoader;
 import kong.unirest.core.HttpResponse;
@@ -13,12 +12,9 @@ import lombok.extern.java.Log;
  * You need to set serperKey in tools4ai.properties or as System property
  */
 @Log
-@Predict
-public class SearchAction implements AIAction {
-    @Override
-    public ActionType getActionType() {
-        return ActionType.JAVAMETHOD;
-    }
+@Predict(actionName = "googleSearch", description = "search the web for information")
+public class SearchAction implements JavaMethodAction {
+
 
     public String googleSearch(String searchString, boolean isNews)  {
         log.info(searchString+" : "+isNews);
@@ -31,13 +27,7 @@ public class SearchAction implements AIAction {
         return resStr;
     }
 
-    @Override
-    public String getDescription() {
-        return "search the web";
-    }
 
-    @Override
-    public String getActionName() {
-        return "googleSearch";
-    }
+
+
 }

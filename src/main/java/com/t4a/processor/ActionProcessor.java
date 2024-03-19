@@ -46,7 +46,7 @@ public class ActionProcessor implements AIProcessor{
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain)  {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
-            log.info(predictedAction.getActionName());
+            log.info((predictedAction).getActionName());
             explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText,predictedAction.getActionName()));
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
@@ -228,6 +228,7 @@ public class ActionProcessor implements AIProcessor{
         }
 
         String json =  gson.toJson(prompt);
+        log.info(json);
         return PredictionLoader.getInstance().getMultiStepResult(json);
     }
 

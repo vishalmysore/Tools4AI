@@ -1,7 +1,6 @@
 package com.t4a.examples.actions.file;
 
-import com.t4a.api.AIAction;
-import com.t4a.api.ActionType;
+import com.t4a.api.JavaMethodAction;
 import com.t4a.predict.Predict;
 import lombok.extern.java.Log;
 
@@ -10,8 +9,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 @Log
-@Predict
-public class FileWriteAction implements AIAction {
+@Predict(actionName = "saveInformationToLocalFile",description = "saves the information in local file")
+public class FileWriteAction implements JavaMethodAction {
 
     public Object saveInformationToLocalFile(String args[]) {
         StringBuilder content = new StringBuilder();
@@ -46,18 +45,5 @@ public class FileWriteAction implements AIAction {
         return fileName;
     }
 
-    @Override
-    public String getDescription() {
-        return "saves the information in local file";
-    }
 
-    @Override
-    public ActionType getActionType() {
-        return ActionType.FILE;
-    }
-
-    @Override
-    public String getActionName() {
-        return "saveInformationToLocalFile";
-    }
 }

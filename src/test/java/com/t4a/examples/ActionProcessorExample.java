@@ -37,7 +37,7 @@ public class ActionProcessorExample {
          String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see. and then send this information to flight booking system";
         //processor.processMultipleActionWithoutFail(p2,null,null);
         String noFailPrmt = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see";
-        String processed = processor.processMultipleActionDynamically("hey I am in Toronto do you think i can go out without jacket",null,null);
+        String processed = processor.processMultipleActionDynamically(noFailPrmt,null,null);
         log.info(processed);
     }
 

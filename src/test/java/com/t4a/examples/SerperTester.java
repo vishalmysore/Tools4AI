@@ -9,7 +9,7 @@ public class SerperTester {
     public static void main(String[] args) throws IOException, InvocationTargetException, IllegalAccessException {
 
         ActionProcessor processor = new ActionProcessor();
-        String news = (String)processor.processSingleAction("can you search the web for Indian news");
+        String news = (String)processor.processSingleAction("search the web for India sweets");
 
 
     }

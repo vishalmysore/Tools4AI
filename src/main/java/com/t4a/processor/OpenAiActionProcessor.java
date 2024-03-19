@@ -31,4 +31,7 @@ public class OpenAiActionProcessor implements AIProcessor{
         }
         return PredictionLoader.getInstance().postActionProcessing(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties(),(String)obj);
     }
+    public Object processSingleAction(String prompt) {
+        return processSingleAction(prompt, new LoggingHumanDecision(),new LogginggExplainDecision());
+    }
 }

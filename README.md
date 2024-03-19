@@ -195,34 +195,25 @@ predicts that the user prompt is related to searching for information.
 
 ### Java Prediction Loaders
 
-All the classes implementing ```AIAction``` interfaces and having annotation ```@Predict``` are added to prediction list
-```AIAction``` is integral to creating all AI-related actions, with each action implemented as a function adhering to the principles of functional programming. The function's name should be descriptive, aligning closely with the action it performs
+All the classes implementing ```JavaMethodAction``` interfaces and having annotation ```@Predict``` are added to prediction list
+```JavaMethodAction``` is integral to creating all AI-related actions, with each action implemented as a function adhering to the principles of functional programming. The function's name should be descriptive, aligning closely with the action it performs
 ```@Predict``` Annotation: This annotation ensures that the AIAction object is included in our prediction list. While not mandatory, it's advisable to mark all actions with @Predict for automatic execution. However, for highly customized actions like deleting records or canceling reservations, omitting this annotation might be preferable to prevent automatic execution.
 
-```getActionName()``` Method: This method returns the descriptive name of the primary function within the class. It's crucial to name this function accurately, as AI utilizes semantic mapping at runtime to correlate the function.
+```actionName``` the descriptive name of the primary function within the class. It's crucial to name this function accurately, as AI utilizes semantic mapping at runtime to correlate the function.
 
 ```
-@Predict
-public class SimpleAction implements AIAction {
+@Predict(actionName = "whatFoodDoesThisPersonLike", description = "what is the food preference of this person ")
+public class SimpleAction implements JavaMethodAction {
 
     public String whatFoodDoesThisPersonLike(String name) {
-        return "Paneer Butter Masala";
+        if("vishal".equalsIgnoreCase(name))
+            return "Paneer Butter Masala";
+        else if ("vinod".equalsIgnoreCase(name)) {
+            return "aloo kofta";
+        }else
+            return "something yummy";
     }
 
-    @Override
-    public String getActionName() {
-        return "whatFoodDoesThisPersonLike";
-    }
-
-    @Override
-    public ActionType getActionType() {
-        return ActionType.JAVAMETHOD;
-    }
-
-    @Override
-    public String getDescription() {
-        return "Provide person's name and find out their food preferences.";
-    }
 }
 
 ```

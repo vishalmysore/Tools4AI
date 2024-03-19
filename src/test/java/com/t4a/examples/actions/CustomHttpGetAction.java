@@ -1,7 +1,6 @@
 package com.t4a.examples.actions;
 
-import com.t4a.api.AIAction;
-import com.t4a.api.ActionType;
+import com.t4a.api.JavaMethodAction;
 import com.t4a.predict.Predict;
 import lombok.extern.java.Log;
 import org.json.JSONArray;
@@ -19,8 +18,8 @@ import java.net.URL;
  */
 
 @Log
-@Predict
-public class CustomHttpGetAction implements AIAction {
+@Predict(actionName = "getTemperature", description ="get weather for city" )
+public class CustomHttpGetAction implements JavaMethodAction {
     public double getTemperature(String cityName) {
         double temperature = 0;
         String urlStr = "https://geocoding-api.open-meteo.com/v1/search?name="+cityName+"&count=1&language=en&format=json";
@@ -101,18 +100,5 @@ public class CustomHttpGetAction implements AIAction {
 
     }
 
-    @Override
-    public String getActionName() {
-        return "getTemperature";
-    }
 
-    @Override
-    public ActionType getActionType() {
-        return ActionType.JAVAMETHOD;
-    }
-
-    @Override
-    public String getDescription() {
-        return "get weather for city";
-    }
 }

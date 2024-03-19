@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Predict {
-    // You can include attributes in the annotation if needed
+    String actionName();
+    String description();
 }

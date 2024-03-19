@@ -1,11 +1,10 @@
 package com.t4a.examples.actions;
 
-import com.t4a.api.AIAction;
-import com.t4a.api.ActionType;
+import com.t4a.api.JavaMethodAction;
 import com.t4a.predict.Predict;
 
-@Predict
-public class SimpleAction implements AIAction {
+@Predict(actionName = "whatFoodDoesThisPersonLike", description = "what is the food preference of this person ")
+public class SimpleAction implements JavaMethodAction {
 
     public String whatFoodDoesThisPersonLike(String name) {
         if("vishal".equalsIgnoreCase(name))
@@ -15,18 +14,5 @@ public class SimpleAction implements AIAction {
         }else
             return "something yummy";
     }
-    @Override
-    public String getActionName() {
-        return "whatFoodDoesThisPersonLike";
-    }
 
-    @Override
-    public ActionType getActionType() {
-        return ActionType.JAVAMETHOD;
-    }
-
-    @Override
-    public String getDescription() {
-        return "Provide persons name and then find out what does that person like";
-    }
 }
