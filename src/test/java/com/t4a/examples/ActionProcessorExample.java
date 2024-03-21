@@ -1,14 +1,12 @@
 package com.t4a.examples;
 
+import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.ActionProcessor;
 import lombok.extern.java.Log;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-
 @Log
 public class ActionProcessorExample {
-    public static void main(String[] args) throws IOException, InvocationTargetException, IllegalAccessException {
+    public static void main(String[] args) throws AIProcessingException {
         ActionProcessor processor = new ActionProcessor();
        //String result = (String)processor.processSingleAction("search google for best paces to see in toronto");
        // log.info(result);

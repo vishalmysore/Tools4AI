@@ -1,4 +1,4 @@
-package com.t4a.action;
+package com.t4a.examples.actions;
 
 import com.t4a.api.JavaMethodAction;
 import com.t4a.predict.Predict;

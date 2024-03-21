@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 @Log
 public class OpenAiActionProcessor implements AIProcessor{
 
-    public Object processSingleAction(String prompt,HumanInLoop humanVerification, ExplainDecision explain) {
+    public Object processSingleAction(String prompt,HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         AIAction action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
         log.info(action+"");
         JavaMethodExecutor methodExecutor = new JavaMethodExecutor();
@@ -25,13 +25,13 @@ public class OpenAiActionProcessor implements AIProcessor{
                 log.info(" the action returned "+obj);
             }
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         }
         return PredictionLoader.getInstance().postActionProcessing(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties(),(String)obj);
     }
-    public Object processSingleAction(String prompt) {
+    public Object processSingleAction(String prompt) throws AIProcessingException{
         return processSingleAction(prompt, new LoggingHumanDecision(),new LogginggExplainDecision());
     }
 }

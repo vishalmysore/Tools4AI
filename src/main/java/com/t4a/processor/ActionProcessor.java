@@ -43,7 +43,7 @@ public class ActionProcessor implements AIProcessor{
      * @param explain
      * @return
      */
-    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain)  {
+    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
             log.info((predictedAction).getActionName());
@@ -105,13 +105,13 @@ public class ActionProcessor implements AIProcessor{
 
         } catch (IOException e) {
             log.severe(e.getMessage());
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         } catch (InvocationTargetException e) {
             log.severe(e.getMessage());
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         } catch (IllegalAccessException e) {
             log.severe(e.getMessage());
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         }
     }
 
@@ -120,19 +120,17 @@ public class ActionProcessor implements AIProcessor{
      *
      * @param promptText
      * @return
-     * @throws IOException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
+
      */
-    public Object processSingleAction(String promptText) throws IOException, InvocationTargetException, IllegalAccessException {
+    public Object processSingleAction(String promptText)  throws AIProcessingException {
         return processSingleAction(promptText, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 
-    public List<Object> processMultipleAction(String promptText, int num) throws IOException, InvocationTargetException, IllegalAccessException {
+    public List<Object> processMultipleAction(String promptText, int num) throws AIProcessingException  {
         return processMultipleAction(promptText, num,new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 
-    public List<Object> processMultipleAction(String promptText, int num,HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+    public List<Object> processMultipleAction(String promptText, int num,HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException{
         List<Object> restulList = new ArrayList<Object>();
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             List<AIAction> predictedActionList = PredictionLoader.getInstance().getPredictedAction(promptText, num);
@@ -170,7 +168,12 @@ public class ActionProcessor implements AIProcessor{
             ChatSession chat = model.startChat();
 
             log.info(String.format("Ask the question 1: %s", promptText));
-            GenerateContentResponse response = chat.sendMessage(promptText);
+            GenerateContentResponse response = null;
+            try {
+                response = chat.sendMessage(promptText);
+            } catch (IOException e) {
+                throw new AIProcessingException(e);
+            }
 
             for (JavaMethodExecutor methodExecutor:javaMethodExecutorList
                  ) {
@@ -183,7 +186,14 @@ public class ActionProcessor implements AIProcessor{
 
                 log.info(methodExecutor.getPropertyValuesJsonString(response));
 
-                Object obj = methodExecutor.action(response, methodExecutor.getAction());
+                Object obj = null;
+                try {
+                    obj = methodExecutor.action(response, methodExecutor.getAction());
+                } catch (InvocationTargetException e) {
+                    throw new AIProcessingException(e);
+                } catch (IllegalAccessException e) {
+                    throw new AIProcessingException(e);
+                }
                 log.info("" + obj);
 
                 Content content =
@@ -192,9 +202,11 @@ public class ActionProcessor implements AIProcessor{
                                         methodExecutor.getAction().getActionName(), Collections.singletonMap(methodExecutor.getAction().getActionName(), obj)));
 
 
-                response = chat.sendMessage(content);
-
-
+                try {
+                    response = chat.sendMessage(content);
+                } catch (IOException e) {
+                    throw new AIProcessingException(e);
+                }
 
 
             }
@@ -206,7 +218,7 @@ public class ActionProcessor implements AIProcessor{
         }
     }
 
-    public String processMultipleActionDynamically(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws IOException, InvocationTargetException, IllegalAccessException {
+    public String processMultipleActionDynamically(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException{
         String jsonPrompts = PredictionLoader.getInstance().getPredictedActionMultiStep(promptText);
         log.info(jsonPrompts);
         int startIndex = jsonPrompts.indexOf("{");
@@ -232,7 +244,7 @@ public class ActionProcessor implements AIProcessor{
         return PredictionLoader.getInstance().getMultiStepResult(json);
     }
 
-    private  SubPrompt recurrProcessPrompt(SubPrompt subprompt, Prompt prompt) {
+    private  SubPrompt recurrProcessPrompt(SubPrompt subprompt, Prompt prompt) throws AIProcessingException{
         String depdendentResult = null;
         if(subprompt.canBeExecutedParallely()){
             return processSubprompt(subprompt,depdendentResult);
@@ -252,7 +264,7 @@ public class ActionProcessor implements AIProcessor{
         }
     }
 
-    private SubPrompt getDependent(SubPrompt subprompt, Prompt prompt, String dependid) {
+    private SubPrompt getDependent(SubPrompt subprompt, Prompt prompt, String dependid) throws AIProcessingException{
         SubPrompt tempsubPrompt = new SubPrompt();
         tempsubPrompt.setId(dependid);
         tempsubPrompt= prompt.getPrmpt().get(prompt.getPrmpt().indexOf(tempsubPrompt));
@@ -262,20 +274,14 @@ public class ActionProcessor implements AIProcessor{
     }
 
 
-    private  SubPrompt processSubprompt(SubPrompt sub,String depdendentResult) {
+    private  SubPrompt processSubprompt(SubPrompt sub,String depdendentResult) throws AIProcessingException{
 
         if(!sub.isProcessed()){
             sub.setProcessed(true);
         }
-        try {
+      
             sub.setResult((String)processSingleAction(sub.getSubprompt()+" here is additional information "+depdendentResult));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        
         log.info("processing "+sub);
         // Perform processing logic here
         return sub;

@@ -15,9 +15,10 @@ import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.Getter;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,6 +58,12 @@ public class PredictionLoader {
     private String openAiKey;
     @Getter
     private String serperKey;
+    private ApplicationContext springContext;
+
+    /**
+     * If the action name returned by AI is not in the list of approved action it will try again this many times
+     */
+    private final int NUM_OF_RETRIES = 2;
     private PredictionLoader() {
         initProp();
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
@@ -102,6 +109,10 @@ public class PredictionLoader {
 
     public void initProp() {
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
+            if(inputStream == null) {
+                log.severe(" tools4ai properties not found ");
+                return;
+            }
             Properties prop = new Properties();
             prop.load(inputStream);
             // Read properties
@@ -181,6 +192,7 @@ public class PredictionLoader {
         return openAiChatModel.generate(prompt+" result "+result);
     }
     public AIAction getPredictedAction(String prompt,AIPlatform aiProvider)  {
+        int numRetries = 0;
         GenerateContentResponse response = null;
         String actionName = null;
         AIAction action = null;
@@ -188,6 +200,18 @@ public class PredictionLoader {
             if(AIPlatform.GEMINI == aiProvider) {
                 response = chat.sendMessage(buildPrompt(prompt, 1));
                 actionName = ResponseHandler.getText(response);
+                if(!actionNameList.toString().contains(actionName)) {
+                    while(numRetries++<NUM_OF_RETRIES) {
+                        response = chat.sendMessage(buildPrompt(prompt, 1));
+                        actionName = ResponseHandler.getText(response);
+                        if(actionNameList.toString().contains(actionName)) {
+                            break;
+                        }
+                    }
+
+
+                }
+                log.info(" Predicted action by AI is "+actionName);
                 action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
                 actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1));
@@ -196,12 +220,14 @@ public class PredictionLoader {
                 if(action == null) {
                     log.info("action not found , trying again");
                     actionName = fetchActionNameFromList(actionName);
-                    log.info("action name "+actionName);
+                    log.info("Predicted action by AI is "+actionName);
                     action = getAiAction(actionName);
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.severe(" Please make sure actions are configured");
         }
 
         return action;
@@ -290,8 +316,12 @@ public class PredictionLoader {
     }
 
     public static PredictionLoader getInstance() {
+        return getInstance(null);
+    }
+    public static PredictionLoader getInstance(ApplicationContext springContext) {
         if(predictionLoader == null) {
             predictionLoader = new PredictionLoader();
+            predictionLoader.setSpringContext(springContext);
             predictionLoader.processCP();
             predictionLoader.loadShellCommands();
             predictionLoader.loadHttpCommands();
@@ -302,8 +332,9 @@ public class PredictionLoader {
     }
 
 
-
-
+    public void setSpringContext(ApplicationContext springContext) {
+        this.springContext = springContext;
+    }
 
     private void loadShellCommands()  {
         ShellPredictionLoader shellLoader = new ShellPredictionLoader();
@@ -331,24 +362,19 @@ public class PredictionLoader {
     }
 
     public void processCP() {
+        Reflections reflections = new Reflections("",
+                new SubTypesScanner(),
+                new TypeAnnotationsScanner());
+        Set<Class<?>> predict = reflections.getTypesAnnotatedWith(Predict.class);
+        Set<Class<?>> activateLoader = reflections.getTypesAnnotatedWith(ActivateLoader.class);
+        loaderPredict(predict);
+        loaderExtended(activateLoader);
+    }
 
-
-        ClassPathScanningCandidateComponentProvider provider =
-                new ClassPathScanningCandidateComponentProvider(true);
-        provider.addIncludeFilter(new AnnotationTypeFilter(Predict.class));
-        provider.addIncludeFilter(new AnnotationTypeFilter(ActivateLoader.class));
-        Set<BeanDefinition> beanDefs = provider
-                .findCandidateComponents("*");
-        beanDefs.stream().forEach(beanDefinition -> {
+    private void loaderExtended(Set<Class<?>> loaderClasses) {
+        loaderClasses.forEach(actionCLAZZ->{
             try {
-                Class actionCLAZZ = Class.forName(beanDefinition.getBeanClassName());
-                if (AIAction.class.isAssignableFrom(actionCLAZZ)) {
-                    log.info("Class " + actionCLAZZ + " implements AIAction");
-                    if (ExtendedPredictedAction.class.isAssignableFrom(actionCLAZZ))
-                        log.warning("You cannot predict extended option implement AIAction instead"+actionCLAZZ);
-                    else
-                        addAction(actionCLAZZ);
-                } else if (ExtendedPredictionLoader.class.isAssignableFrom(actionCLAZZ)) {
+                if (ExtendedPredictionLoader.class.isAssignableFrom(actionCLAZZ)) {
                     log.info("Class " + actionCLAZZ + " implements Loader");
                     loadFromLoader(actionCLAZZ);
                 }
@@ -358,7 +384,22 @@ public class PredictionLoader {
             }
         });
     }
+    private void loaderPredict(Set<Class<?>> loaderClasses) {
+        loaderClasses.forEach(actionCLAZZ->{
+            try {
+                if (AIAction.class.isAssignableFrom(actionCLAZZ)) {
+                    log.info("Class " + actionCLAZZ + " implements AIAction");
+                    if (ExtendedPredictedAction.class.isAssignableFrom(actionCLAZZ))
+                        log.warning("You cannot predict extended option implement AIAction instead"+actionCLAZZ);
+                    else
+                        addAction(actionCLAZZ);
+                }
 
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 
     private  void loadFromLoader(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ExtendedPredictionLoader instance = (ExtendedPredictionLoader)clazz.getDeclaredConstructor().newInstance();
@@ -379,7 +420,14 @@ public class PredictionLoader {
 
 
     private  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        AIAction instance = (AIAction)clazz.getDeclaredConstructor().newInstance();
+        AIAction instance = null;
+        if(springContext != null) {
+            instance = (AIAction) springContext.getBean(clazz);
+            log.info(" instance from Spring " + instance);
+        } if(instance == null) {
+            instance = (AIAction) clazz.getDeclaredConstructor().newInstance();
+        }
+
         String actionName = instance.getActionName();
 
         actionNameList.append(actionName+",");

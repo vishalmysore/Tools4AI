@@ -36,6 +36,8 @@ public class SimplePredictionExample {
             response = chatSession.sendMessage(preaction+"I need to go from Toronto to Monreal?"+action);
             System.out.println(ResponseHandler.getText(response));
 
+            response = chatSession.sendMessage("What is the current weather in Toronto? here is additional information null- what action do you think we should take sendMessageToQueue,whatFoodDoesThisPersonLike,insertCustomerComplaint,googleSearch,saveInformationToLocalFile,getTemperature,saveEmployeeInformation,raiseTicketForProductionIssue,runBackup,runAutomatedTests,startService,restartCustomerPortal,diagnoseEngineIssues,alertSupportTeam,backupDatabase,scanSystemVulnerabilities,getUserDetails, somethingNotVeryUseful, ,getActivities,postActivities,getActivities_With_id,putActivities,deleteActivities,getAuthors,postAuthors,getbooks,getAuthors_With_id,putAuthors,deleteAuthors,getBooks,postBooks,getBooks_With_id,putBooks,deleteBooks,getCoverPhotos,postCoverPhotos,getcovers,getCoverPhotos_With_id,putCoverPhotos,deleteCoverPhotos,getUsers,postUsers,getUsers_With_id,putUsers,deleteUsers,updatePet,addPet,findPetsByStatus,findPetsByTags,getPetById,updatePetWithForm,deletePet,uploadFile,getInventory,placeOrder,getOrderById,deleteOrder,createUser,createUsersWithListInput,loginUser,logoutUser,getUserByName,updateUser,deleteUser - reply back with 1 action only");
+            System.out.println(ResponseHandler.getText(response));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
