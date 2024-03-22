@@ -45,7 +45,7 @@ public class PredictionLoader {
 
     private final String OPEN_AIPRMT = "here is your prompt - prompt_str - here is you action- action_name(params_values) - what parameter should you pass to this function. give comma separated name=values only and nothing else";
     private final  String POSTACTIONCMD = " - reply back with ";
-    private final  String NUMACTION = " action only";
+    private final  String NUMACTION = " action only. Make sure Action matches exactly from this list";
 
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     private ChatSession chat;
@@ -200,11 +200,12 @@ public class PredictionLoader {
             if(AIPlatform.GEMINI == aiProvider) {
                 response = chat.sendMessage(buildPrompt(prompt, 1));
                 actionName = ResponseHandler.getText(response);
-                if(!actionNameList.toString().contains(actionName)) {
+                if(!actionNameList.toString().contains(","+actionName+",")) {
                     while(numRetries++<NUM_OF_RETRIES) {
+                        log.info(" got "+actionName+" Trying again "+numRetries);
                         response = chat.sendMessage(buildPrompt(prompt, 1));
                         actionName = ResponseHandler.getText(response);
-                        if(actionNameList.toString().contains(actionName)) {
+                        if(actionNameList.toString().contains(","+actionName+",")) {
                             break;
                         }
                     }
@@ -393,6 +394,8 @@ public class PredictionLoader {
                         log.warning("You cannot predict extended option implement AIAction instead"+actionCLAZZ);
                     else
                         addAction(actionCLAZZ);
+                } else {
+                    log.warning(" You have predict annotation but the class does not implement AIAction interface "+actionCLAZZ.getName());
                 }
 
             } catch (Exception e) {

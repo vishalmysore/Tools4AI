@@ -8,8 +8,8 @@ import lombok.extern.java.Log;
 public class ActionProcessorExample {
     public static void main(String[] args) throws AIProcessingException {
         ActionProcessor processor = new ActionProcessor();
-       //String result = (String)processor.processSingleAction("search google for best paces to see in toronto");
-       // log.info(result);
+       String result = (String)processor.processSingleAction(" My name is Vishal Mysore, My computer is not starting and I am in Toronto");
+        log.info(result);
 
 /*        result = (String)processor.processSingleAction("Hey I am in Toronto my name is Vishal Can you save this info");
         log.info(result);*/
@@ -32,11 +32,11 @@ public class ActionProcessorExample {
             log.info((String)resultObj);
 
         }*/
-         String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see. and then send this information to flight booking system";
+        // String p2 = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see. and then send this information to flight booking system";
         //processor.processMultipleActionWithoutFail(p2,null,null);
-        String noFailPrmt = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see";
-        String processed = processor.processMultipleActionDynamically(noFailPrmt,null,null);
-        log.info(processed);
+        //String noFailPrmt = "hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see";
+       // String processed = processor.processMultipleActionDynamically(noFailPrmt,null,null);
+        //log.info(processed);
     }
 
 

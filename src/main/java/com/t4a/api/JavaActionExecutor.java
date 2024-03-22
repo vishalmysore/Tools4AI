@@ -101,7 +101,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
         for (Map.Entry<String, Type> entry : properties.entrySet()) {
             String property = entry.getKey();
-            Type type = entry.getValue();
+            Type type = (Type)entry.getValue();
 
             Schema propertySchema = Schema.newBuilder()
                     .setType(type)

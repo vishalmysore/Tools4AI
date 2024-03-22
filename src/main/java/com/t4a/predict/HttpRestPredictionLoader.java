@@ -8,6 +8,7 @@ import com.t4a.action.http.HttpMethod;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.api.AIAction;
+import lombok.extern.java.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Log
 public class HttpRestPredictionLoader {
     private  String yamlFile = "http_actions.json";
     private URL resourceUrl = null;
@@ -35,7 +37,8 @@ public class HttpRestPredictionLoader {
             resourceUrl = HttpRestPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
         if (resourceUrl == null) {
-            throw new IllegalArgumentException("File not found: " + yamlFile);
+            log.warning("File not found: " + yamlFile);
+            return;
         }
         Gson gson = new Gson();
         //List<HttpPredictedAction> actions = new ArrayList<>();

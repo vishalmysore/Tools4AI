@@ -1,7 +1,7 @@
 package com.t4a.action;
 
-import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
+import com.t4a.api.JavaMethodAction;
 
 /**
  * This Action can be used when you want the AI to get back with answer and if you do not have any
@@ -13,7 +13,7 @@ import com.t4a.api.ActionType;
  *
  */
 
-public final class BlankAction implements AIAction {
+public final class BlankAction implements JavaMethodAction {
     public String askAdditionalQuestion(String additionalQuestion){
         return "provide answer for this query : "+additionalQuestion;
     }

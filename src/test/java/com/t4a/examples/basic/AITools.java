@@ -7,6 +7,7 @@ import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.google.gson.Gson;
 import com.t4a.api.ActionType;
 import com.t4a.api.GuardRailException;
 import com.t4a.api.GuardRails;
@@ -73,10 +74,11 @@ public class AITools {
 
             System.out.println("\nPrint response 1 : ");
             System.out.println(ResponseHandler.getContent(response));
-           //String jsonString = generator.getPropertyValuesMapMap(response);
-            //System.out.println(jsonString);
-
-            return generator.action(response,"");
+            Map<String,Object> map=  generator.getPropertyValuesMapMap(response);
+            Gson gson = new Gson();
+            String jsonString = gson.toJson(map);
+            System.out.println(jsonString);
+            return generator.action(response,jsonString);
 
 
         } catch (IOException e) {

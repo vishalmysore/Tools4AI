@@ -24,6 +24,7 @@ public class SimplePredictionExample {
             response = chatSession.sendMessage(preaction+"Hey new new employee joined today his name is Shahruh Devgan, his id is 788778"+action);
             System.out.println(ResponseHandler.getText(response));
 
+
             response = chatSession.sendMessage(preaction+"I want to eat really spicy Indian Food Today?"+action);
             System.out.println(ResponseHandler.getText(response));
 

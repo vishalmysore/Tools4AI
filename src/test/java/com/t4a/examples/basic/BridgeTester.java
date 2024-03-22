@@ -1,14 +1,15 @@
 package com.t4a.examples.basic;
 
+import com.t4a.examples.actions.Customer;
+import com.t4a.predict.PojoBuilder;
+import com.t4a.processor.AIProcessingException;
 import lombok.extern.java.Log;
-
-import java.io.IOException;
 @Log
 public class BridgeTester {
     public BridgeTester(){
 
     }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws AIProcessingException {
 
         log.info("Hello");
         String projectId = "cookgptserver";
@@ -25,10 +26,12 @@ public class BridgeTester {
         String status = bridge.testJavaClass(projectId, location, modelName, promptText);
         log.info(promptText+ " : "+status);
     }
-    public String testJavaClass(String projectId, String location, String modelName,String promptText){
+    public String testJavaClass(String projectId, String location, String modelName,String promptText) throws AIProcessingException {
 
-        AITools tools = new AITools(projectId,location,modelName);
-        Object pojo = tools.actionClass(promptText,"com.t4a.examples.basic.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
+        PojoBuilder tools = new PojoBuilder();
+        Object pojo = tools.buildPojo(promptText,"com.t4a.examples.basic.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
+        System.out.println(pojo);
+        pojo = tools.buildPojo("I went to the part yesterday and met someone it was so good to meet an old friend. A customer is complaining that his computer is not working, his name is Vinod Gupta,  and he stays in Toronto", Customer.class.getName(),"Customer", "get Customer details");
         System.out.println(pojo);
         return pojo.toString();
     }

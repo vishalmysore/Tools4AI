@@ -52,7 +52,8 @@ public class ShellPredictionLoader {
         resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
         if (resourceUrl == null) {
-            throw new IllegalArgumentException("File not found: " + yamlFile);
+            log.warning("File not found: " + yamlFile);
+            return;
         }
 
         try (InputStream inputStream = resourceUrl.openStream();

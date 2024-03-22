@@ -48,7 +48,8 @@ public class SwaggerPredictionLoader {
             resourceUrl = SwaggerPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
         if (resourceUrl == null) {
-            throw new IllegalArgumentException("File not found: " + yamlFile);
+            log.warning("File not found: " + yamlFile);
+            return;
         }
         Gson gson = new Gson();
         //List<HttpPredictedAction> actions = new ArrayList<>();

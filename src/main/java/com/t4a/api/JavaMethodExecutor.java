@@ -110,8 +110,16 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
             return buildFunction(extendedPredictedAction,extendedPredictedAction.getActionName(),extendedPredictedAction.getDescription());
         }
-        else
-        return buildFunction(action.getClass().getName(),action.getActionName(),action.getActionName(),action.getDescription());
+        else if(action.getActionType().equals(ActionType.JAVAMETHOD)) {
+            JavaMethodAction methodAction = (JavaMethodAction)action;
+            if(!methodAction.isComplexMethod()) {
+                return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
+            } else {
+                log.warning("method has pojos or complex data type , please use PojoBuilder");
+                return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
+            }
+        } else
+            return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
     }
     public void mapMethod(HttpPredictedAction action) {
         List<InputParameter> inputParameterList =action.getInputObjects();
@@ -185,7 +193,8 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                     Parameter[] parameters = method.getParameters();
 
                     for (int i = 0; i < parameters.length; i++) {
-                        properties.put(parameters[i].getName(), mapType(parameters[i].getType()));
+                        Type tp = mapType(parameters[i].getType());
+                        properties.put(parameters[i].getName(), tp);
                     }
 
                     log.info("Method arguments for " + methodName + ": " + properties);
