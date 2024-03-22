@@ -7,12 +7,19 @@
     <img  src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fvishalmysore%2Ftools4ai&countColor=black&style=flat%22">
     <a target="_blank" href="https://github.com/vishalmyore/tools4ai"><img src="https://img.shields.io/github/stars/vishalmysore/tools4ai?color=black" /></a>    
 </p>
+### Table of Contents
+- [Rapid Start](#-Rapid-Start)
+- [Support for Additional OpenAI Providers](#-support-for-additional-openai-providers)
+  - [Azure OpenAI](#azure-openai)
+  - [Anyscale](#anyscale)
+- [Supported Services](#-supported-services)
+- [Installation](#-installation)
 
-# Rapid Start
+# 📌 Rapid Start
 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
 
-# Tools4AI
+# 💡 Tools4AI
 Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integraetion with enterprise 
 Java applications.
 This project illustrates the integration of AI with enterprise tools or external tools, converting natural language prompts
