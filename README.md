@@ -11,7 +11,7 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-- [SetUp](#-tools4ai-setup)
+- [SetUp](#-setup)
   - [JavaDocs](#-JavaDocs)
   - [GCLOUD](#-GCLOUD)
   - [Tools Integration](#Tools-Integration)
@@ -52,7 +52,6 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-# 💡 Tools4AI Setup
 
 ## 🛠️ Setup
 Download source and build from scratch
