@@ -11,11 +11,11 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-    - [SetUp](#-Setup)
-    - [JavaDocs](#-JavaDocs)
-    - [GCLOUD](#-GCLOUD)
-    - [Tools Integration](#Tools-Integration)
-    - [Reference Examples](#Reference-Examples)
+- [SetUp](#-tools4ai-setup)
+  - [JavaDocs](#-JavaDocs)
+  - [GCLOUD](#-GCLOUD)
+  - [Tools Integration](#Tools-Integration)
+  - [Reference Examples](#Reference-Examples)
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 
@@ -51,6 +51,8 @@ if a user's prompt is "my car broke down," in addition to the action "bookTaxi,"
 set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinner time). This predictive
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
+
+# 💡 Tools4AI Setup
 
 ## 🛠️ Setup
 Download source and build from scratch
