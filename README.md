@@ -56,7 +56,7 @@ Or use as maven dependency
 <dependency>
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.7.7</version>
+    <version>0.8.5</version>
 </dependency>
 
 ```
