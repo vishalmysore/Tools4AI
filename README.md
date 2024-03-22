@@ -11,8 +11,8 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-    - [sett](#-JavaDocs1)
-    - [JavaDocs](#-JavaDocs)
+    - [sett](#-JavaDocs)
+    - [JavaDocs](#-setup)
     - [GCLOUD](#-GCLOUD)
     - [Tools Integration](#-Tools-Integration)
     - [Reference Examples](#-Reference-Examples)
@@ -51,7 +51,7 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-# 🛠️ JavaDocs1
+# 🛠️ JavaDocs
 
 Download source and build from scratch
 
@@ -70,7 +70,7 @@ Or use as maven dependency
 ```
 check for latest version here  https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
 
-## 📘 JavaDocs
+## 📘 Setup
 
 Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools4ai/latest/index.html
 
