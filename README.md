@@ -11,7 +11,7 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-    - [SetUp](#-rapid-start)
+    - [SetUp](#-Setup)
     - [JavaDocs](#-JavaDocs)
     - [GCLOUD](#-GCLOUD)
     - [Tools Integration](#Tools-Integration)
