@@ -255,7 +255,7 @@ In this prompt:
 "we are so happy" provides additional context but doesn't directly affect the action to be taken.
 The AI system first matches the user's intent with a list of all available actions. In this case, it selects the "saveEmployeeInformation" action as the best match. Then, it maps the parameters accordingly: "Bahubali" as the employee's name and "IFC" as the organization's name. This allows the AI system to accurately understand and execute the user's request.
 
-### Swagger Prediction Loader  
+### ✒️ Swagger Prediction Loader  
 <img src="restapi.png" >
 
 The Swagger Prediction Loader is capable of directly loading HTTP endpoints as predictions, enabling automatic
@@ -281,7 +281,7 @@ In essence, the Swagger Prediction Loader leverages the structure and metadata d
 specification to dynamically create HttpPredictedAction objects, allowing for seamless integration of HTTP
 endpoints into the prediction system
 
-### Http Prediction Loader
+### ✍️ Http Prediction Loader
 
 ```HttpPredictionLoader``` is responsible for loading the manual http endpoint configuration which look something like this 
 
@@ -331,7 +331,7 @@ For the manual definition of HTTP endpoints using a configuration file like the 
 
 This approach allows for flexibility in defining HTTP endpoints outside of a Swagger/OpenAPI specification, enabling the manual configuration of endpoints to suit specific application requirements.
 
-### Extended Prediction Loader
+### 🖊️ Extended Prediction Loader
 The ```ExtendedPredictionLoader``` offers a mechanism for creating custom prediction loaders. While Shell, HTTP, and Java Methods are supported by default, there may arise situations or use cases necessitating a custom set of actions. It's important to note the distinction between custom actions and ```ExtendedPredictedAction.``` Custom actions can be created by implementing the AIAction class, while ExtendedPredictedAction have their own loading mechanism. These actions are already present in the prediction list by default and cannot be predicted again.
 
 To create custom implementations of ExtendedPredictionLoader, you need to annotate the loader class with ```@ActivateLoader.``` Prediction loader will then identify all classes with this annotation and call the ```getExtendedActions()``` method. This method should return the action names along with their corresponding ExtendedPredictOptions, allowing for the seamless integration of custom actions into the prediction system.
@@ -381,6 +381,6 @@ Guard Rails with Spring security
 ``` Application Checkout and monitoring using with Gemini - Prompt - Check if my restaurant system is up and running and able to book the reservation``` TBD <br>
 ``` Validation with Prompt  - Prompt - What happened the the flight booking i made whats the status?```TBD <br>
 
-## Advanced prompt function calling
+## 🧾 Advanced prompt function calling
 ``` Can you check if my movie booking system can handle 50 reservations in 1 min ``` <br>
 ``` what happens if my cookgpt is giving only vegetarian recipes``` <br>
