@@ -10,10 +10,10 @@
 
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
-- [Support for Additional OpenAI Providers](#-support-for-additional-openai-providers)
-  - [Azure OpenAI](#azure-openai)
-  - [Anyscale](#anyscale)
-- [Supported Services](#-supported-services)
+- [Tools4AI](#-Tools4AI)
+- [SetUp](#-SETUP)
+- [JavaDocs](#-JavaDocs)
+- [GCLOUD](#-GCLOUD)
 - [Installation](#-installation)
 
 # 📌 Rapid Start
@@ -51,7 +51,7 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-## SETUP
+## 🛠️ SETUP
 
 Download source and build from scratch
 
@@ -70,12 +70,12 @@ Or use as maven dependency
 ```
 check for latest version here  https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
 
-## JavaDocs
+## 📘 JavaDocs
 
 Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools4ai/latest/index.html
 
 
-## GCLOUD
+## ☁️ GCLOUD
 Make sure you have gcloud project set up and have enabled vertex API
 ```     
         String projectId = "cookgptserver" // this can be any server name you create in your GCloud
@@ -84,7 +84,7 @@ Make sure you have gcloud project set up and have enabled vertex API
 ```
 You have to mention your project id from Gcloud 
 
-## Quick Start
+## 👉 Quick Start
 ```
 mvn exec:java
 ```
@@ -95,7 +95,7 @@ and do an api call to https://open-meteo.com/ for real time weather infomraiton 
 If you rerun this program with a new prompt ```"Hey I am in Delhi do you think i can go out without jacket, also let me know best places to visit here"``` this
 will get the weather information and feed it back to Gemini and again go back with additional question and gets back with landmarks in delhi
 
-## Tools Integration
+## 🛠️ Tools Integration
 ```
    AITools tools = new AITools(projectId,location,modelName);
    RestaurantPojo pojo = (RestaurantPojo)tools.invokeClass(promptText,"test.com.ta.bridge.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
