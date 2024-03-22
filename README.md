@@ -200,9 +200,9 @@ public class SearchAction implements AIAction {
 When annotated with @Predict, the AI system will call the execute method of SearchAction when it 
 predicts that the user prompt is related to searching for information.
 
-## Prediction Loaders
+## 🧱 Prediction Loaders
 
-### Java Prediction Loaders
+### 🔑 Java Prediction Loaders
 
 All the classes implementing ```JavaMethodAction``` interfaces and having annotation ```@Predict``` are added to prediction list
 ```JavaMethodAction``` is integral to creating all AI-related actions, with each action implemented as a function adhering to the principles of functional programming. The function's name should be descriptive, aligning closely with the action it performs
@@ -229,7 +229,7 @@ public class SimpleAction implements JavaMethodAction {
 
 So prompt like ```Hey Vishal is coming to my house for dinner``` will automatically trigger method ```whatFoodDoesThisPersonLike``` with ```name``` Vishal
 
-### Shell Prediction Loader  
+### 🖌️ Shell Prediction Loader  
 
 The prediction loader is responsible for loading command scripts, shell scripts, Python scripts, or any other
 type of script from configuration files. It utilizes the actionName field from the configuration to map to 
