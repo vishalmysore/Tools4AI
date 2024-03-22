@@ -17,8 +17,9 @@
     - [Tools Integration](#-Tools-Integration)
     - [Reference Examples](#-Reference-Examples)
 # 📌 Rapid Start
-Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
-Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
+🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
+
+🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
 
 # 💡 Tools4AI
 Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integraetion with enterprise 
@@ -51,8 +52,7 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-# 🛠️ Setup
-
+## 🛠️ Setup
 Download source and build from scratch
 
 ```mvn clean install``` <br>
