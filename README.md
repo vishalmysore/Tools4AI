@@ -11,11 +11,11 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
- - [SetUp](#-SETUP)
- - [JavaDocs](#-JavaDocs)
- - [GCLOUD](#-GCLOUD)
- - [Tools Integration](#-Tools-Integration)
- - [Reference Examples](#-Reference-Examples)
+   - [SetUp](#-SETUP)
+   - [JavaDocs](#-JavaDocs)
+   - [GCLOUD](#-GCLOUD)
+   - [Tools Integration](#-Tools-Integration)
+   - [Reference Examples](#-Reference-Examples)
 
 # 📌 Rapid Start
 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
