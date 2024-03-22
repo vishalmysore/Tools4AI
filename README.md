@@ -11,14 +11,11 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-    - [SetUp](#-setup)
-    - [JavaDocs](#-JavaDocs)
-    - [GCLOUD](#-GCLOUD)
-    - [Tools Integration](#-Tools-Integration)
-    - [Reference Examples](#-Reference-Examples)
-- [Tools4AI](#-Tools4AI)
-    - [SetUp](#-setup)
-    - [Anyscale](#anyscale)
+    - [SetUp](#setup)
+    - [JavaDocs](#JavaDocs)
+    - [GCLOUD](#GCLOUD)
+    - [Tools Integration](#Tools-Integration)
+    - [Reference Examples](#Reference-Examples)
 # 📌 Rapid Start
 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
