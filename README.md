@@ -11,12 +11,14 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-- [SetUp](#-SETUP)
-- [JavaDocs](#-JavaDocs)
-- [GCLOUD](#-GCLOUD)
-- [Tools Integration](#-Tools-Integration)
-- [Reference Examples](#-Reference-Examples)
-
+    - [SetUp](#-setup)
+    - [JavaDocs](#-JavaDocs)
+    - [GCLOUD](#-GCLOUD)
+    - [Tools Integration](#-Tools-Integration)
+    - [Reference Examples](#-Reference-Examples)
+- [Tools4AI](#-Tools4AI)
+    - [SetUp](#-setup)
+    - [Anyscale](#anyscale)
 # 📌 Rapid Start
 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
@@ -52,7 +54,7 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-## 🛠️ SETUP {#setup}
+## 🛠️ SETUP
 
 Download source and build from scratch
 
