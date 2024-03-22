@@ -14,8 +14,8 @@
     - [SetUp](#-setup)
     - [JavaDocs](#-JavaDocs)
     - [GCLOUD](#-GCLOUD)
-    - [Tools Integration](#-Tools-Integration)
-    - [Reference Examples](#-Reference-Examples)
+    - [Tools Integration](#Tools-Integration)
+    - [Reference Examples](#Reference-Examples)
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 
