@@ -14,7 +14,8 @@
 - [SetUp](#-SETUP)
 - [JavaDocs](#-JavaDocs)
 - [GCLOUD](#-GCLOUD)
-- [Installation](#-installation)
+- [Tools Integration](#-Tools-Integration)
+- [Reference Examples](#-Reference-Examples)
 
 # 📌 Rapid Start
 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
@@ -148,14 +149,14 @@ tools.action(ActionType.JAVAMETHOD, <list of arguments including prompt>)
 
 ```
 
-## Reference Examples
+## ✈️ Reference Examples
 These are references which i have created using the above AIAction , this shows how the actionable prompts work  
 ``` RecipeTasteFinder  ```  This class demonstrates function calling with mapped Hashmap response <br>
 ``` RecipeTasteAndDiet  ```  Execute the class for function chaining with 2 functions mapped Hashmap response <br>
 ``` MultiBot  ```  Run this class for function chaining with 2 functions Airline booking and restaurant booking<br>
 ``` UdoKhaoDekho  ```  3 functions Flight , Restaurant and Movie <br>
 
-## Actionable Prompts
+## 🚀 Actionable Prompts
 These are the example of actionable prompts , directly take action based on the prompts
 
 ```public class MongoAction implements AIAction {``` 
@@ -164,7 +165,7 @@ within an AI system. Specifically, this class is responsible for inserting data 
 Method within the MongoAction class will be automatically invoked when this action is triggered,
 typically in response to specific user prompts or interactions.
 
-## Predictable Prompts
+## 🛸 Predictable Prompts
 ```
 @Predict 
 public class MongoAction implements AIAction { 
