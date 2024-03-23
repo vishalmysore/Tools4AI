@@ -106,8 +106,18 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
             if(type == Type.OBJECT) {
                 log.info(property);
-                Map<String,Object> mapOfMapsForJasonRecursive = (Map<String,Object>)value;
-                propertySchemaBuilder.putProperties(property,getBuildForJson(mapOfMapsForJasonRecursive));
+                if(value instanceof Map) {
+                    Map<String, Object> mapOfMapsForJasonRecursive = (Map<String, Object>) value;
+                    propertySchemaBuilder.putProperties(property, getBuildForJson(mapOfMapsForJasonRecursive));
+                } else if (value instanceof ArrayList) {
+                    ArrayList list = (ArrayList) value;
+
+                    for (Object listVal:list
+                         ) {
+
+                        log.info(getBuildForJson((Map<String, Object>) listVal).toString());
+                    }
+                }
             }
             Schema propertySchema= propertySchemaBuilder.build();
             schemaBuilder.putProperties(property, propertySchema)
