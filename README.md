@@ -53,7 +53,7 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-### Azure OpenAI
+## Azure OpenAI
 
 ## 🛠️ Setup
 Download source and build from scratch
