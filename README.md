@@ -16,7 +16,7 @@
   - [GCLOUD](#-GCLOUD)
   - [Tools Integration](#Tools-Integration)
   - [Reference Examples](#Reference-Examples)
-  - [Azure OpenAI](#azure-openai)
+  - [Azure OpenAI](#setup)
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 
@@ -53,9 +53,8 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-## Azure OpenAI
+## SetUp
 
-## 🛠️ Setup
 Download source and build from scratch
 
 ```mvn clean install``` <br>
