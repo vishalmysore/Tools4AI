@@ -18,7 +18,8 @@
   - [Reference Examples](#-Reference-Examples)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
-  -[Hallucination](#hallucination) 
+    - [Hallucination](#hallucination)
+  
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 
