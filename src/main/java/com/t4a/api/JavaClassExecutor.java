@@ -79,7 +79,7 @@ public class JavaClassExecutor extends JavaActionExecutor {
             String fieldName = field.getName();
 
             // Get the type of the field
-            Type fieldType = mapType(field.getType());
+            Type fieldType = mapTypeForPojo(field.getType());
 
             if(fieldType == Type.OBJECT) {
                 schemaBuilder.putProperties(fieldName, mapClassToFun(field.getType().getName(),funName,discription))

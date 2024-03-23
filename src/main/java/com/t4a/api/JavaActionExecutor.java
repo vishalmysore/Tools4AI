@@ -42,6 +42,26 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
     }
 
+    public Type mapTypeForPojo(Class<?> type) {
+        if (type == String.class) {
+            return Type.STRING;
+        } else if (type == int.class || type == Integer.class) {
+            return Type.INTEGER;
+        } else if (type == double.class || type == Double.class) {
+            return Type.NUMBER;
+        } else if (type == boolean.class || type == Boolean.class) {
+            return Type.BOOLEAN;
+        } else if(type.isArray()){
+            return Type.ARRAY;
+        } else if(type.equals(Date.class)){
+            return Type.STRING;
+        } else {
+            return Type.OBJECT;
+        }
+
+    }
+
+
     /**
      * Map String to Gemini type
      * @param type
