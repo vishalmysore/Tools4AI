@@ -13,10 +13,12 @@
 - [Tools4AI](#-Tools4AI)
   - [SetUp](#setup)
   - [JavaDocs](#-JavaDocs)
-  - [GCLOUD](#-GCLOUD)
-  - [Tools Integration](#Tools-Integration)
-  - [Reference Examples](#Reference-Examples)  
-  
+  - [GCLOUD](#GCLOUD)
+  - [Tools Integration](#-Tools-Integration)
+  - [Reference Examples](#-Reference-Examples)  
+- [Prediction Loaders](#-prediction-loaders)  
+- [Response Validation](#response-validation)
+  -[Hallucination](#hallucination) 
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 
