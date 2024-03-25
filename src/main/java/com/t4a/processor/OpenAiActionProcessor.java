@@ -10,9 +10,15 @@ import java.lang.reflect.InvocationTargetException;
 
 @Log
 public class OpenAiActionProcessor implements AIProcessor{
+    @Override
+    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
+        return processSingleAction(promptText,null,humanVerification,explain);
+    }
 
-    public Object processSingleAction(String prompt,HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
-        AIAction action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
+    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
+        if(action == null) {
+            action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
+        }
         log.info(action+"");
         JavaMethodExecutor methodExecutor = new JavaMethodExecutor();
         methodExecutor.mapMethod(action);

@@ -36,6 +36,9 @@ import java.util.List;
 @Log
 public class ActionProcessor implements AIProcessor{
 
+    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
+       return processSingleAction( promptText, null,  humanVerification,  explain) ;
+    }
     /**
      * Process single action based on prediction
      * @param promptText prompt
@@ -43,11 +46,18 @@ public class ActionProcessor implements AIProcessor{
      * @param explain
      * @return
      */
-    public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
+    public Object processSingleAction(String promptText,AIAction predictedAction, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
-            AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
+
+            if(predictedAction == null) {
+                predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
+            }
+
+
             log.info((predictedAction).getActionName());
-            explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText,predictedAction.getActionName()));
+            if(explain != null) {
+                explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText, predictedAction.getActionName()));
+            }
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
              methodAction.buildFunction(predictedAction);
@@ -68,7 +78,7 @@ public class ActionProcessor implements AIProcessor{
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))
@@ -82,17 +92,21 @@ public class ActionProcessor implements AIProcessor{
             log.info("\nPrint response 1 : ");
             log.info("" + ResponseHandler.getContent(response));
             log.info(" Human Validation Proceed " +" funciton "+predictedAction.getActionName()+" params "+methodAction.getPropertyValuesJsonString(response));
+            Object actionResponse = null;
+            if(humanVerification != null) {
+                FeedbackLoop feedbackFromHuman = humanVerification.allow(promptText, predictedAction.getActionName(), methodAction.getPropertyValuesMap(response));
+                if (feedbackFromHuman.isAIResponseValid()) {
+                    actionResponse = methodAction.action(response, predictedAction);
+                }
 
-            Object obj = null;
-            FeedbackLoop feedbackFromHuman = humanVerification.allow(promptText,predictedAction.getActionName(),methodAction.getPropertyValuesMap(response));
-            if(feedbackFromHuman.isAIResponseValid())
-                obj = methodAction.action(response, predictedAction);
-            log.info("" + obj);
-
+            } else {
+                actionResponse = methodAction.action(response, predictedAction);
+            }
+            log.info("" + actionResponse);
             Content content =
                     ContentMaker.fromMultiModalData(
                             PartMaker.fromFunctionResponse(
-                                    predictedAction.getActionName(), Collections.singletonMap(predictedAction.getActionName(), obj)));
+                                    predictedAction.getActionName(), Collections.singletonMap(predictedAction.getActionName(), actionResponse)));
 
 
             response = chat.sendMessage(content);
@@ -123,7 +137,11 @@ public class ActionProcessor implements AIProcessor{
 
      */
     public Object processSingleAction(String promptText)  throws AIProcessingException {
-        return processSingleAction(promptText, new LoggingHumanDecision(), new LogginggExplainDecision());
+        return processSingleAction(promptText, null, new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
+
+    public Object processSingleAction(String promptText, AIAction action)  throws AIProcessingException {
+        return processSingleAction(promptText, action, null,null);
     }
 
     public List<Object> processMultipleAction(String promptText, int num) throws AIProcessingException  {
@@ -159,7 +177,7 @@ public class ActionProcessor implements AIProcessor{
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))

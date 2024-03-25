@@ -1,5 +1,7 @@
 package com.t4a.processor;
 
+import com.t4a.api.AIAction;
+
 /**
  * Take actions based on images
  *
@@ -7,6 +9,9 @@ package com.t4a.processor;
 public class ImageActionProcessor implements AIProcessor{
     @Override
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) {
+        return null;
+    }
+    public Object processSingleAction(String promptText, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) {
         return null;
     }
 }

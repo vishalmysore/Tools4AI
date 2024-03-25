@@ -53,7 +53,7 @@ public class AIFlightAssistant {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))

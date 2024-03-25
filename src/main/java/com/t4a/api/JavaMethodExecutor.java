@@ -194,7 +194,11 @@ public class JavaMethodExecutor extends JavaActionExecutor {
 
                     for (int i = 0; i < parameters.length; i++) {
                         Type tp = mapType(parameters[i].getType());
-                        properties.put(parameters[i].getName(), tp);
+                        if(tp == Type.OBJECT) {
+                            log.warning("Method takes objects please use pojo transformer instead ");
+                        } else {
+                            properties.put(parameters[i].getName(), tp);
+                        }
                     }
 
                     log.info("Method arguments for " + methodName + ": " + properties);
@@ -282,7 +286,8 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             try {
                 obj = method.invoke(instance, parameterValues);
             }catch (Exception e) {
-                log.warning("could not invoke method returning values"+e.getMessage());
+                e.printStackTrace();
+                log.warning("could not invoke method returning values "+e.getMessage());
             }
             if(obj == null) {
                 obj = "{failed}";

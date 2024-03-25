@@ -43,6 +43,7 @@ public class GenericHtppTest {
             httpAction.setType(HttpMethod.GET);
             InputParameter cityParameter = new InputParameter("name","String","name of the city");
             InputParameter countparameter = new InputParameter("count","String","count");
+            countparameter.setDefaultValue("1");
             List<InputParameter> parameters = new ArrayList<InputParameter>();
 
             InputParameter language = new InputParameter("language","String","name of the city");
@@ -70,7 +71,7 @@ public class GenericHtppTest {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))

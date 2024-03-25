@@ -72,7 +72,7 @@ public class PromptTransformer {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))
@@ -133,7 +133,7 @@ public class PromptTransformer {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(PredictionLoader.getInstance().getModelName())
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))

@@ -70,17 +70,17 @@ public class PredictionLoader {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
             GenerativeModel modelExplain =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
             GenerativeModel multiCommand =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();

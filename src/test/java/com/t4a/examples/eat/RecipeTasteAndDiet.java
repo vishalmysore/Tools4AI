@@ -72,7 +72,7 @@ public class RecipeTasteAndDiet {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                   new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))

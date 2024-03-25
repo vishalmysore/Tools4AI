@@ -8,7 +8,7 @@ import lombok.extern.java.Log;
 public class ActionProcessorExample {
     public static void main(String[] args) throws AIProcessingException {
         ActionProcessor processor = new ActionProcessor();
-       String result = (String)processor.processSingleAction(" My name is Vishal Mysore, My computer is not starting and I am in Toronto");
+       String result = (String)processor.processSingleAction(" Customer name is Vishal Mysore, his computer is not starting and he is in Toronto");
         log.info(result);
 
 /*        result = (String)processor.processSingleAction("Hey I am in Toronto my name is Vishal Can you save this info");

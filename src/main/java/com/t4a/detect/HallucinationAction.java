@@ -29,7 +29,7 @@ public class HallucinationAction implements AIAction {
 
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                  new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();

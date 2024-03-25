@@ -66,7 +66,7 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
 
 
             GenerativeModel model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
@@ -85,7 +85,7 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
                     .addFunctionDeclarations(questionActionFun)
                     .build();
             model =
-                    GenerativeModel.newBuilder()
+                    new GenerativeModel.Builder()
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .setTools(Arrays.asList(tool))

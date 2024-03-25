@@ -7,7 +7,7 @@ public class SerperTester {
     public static void main(String[] args) throws AIProcessingException {
 
         ActionProcessor processor = new ActionProcessor();
-        String news = (String)processor.processSingleAction("i need to cook for vishal what should i cook");
+        String news = (String)processor.processSingleAction("can you search the web for Indian recipe");
 
 
     }
