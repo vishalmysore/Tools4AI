@@ -3,7 +3,7 @@ package com.t4a.action.shell;
 import com.t4a.api.ActionType;
 import com.t4a.api.PredictedAIAction;
 import lombok.*;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,7 +38,7 @@ import java.net.URL;
 
 @Getter
 @Setter
-@Log
+@Slf4j
 @RequiredArgsConstructor
 public class ShellPredictedAction implements PredictedAIAction {
 
@@ -58,11 +58,11 @@ public class ShellPredictedAction implements PredictedAIAction {
         commandBuilder.append("cmd /c ").append(scriptPath);
         for (String arg : arguments) {
             commandBuilder.append(" ").append(arg);
-            log.info(arg);
+            log.debug(arg);
         }
         String command = commandBuilder.toString();
 
-        log.info(command);
+        log.debug(command);
         // Execute the command
         Process process = Runtime.getRuntime().exec(command);
 
@@ -70,12 +70,12 @@ public class ShellPredictedAction implements PredictedAIAction {
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String line;
         while ((line = reader.readLine()) != null) {
-            System.out.println(line);
+            log.debug(line);
         }
 
         // Wait for the script to finish execution
         int exitCode = process.waitFor();
-        System.out.println("Script exited with code " + exitCode);
+        log.debug("Script exited with code " + exitCode);
     }
 
     public static String detectPathType(String scriptPath) {

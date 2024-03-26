@@ -2,7 +2,6 @@ package com.t4a.predict;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.api.Type;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
@@ -14,7 +13,7 @@ import com.t4a.api.ActionType;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.Getter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -32,7 +31,7 @@ import java.util.*;
  * predicting actions, explaining actions, and building prompts for interaction with users.
  * </p>
  */
-@Log
+@Slf4j
 public class PredictionLoader {
 
     @Getter
@@ -107,10 +106,10 @@ public class PredictionLoader {
         return location;
     }
 
-    public void initProp() {
+    private void initProp() {
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
             if(inputStream == null) {
-                log.severe(" tools4ai properties not found ");
+                log.error(" tools4ai properties not found ");
                 return;
             }
             Properties prop = new Properties();
@@ -135,10 +134,10 @@ public class PredictionLoader {
             if(serperKey != null)
                 serperKey = serperKey.trim();
             // Use the properties
-            log.info("projectId: " + projectId);
-            log.info("location: " + location);
-            log.info("modelName: " + modelName);
-            log.info("serperKey: " + serperKey);
+            log.debug("projectId: " + projectId);
+            log.debug("location: " + location);
+            log.debug("modelName: " + modelName);
+            log.debug("serperKey: " + serperKey);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -178,16 +177,16 @@ public class PredictionLoader {
         }
         return builder.toString();
     }
-    public String getActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Type> params)  {
+    public String getActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params)  {
         String prmpt = OPEN_AIPRMT.replace("prompt_str",prompt);
         prmpt = prmpt.replace("action_name",action.getActionName());
         String realParms = getCommaSeparatedKeys(params);
         prmpt = prmpt.replace("params_values",realParms);
-        log.info(prmpt);
+        log.debug(prmpt);
         return openAiChatModel.generate(prmpt);
     }
 
-    public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Type> params,String result)  {
+    public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params,String result)  {
 
         return openAiChatModel.generate(prompt+" result "+result);
     }
@@ -202,7 +201,7 @@ public class PredictionLoader {
                 actionName = ResponseHandler.getText(response);
                 if(!actionNameList.toString().contains(","+actionName+",")) {
                     while(numRetries++<NUM_OF_RETRIES) {
-                        log.info(" got "+actionName+" Trying again "+numRetries);
+                        log.debug(" got "+actionName+" Trying again "+numRetries);
                         response = chat.sendMessage(buildPrompt(prompt, 1));
                         actionName = ResponseHandler.getText(response);
                         if(actionNameList.toString().contains(","+actionName+",")) {
@@ -212,23 +211,23 @@ public class PredictionLoader {
 
 
                 }
-                log.info(" Predicted action by AI is "+actionName);
+                log.debug(" Predicted action by AI is "+actionName);
                 action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
                 actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1));
                 actionName = actionName.replace("()","");
                 action = getAiAction(actionName);
                 if(action == null) {
-                    log.info("action not found , trying again");
+                    log.debug("action not found , trying again");
                     actionName = fetchActionNameFromList(actionName);
-                    log.info("Predicted action by AI is "+actionName);
+                    log.debug("Predicted action by AI is "+actionName);
                     action = getAiAction(actionName);
                 }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
-            log.severe(" Please make sure actions are configured");
+            log.error(" Please make sure actions are configured");
         }
 
         return action;
@@ -260,7 +259,7 @@ public class PredictionLoader {
             throw new RuntimeException(e);
         }
         String nlpans = ResponseHandler.getText(response);
-        log.info(nlpans);
+        log.debug(nlpans);
         return nlpans;
     }
     public String getPredictedActionMultiStep(String prompt)  {
@@ -271,7 +270,7 @@ public class PredictionLoader {
             throw new RuntimeException(e);
         }
         String subprompts = ResponseHandler.getText(response);
-        log.info(subprompts);
+        log.debug(subprompts);
         return subprompts;
 
     }
@@ -290,7 +289,7 @@ public class PredictionLoader {
     }
 
     private AIAction getAiAction(String actionName) {
-        log.info(" Trying to load "+actionName);
+        log.debug(" Trying to load "+actionName);
         AIAction action = predictions.get(actionName);
         if(action != null) {
 
@@ -342,7 +341,7 @@ public class PredictionLoader {
         try {
             shellLoader.load(predictions,actionNameList);
         } catch (LoaderException e) {
-            log.warning(e.getMessage());
+            log.error(e.getMessage());
         }
     }
     private void loadSwaggerHttpActions() {
@@ -350,7 +349,7 @@ public class PredictionLoader {
         try {
             httpLoader.load(predictions,actionNameList);
         } catch (LoaderException e) {
-            log.warning(e.getMessage());
+            log.error(e.getMessage());
         }
     }
     private void loadHttpCommands()  {
@@ -358,7 +357,7 @@ public class PredictionLoader {
         try {
             httpLoader.load(predictions,actionNameList);
         } catch (LoaderException e) {
-            log.warning(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -376,7 +375,7 @@ public class PredictionLoader {
         loaderClasses.forEach(actionCLAZZ->{
             try {
                 if (ExtendedPredictionLoader.class.isAssignableFrom(actionCLAZZ)) {
-                    log.info("Class " + actionCLAZZ + " implements Loader");
+                    log.debug("Class " + actionCLAZZ + " implements Loader");
                     loadFromLoader(actionCLAZZ);
                 }
 
@@ -389,13 +388,13 @@ public class PredictionLoader {
         loaderClasses.forEach(actionCLAZZ->{
             try {
                 if (AIAction.class.isAssignableFrom(actionCLAZZ)) {
-                    log.info("Class " + actionCLAZZ + " implements AIAction");
+                    log.debug("Class " + actionCLAZZ + " implements AIAction");
                     if (ExtendedPredictedAction.class.isAssignableFrom(actionCLAZZ))
-                        log.warning("You cannot predict extended option implement AIAction instead"+actionCLAZZ);
+                        log.error("You cannot predict extended option implement AIAction instead"+actionCLAZZ);
                     else
                         addAction(actionCLAZZ);
                 } else {
-                    log.warning(" You have predict annotation but the class does not implement AIAction interface "+actionCLAZZ.getName());
+                    log.error(" You have predict annotation but the class does not implement AIAction interface "+actionCLAZZ.getName());
                 }
 
             } catch (Exception e) {
@@ -409,13 +408,13 @@ public class PredictionLoader {
         try {
             Map<String, ExtendedPredictedAction> extendedPredictOptionsMap = instance.getExtendedActions();
             for (String key : extendedPredictOptionsMap.keySet()) {
-                log.info(" names "+actionNameList);
+                log.debug(" names "+actionNameList);
                 actionNameList.append(key).append(",");
                 predictions.put(key,extendedPredictOptionsMap.get(key));
             }
 
         } catch (LoaderException e) {
-            log.severe(e.getMessage()+" for "+clazz.getName());
+            log.error(e.getMessage()+" for "+clazz.getName());
 
         }
     }
@@ -426,7 +425,7 @@ public class PredictionLoader {
         AIAction instance = null;
         if(springContext != null) {
             instance = (AIAction) springContext.getBean(clazz);
-            log.info(" instance from Spring " + instance);
+            log.debug(" instance from Spring " + instance);
         } if(instance == null) {
             instance = (AIAction) clazz.getDeclaredConstructor().newInstance();
         }
@@ -450,7 +449,7 @@ public class PredictionLoader {
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
         String query = PREACTIONCMD+prompt+ACTIONCMD+actionNameList.toString()+POSTACTIONCMD+number +append;
-        log.info(query);
+        log.debug(query);
         return query;
     }
     private String getModifiedActionName(StringBuffer stringBuffer) {
@@ -473,7 +472,7 @@ public class PredictionLoader {
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
         String query = PREACTIONCMD+prompt+ACTIONCMD+getModifiedActionName(actionNameList)+POSTACTIONCMD+number +append;
-        log.info(query);
+        log.debug(query);
         return query;
     }
 

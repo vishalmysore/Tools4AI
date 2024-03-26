@@ -96,4 +96,12 @@ public interface AIAction {
      * @return
      */
     public String getDescription();
+
+    /**
+     * By default return low action risk so that it can pass without human verification
+     * @return
+     */
+    public default ActionRisk getActionRisk() {
+        return ActionRisk.LOW;
+    }
 }

@@ -1,6 +1,6 @@
 package com.t4a.processor;
 
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
@@ -8,16 +8,16 @@ import java.util.Map;
  * Simple implementation of Human IN Loop, all it does is logging but in real world this could trigger a full
  * human validation and return true or false
  */
-@Log
+@Slf4j
 public class LoggingHumanDecision implements HumanInLoop{
     @Override
     public FeedbackLoop allow(String promptText, String methodName, Map<String, Object> params) {
 
-        log.info(" Do you allow "+methodName+" for "+promptText);
+        log.debug(" Do you allow "+methodName+" for "+promptText);
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            log.info("Key: " + key + ", Value: " + value);
+            log.debug("Key: " + key + ", Value: " + value);
         }
         return new FeedbackLoop() {
 
@@ -30,7 +30,7 @@ public class LoggingHumanDecision implements HumanInLoop{
     @Override
     public FeedbackLoop allow(String promptText, String methodName, String params) {
 
-        log.info(" Do you allow "+methodName+" for "+promptText);
+        log.debug(" Do you allow "+methodName+" for "+promptText);
 
         return new FeedbackLoop() {
 

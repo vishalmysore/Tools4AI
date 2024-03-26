@@ -1,16 +1,16 @@
 package com.t4a.examples;
 
-import com.t4a.action.BlankAction;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
+import com.t4a.action.BlankAction;
 import com.t4a.api.AIAction;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +26,7 @@ import java.util.Map;
  * 2) java PromptPredictionExample projectId=cookgptserver location=us-central1 modelName=gemini-1.0-pro promptText="I am an employee my name is Vishal Mysore , I need to save my info"
  * 3) java PromptPredictionExample projectId=cookgptserver location=us-central1 modelName=gemini-1.0-pro promptText="My Name is Vishal I live in Toronto, My friends name is Vinod and He lives in Balaghat , please save this information"
  */
-@Log
+@Slf4j
 public class PromptPredictionExample {
     private String projectId = null;//"cookgptserver";
     private String location = null;//"us-central1";
@@ -52,7 +52,7 @@ public class PromptPredictionExample {
                 argumentsMap.put(key, value);
             } else {
                 // Handle invalid arguments
-                log.info("Invalid argument: " + arg);
+                log.debug("Invalid argument: " + arg);
             }
         }
 
@@ -63,10 +63,10 @@ public class PromptPredictionExample {
         this.promptText = argumentsMap.get("promptText");
 
         // Print the extracted values
-        log.info("projectId: " + projectId);
-        log.info("location: " + location);
-        log.info("modelName: " + modelName);
-        log.info("promptText: " + promptText);
+        log.debug("projectId: " + projectId);
+        log.debug("location: " + location);
+        log.debug("modelName: " + modelName);
+        log.debug("promptText: " + promptText);
     }
     public static void main(String[] args) throws Exception {
 
@@ -77,19 +77,19 @@ public class PromptPredictionExample {
     public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
-            log.info(predictedAction.getActionName());
+            log.debug(predictedAction.getActionName());
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
             FunctionDeclaration weatherFunciton = methodAction.buildFunction(predictedAction);
 
-            log.info("Function declaration h1:");
-            log.info("" + weatherFunciton);
+            log.debug("Function declaration h1:");
+            log.debug("" + weatherFunciton);
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
             FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
-            log.info("Function declaration h1:");
-            log.info("" + additionalQuestionFun);
+            log.debug("Function declaration h1:");
+            log.debug("" + additionalQuestionFun);
             //add the function to the tool
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(weatherFunciton).addFunctionDeclarations(additionalQuestionFun)
@@ -104,15 +104,15 @@ public class PromptPredictionExample {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info("" + ResponseHandler.getContent(response));
-            log.info(methodAction.getPropertyValuesJsonString(response));
+            log.debug("\nPrint response 1 : ");
+            log.debug("" + ResponseHandler.getContent(response));
+            log.debug(methodAction.getPropertyValuesJsonString(response));
 
             Object obj = methodAction.action(response, predictedAction);
-            log.info(""+obj);
+            log.debug(""+obj);
 
             Content content =
                     ContentMaker.fromMultiModalData(
@@ -122,9 +122,9 @@ public class PromptPredictionExample {
 
             response = chat.sendMessage(content);
 
-            log.info("Print response content: ");
-            log.info(""+ResponseHandler.getContent(response));
-            log.info(ResponseHandler.getText(response));
+            log.debug("Print response content: ");
+            log.debug(""+ResponseHandler.getContent(response));
+            log.debug(ResponseHandler.getText(response));
 
 
 

@@ -3,9 +3,9 @@ package com.t4a.examples.basic;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.Schema;
 import com.google.cloud.vertexai.api.Type;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
-@Log
+@Slf4j
 public class FunctionHelper {
     public static void main(String[] args) {
         FunctionDeclaration functionTaste = FunctionDeclaration.newBuilder()
@@ -33,10 +33,10 @@ public class FunctionHelper {
                                 .build()
                 )
                 .build();
-        log.info("Function declaration h1:");
-        log.info(""+functionTaste);
-        log.info("Function declaration h2:");
-        log.info(""+functionTaste);
+        log.debug("Function declaration h1:");
+        log.debug(""+functionTaste);
+        log.debug("Function declaration h2:");
+        log.debug(""+functionTaste);
 
     }
 }

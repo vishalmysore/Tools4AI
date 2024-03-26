@@ -6,10 +6,13 @@
 
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.8.7</version>
+    <version>0.8.8</version>
 
     <name>Tools For Artificial Intelligence</name>
-    <description>Connect Various Tools directly into AI LLM. This is 100% Java implementation of Large Action Model or LLM Agent</description>
+    <description>
+        Connect Various Tools directly into AI LLM. This is 100% Java implementation of Large Action Model or LLM Agent. It can work with Gemini, OpenAI , LocalAI or any locally hosted LLM
+        Integrate AI with enterprise tools or external tools, converting natural language prompts into actions. Actions could be Java Methods, Classes, Http endpoints, Shell scripts , Swagger url or more.
+    </description>
     <url>https://github.com/vishalmysore/Tools4AI</url>
     <licenses>
         <license>
@@ -173,17 +176,34 @@
             <artifactId>unirest-java-core</artifactId>
         </dependency>
 
-        <!-- pick a JSON module if you want to parse JSON include one of these: -->
-        <!-- Google GSON -->
+
         <dependency>
             <groupId>com.konghq</groupId>
             <artifactId>unirest-modules-gson</artifactId>
         </dependency>
 
-        <!-- OR maybe you like Jackson better? -->
+
         <dependency>
             <groupId>com.konghq</groupId>
             <artifactId>unirest-modules-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.12</version>
+        </dependency>
+
+        <!-- Logback (SLF4J Implementation) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.3</version>
         </dependency>
     </dependencies>
 

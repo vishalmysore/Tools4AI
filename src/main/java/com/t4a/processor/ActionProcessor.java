@@ -13,7 +13,7 @@ import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.chain.Prompt;
 import com.t4a.processor.chain.SubPrompt;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,7 +33,7 @@ import java.util.List;
  *
  * </pre>
  */
-@Log
+@Slf4j
 public class ActionProcessor implements AIProcessor{
 
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
@@ -54,7 +54,7 @@ public class ActionProcessor implements AIProcessor{
             }
 
 
-            log.info((predictedAction).getActionName());
+            log.debug((predictedAction).getActionName());
             if(explain != null) {
                 explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText, predictedAction.getActionName()));
             }
@@ -62,14 +62,14 @@ public class ActionProcessor implements AIProcessor{
 
              methodAction.buildFunction(predictedAction);
 
-            log.info("Function declaration h1:");
-            log.info("" + methodAction.getGeneratedFunction());
+            log.debug("Function declaration h1:");
+            log.debug("" + methodAction.getGeneratedFunction());
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
             FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
-            log.info("Function declaration h1:");
-            log.info("" + additionalQuestionFun);
+            log.debug("Function declaration h1:");
+            log.debug("" + additionalQuestionFun);
             //add the function to the tool
             Tool.Builder toolBuilder = Tool.newBuilder();
             toolBuilder.addFunctionDeclarations(methodAction.getGeneratedFunction());
@@ -86,12 +86,12 @@ public class ActionProcessor implements AIProcessor{
 
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info("" + ResponseHandler.getContent(response));
-            log.info(" Human Validation Proceed " +" funciton "+predictedAction.getActionName()+" params "+methodAction.getPropertyValuesJsonString(response));
+            log.debug("\nPrint response 1 : ");
+            log.debug("" + ResponseHandler.getContent(response));
+            log.debug(" Human Validation Proceed " +" funciton "+predictedAction.getActionName()+" params "+methodAction.getPropertyValuesJsonString(response));
             Object actionResponse = null;
             if(humanVerification != null) {
                 FeedbackLoop feedbackFromHuman = humanVerification.allow(promptText, predictedAction.getActionName(), methodAction.getPropertyValuesMap(response));
@@ -102,7 +102,7 @@ public class ActionProcessor implements AIProcessor{
             } else {
                 actionResponse = methodAction.action(response, predictedAction);
             }
-            log.info("" + actionResponse);
+            log.debug("" + actionResponse);
             Content content =
                     ContentMaker.fromMultiModalData(
                             PartMaker.fromFunctionResponse(
@@ -111,20 +111,20 @@ public class ActionProcessor implements AIProcessor{
 
             response = chat.sendMessage(content);
 
-            log.info("Print response content: ");
-            log.info("" + ResponseHandler.getContent(response));
+            log.debug("Print response content: ");
+            log.debug("" + ResponseHandler.getContent(response));
             String result = ResponseHandler.getText(response);
             return result;
 
 
         } catch (IOException e) {
-            log.severe(e.getMessage());
+            log.error(e.getMessage());
             throw new AIProcessingException(e);
         } catch (InvocationTargetException e) {
-            log.severe(e.getMessage());
+            log.error(e.getMessage());
             throw new AIProcessingException(e);
         } catch (IllegalAccessException e) {
-            log.severe(e.getMessage());
+            log.error(e.getMessage());
             throw new AIProcessingException(e);
         }
     }
@@ -157,13 +157,13 @@ public class ActionProcessor implements AIProcessor{
 
             for (AIAction predictedAction:predictedActionList
                  ) {
-                log.info(predictedAction.getActionName());
+                log.debug(predictedAction.getActionName());
                 JavaMethodExecutor methodAction = new JavaMethodExecutor();
 
                 methodAction.buildFunction(predictedAction);
 
-                log.info("Function declaration h1:");
-                log.info("" + methodAction.getGeneratedFunction());
+                log.debug("Function declaration h1:");
+                log.debug("" + methodAction.getGeneratedFunction());
 
 
 
@@ -185,7 +185,7 @@ public class ActionProcessor implements AIProcessor{
 
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = null;
             try {
                 response = chat.sendMessage(promptText);
@@ -197,12 +197,12 @@ public class ActionProcessor implements AIProcessor{
                  ) {
 
 
-                log.info("Print response content: ");
-                log.info("" + ResponseHandler.getContent(response));
+                log.debug("Print response content: ");
+                log.debug("" + ResponseHandler.getContent(response));
                 String result = ResponseHandler.getText(response);
                 restulList.add(result);
 
-                log.info(methodExecutor.getPropertyValuesJsonString(response));
+                log.debug(methodExecutor.getPropertyValuesJsonString(response));
 
                 Object obj = null;
                 try {
@@ -212,7 +212,7 @@ public class ActionProcessor implements AIProcessor{
                 } catch (IllegalAccessException e) {
                     throw new AIProcessingException(e);
                 }
-                log.info("" + obj);
+                log.debug("" + obj);
 
                 Content content =
                         ContentMaker.fromMultiModalData(
@@ -238,16 +238,16 @@ public class ActionProcessor implements AIProcessor{
 
     public String processMultipleActionDynamically(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException{
         String jsonPrompts = PredictionLoader.getInstance().getPredictedActionMultiStep(promptText);
-        log.info(jsonPrompts);
+        log.debug(jsonPrompts);
         int startIndex = jsonPrompts.indexOf("{");
         int endIndex = jsonPrompts.lastIndexOf("}");
         if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
             // Extract the JSON substring
             jsonPrompts = jsonPrompts.substring(startIndex, endIndex + 1);
-            System.out.println("Extracted JSON substring:");
-            System.out.println(jsonPrompts);
+            log.debug("Extracted JSON substring:");
+            log.debug(jsonPrompts);
         } else {
-            System.out.println("Error: Unable to find valid JSON substring.");
+            log.debug("Error: Unable to find valid JSON substring.");
         }
         Gson gson = new Gson();
         Prompt prompt = gson.fromJson(jsonPrompts, Prompt.class);
@@ -258,7 +258,7 @@ public class ActionProcessor implements AIProcessor{
         }
 
         String json =  gson.toJson(prompt);
-        log.info(json);
+        log.debug(json);
         return PredictionLoader.getInstance().getMultiStepResult(json);
     }
 
@@ -300,7 +300,7 @@ public class ActionProcessor implements AIProcessor{
       
             sub.setResult((String)processSingleAction(sub.getSubprompt()+" here is additional information "+depdendentResult));
         
-        log.info("processing "+sub);
+        log.debug("processing "+sub);
         // Perform processing logic here
         return sub;
     }

@@ -13,7 +13,7 @@ import com.t4a.api.GuardRailException;
 import com.t4a.api.JavaMethodExecutor;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,7 @@ import java.util.List;
  *
  * By systematically analyzing responses in this manner, the class provides a robust mechanism for assessing the reliability and coherence of LLM-generated content
  */
-@Log
+@Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
 public class ZeroShotHallucinationDetector implements DetectorAction {
@@ -75,7 +75,7 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
             response = chatSession.sendMessage(breakIntoQuestionPrompt + dd.getResponse());
 
             String questions = ResponseHandler.getText(response);
-            log.info(questions);
+            log.debug(questions);
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
             HallucinationAction questionAction = new HallucinationAction(projectId, location, modelName, sampleResponse);
 
@@ -91,9 +91,9 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
                             .setTools(Arrays.asList(tool))
                             .build();
             chatSession = new ChatSession(model);
-            log.info(questions);
+            log.debug(questions);
             response = chatSession.sendMessage("ask these questions -  " + questions + " - end of questions");
-            log.info("" + ResponseHandler.getContent(response));
+            log.debug("" + ResponseHandler.getContent(response));
             List<HallucinationQA> hallucinationList = (List<HallucinationQA>) methodAction.action(response, questionAction);
 
             res.setHallucinationList(hallucinationList);

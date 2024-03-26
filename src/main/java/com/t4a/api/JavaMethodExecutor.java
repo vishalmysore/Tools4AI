@@ -10,22 +10,25 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.predict.LoaderException;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This is one of the main classes which is part of processing logic. IT does alll the mapping of actions to
  * predicted options and creates the instance of action class. It is also responsible for invoking the correct action
  * and pass back the response.
  */
-@Log
+@Slf4j
 public class JavaMethodExecutor extends JavaActionExecutor {
-    private final Map<String, Type> properties = new HashMap<>();
+    private final Map<String, Object> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
     private Gson gson = new Gson();
 
@@ -50,7 +53,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
 
 
 
-    public Map<String, Type> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 
@@ -115,7 +118,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             if(!methodAction.isComplexMethod()) {
                 return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
             } else {
-                log.warning("method has pojos or complex data type , please use PromptTransformer");
+                log.warn("method has pojos or complex data type , Will try to convert them, if it fails  please use PromptTransformer");
                 return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
             }
         } else
@@ -195,20 +198,20 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                     for (int i = 0; i < parameters.length; i++) {
                         Type tp = mapType(parameters[i].getType());
                         if(tp == Type.OBJECT) {
-                            log.warning("Method takes objects please use pojo transformer instead ");
+                            properties.put(parameters[i].getName(),parameters[i].getType());
                         } else {
                             properties.put(parameters[i].getName(), tp);
                         }
                     }
 
-                    log.info("Method arguments for " + methodName + ": " + properties);
+                    log.debug("Method arguments for " + methodName + ": " + properties);
                     return;
                 }
             }
 
-            log.severe("Method not found: " + methodName);
+            log.error("Method not found: " + methodName);
         } catch (ClassNotFoundException e) {
-            log.severe("Class not found: " + className);
+            log.error("Class not found: " + className);
         }
     }
 
@@ -249,7 +252,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                 for (int i = 0; i < paramNamesArray.length; i++) {
                     String s = paramNamesArray[i];
                     paramNamesArray[i] = (String)propertyValuesMap.get(s);
-                    log.info(paramNamesArray[i]);
+                    log.debug(paramNamesArray[i]);
 
                 }
                 action.executeShell(paramNamesArray);
@@ -268,16 +271,21 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                 throw new RuntimeException(e);
             }
         } else {
-            String[] parameterNames = Arrays.stream(method.getParameters())
-                    .map(p -> p.getName())
-                    .toArray(String[]::new);
+            Parameter[] parametersFromMethod = method.getParameters();
 
             // Create an array to hold the parameter values
-            Object[] parameterValues = new Object[parameterNames.length];
+            Object[] parameterValues = new Object[parametersFromMethod.length];
+
 
             // Populate the parameter values from the map based on parameter names
-            for (int i = 0; i < parameterNames.length; i++) {
-                parameterValues[i] = propertyValuesMap.get(parameterNames[i]);
+            for (int i = 0; i < parametersFromMethod.length; i++) {
+                if(mapType(parametersFromMethod[i].getType()) == Type.OBJECT) {
+                    log.debug(parametersFromMethod[i].getType()+"");
+                    parameterValues[i]=  getGson().fromJson(getGson().toJson(getPropertyValuesMapMap(response).get(parametersFromMethod[i].getName())),parametersFromMethod[i].getType());
+                    log.debug("created "+parameterValues[i].toString());
+                } else {
+                    parameterValues[i] = propertyValuesMap.get(parametersFromMethod[i].getName());
+                }
             }
 
 
@@ -287,7 +295,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                 obj = method.invoke(instance, parameterValues);
             }catch (Exception e) {
                 e.printStackTrace();
-                log.warning("could not invoke method returning values "+e.getMessage());
+                log.warn("could not invoke method returning values "+e.getMessage());
             }
             if(obj == null) {
                 obj = "{failed}";
@@ -316,7 +324,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                 for (int i = 0; i < paramNamesArray.length; i++) {
                     String s = paramNamesArray[i];
                     paramNamesArray[i] = (String)propertyValuesMap.get(s);
-                    log.info(paramNamesArray[i]);
+                    log.debug(paramNamesArray[i]);
 
                 }
                 action.executeShell(paramNamesArray);
@@ -353,7 +361,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             try {
                 obj = method.invoke(instance, parameterValues);
             }catch (Exception e) {
-                log.warning("could not invoke method returning values"+e.getMessage());
+                log.warn("could not invoke method returning values"+e.getMessage());
             }
             if(obj == null) {
                 obj = "{failed}";

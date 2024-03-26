@@ -3,10 +3,8 @@ package com.t4a.api;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Schema;
-import com.google.cloud.vertexai.api.Type;
 import com.google.gson.Gson;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ import java.util.Map;
  * Create a POJO Object from the response object
  */
 public class JavaClassExecutor extends JavaActionExecutor {
-    private Map<String, Type> properties = new HashMap<>();
+    private Map<String, Object> properties = new HashMap<>();
     private FunctionDeclaration generatedFunction;
     private Gson gson = new Gson();
 
@@ -28,11 +26,7 @@ public class JavaClassExecutor extends JavaActionExecutor {
     }
     private Class<?> pojoClass ;
 
-    /**
-     * map the class to a map with name and value
-     * @param className
-     * @throws ClassNotFoundException
-     */
+ /*
     public void mapClass(String className) throws ClassNotFoundException {
         this.pojoClass = Class.forName(className);;
 
@@ -55,10 +49,11 @@ public class JavaClassExecutor extends JavaActionExecutor {
         }
 
         // Print the field names and types
-        for (Map.Entry<String, Type> entry : properties.entrySet()) {
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
             System.out.println("Field Name: " + entry.getKey() + ", Field Type: " + entry.getValue());
         }
     }
+
 
     public  Schema mapClassToFun(String className, String funName, String discription) throws ClassNotFoundException {
 
@@ -89,8 +84,8 @@ public class JavaClassExecutor extends JavaActionExecutor {
                 Schema.Builder propertySchemaBuilder = Schema.newBuilder()
                         .setType(fieldType)
                         .setDescription(fieldName);
-            schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
-                    .addRequired(fieldName);
+                schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
+                        .addRequired(fieldName);
                 properties.put(fieldName,fieldType);
             }
         }
@@ -100,12 +95,14 @@ public class JavaClassExecutor extends JavaActionExecutor {
 
     }
 
+
+
     public FunctionDeclaration buildFunction(String className, String funName, String discription) throws ClassNotFoundException {
         mapClass(className);
         generatedFunction = getBuildFunction(funName, discription);
         return generatedFunction;
     }
-
+*/
     public FunctionDeclaration buildFunctionFromClass(String className, String funName, String discription) throws ClassNotFoundException {
         Schema schema  =mapClassToFun(className,funName, discription);
         pojoClass = Class.forName(className);
@@ -121,7 +118,7 @@ public class JavaClassExecutor extends JavaActionExecutor {
         return generatedFunction;
     }
     @Override
-    public Map<String, Type> getProperties() {
+    public Map<String, Object> getProperties() {
         return properties;
     }
 

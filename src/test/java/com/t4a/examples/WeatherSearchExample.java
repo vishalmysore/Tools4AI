@@ -7,9 +7,9 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
 import com.t4a.action.BlankAction;
-import com.t4a.examples.actions.CustomHttpGetAction;
 import com.t4a.api.JavaMethodExecutor;
-import lombok.extern.java.Log;
+import com.t4a.examples.actions.CustomHttpGetAction;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Uses open weather to get prediction
  */
-@Log
+@Slf4j
 public class WeatherSearchExample {
     private String projectId = null;//"cookgptserver";
     private String location = null;//"us-central1";
@@ -47,7 +47,7 @@ public class WeatherSearchExample {
                 argumentsMap.put(key, value);
             } else {
                 // Handle invalid arguments
-                log.info("Invalid argument: " + arg);
+                log.debug("Invalid argument: " + arg);
             }
         }
 
@@ -58,10 +58,10 @@ public class WeatherSearchExample {
         this.promptText = argumentsMap.get("promptText");
 
         // Print the extracted values
-        log.info("projectId: " + projectId);
-        log.info("location: " + location);
-        log.info("modelName: " + modelName);
-        log.info("promptText: " + promptText);
+        log.debug("projectId: " + projectId);
+        log.debug("location: " + location);
+        log.debug("modelName: " + modelName);
+        log.debug("promptText: " + promptText);
     }
     public static void main(String[] args) throws Exception {
 
@@ -76,14 +76,14 @@ public class WeatherSearchExample {
 
             FunctionDeclaration weatherFunciton = methodAction.buildFunction(httpAction);
 
-            log.info("Function declaration h1:");
-            log.info("" + weatherFunciton);
+            log.debug("Function declaration h1:");
+            log.debug("" + weatherFunciton);
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
             FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
-            log.info("Function declaration h1:");
-            log.info("" + additionalQuestionFun);
+            log.debug("Function declaration h1:");
+            log.debug("" + additionalQuestionFun);
             //add the function to the tool
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(weatherFunciton).addFunctionDeclarations(additionalQuestionFun)
@@ -98,15 +98,15 @@ public class WeatherSearchExample {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info("" + ResponseHandler.getContent(response));
-            log.info(methodAction.getPropertyValuesJsonString(response));
+            log.debug("\nPrint response 1 : ");
+            log.debug("" + ResponseHandler.getContent(response));
+            log.debug(methodAction.getPropertyValuesJsonString(response));
 
             Object obj = methodAction.action(response, httpAction);
-            log.info(""+obj);
+            log.debug(""+obj);
 
             Content content =
                     ContentMaker.fromMultiModalData(
@@ -116,9 +116,9 @@ public class WeatherSearchExample {
 
             response = chat.sendMessage(content);
 
-            log.info("Print response content: ");
-            log.info(""+ResponseHandler.getContent(response));
-            log.info(ResponseHandler.getText(response));
+            log.debug("Print response content: ");
+            log.debug(""+ResponseHandler.getContent(response));
+            log.debug(ResponseHandler.getText(response));
 
 
         }

@@ -6,12 +6,12 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.*;
 
-@Log
+@Slf4j
 public class AIFlightAssistant {
     public static void main(String[] args) throws IOException {
 
@@ -22,7 +22,7 @@ public class AIFlightAssistant {
         String promptText = "My name is vishal i need to fly from toronto to bangalore on 25th of june, what a great day it is";
 
         String status = bookFlight(projectId, location, modelName, promptText);
-        log.info(promptText+ " : "+status);
+        log.debug(promptText+ " : "+status);
     }
 
     public static String bookFlight(String projectId, String location, String modelName,String promptText) {
@@ -42,8 +42,8 @@ public class AIFlightAssistant {
                     )
                     .build();
 
-            log.info("Function declaration h1:");
-            log.info(""+getDetailsOfFlight);
+            log.debug("Function declaration h1:");
+            log.debug(""+getDetailsOfFlight);
 
 
             //add the function to the tool
@@ -60,22 +60,22 @@ public class AIFlightAssistant {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info(""+ResponseHandler.getContent(response));
+            log.debug("\nPrint response 1 : ");
+            log.debug(""+ResponseHandler.getContent(response));
             Map<String,String> values =  getPropertyValues(response,(new ArrayList<>(properties.keySet())));
             for (Map.Entry<String, String> entry : values.entrySet()) {
                 String propertyName = entry.getKey();
                 String propertyValue = entry.getValue();
-                log.info(propertyName + ": " + propertyValue);
+                log.debug(propertyName + ": " + propertyValue);
             }
 
             Gson gson = new Gson();
             String jsonString = gson.toJson(values);
 
-            log.info(jsonString);
+            log.debug(jsonString);
 
             FlightDetails flightDetails = gson.fromJson(jsonString, FlightDetails.class);
             return BookingHelper.bookFlight(flightDetails);

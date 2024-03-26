@@ -12,13 +12,16 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-@Log
+@Slf4j
 public class GenericHtppTest {
 
 
@@ -56,14 +59,14 @@ public class GenericHtppTest {
             httpAction.setDescription("get temperature in real time");
             FunctionDeclaration weatherFunciton = methodAction.buildFunction(httpAction);
 
-            log.info("Function declaration h1:");
-            log.info("" + weatherFunciton);
+            log.debug("Function declaration h1:");
+            log.debug("" + weatherFunciton);
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
             BlankAction blankAction = new BlankAction();
             FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
-            log.info("Function declaration h1:");
-            log.info("" + additionalQuestionFun);
+            log.debug("Function declaration h1:");
+            log.debug("" + additionalQuestionFun);
             //add the function to the tool
             Tool tool = Tool.newBuilder()
                     .addFunctionDeclarations(weatherFunciton).addFunctionDeclarations(additionalQuestionFun)
@@ -78,15 +81,15 @@ public class GenericHtppTest {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info("" + ResponseHandler.getContent(response));
-            log.info(methodAction.getPropertyValuesJsonString(response));
+            log.debug("\nPrint response 1 : ");
+            log.debug("" + ResponseHandler.getContent(response));
+            log.debug(methodAction.getPropertyValuesJsonString(response));
 
             Object obj = methodAction.action(response, httpAction);
-            log.info(""+obj);
+            log.debug(""+obj);
 
             Content content =
                     ContentMaker.fromMultiModalData(
@@ -96,9 +99,9 @@ public class GenericHtppTest {
 
             response = chat.sendMessage(content);
 
-            log.info("Print response content: ");
-            log.info(""+ResponseHandler.getContent(response));
-            log.info(ResponseHandler.getText(response));
+            log.debug("Print response content: ");
+            log.debug(""+ResponseHandler.getContent(response));
+            log.debug(ResponseHandler.getText(response));
 
 
         } catch (InvocationTargetException e) {

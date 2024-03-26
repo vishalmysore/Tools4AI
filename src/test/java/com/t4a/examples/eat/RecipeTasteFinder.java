@@ -1,21 +1,13 @@
 package com.t4a.examples.eat;
+
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.Content;
-import com.google.cloud.vertexai.api.FunctionDeclaration;
-import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.api.Schema;
-import com.google.cloud.vertexai.api.Tool;
-import com.google.cloud.vertexai.api.Type;
-import com.google.cloud.vertexai.generativeai.ChatSession;
-import com.google.cloud.vertexai.generativeai.ContentMaker;
-import com.google.cloud.vertexai.generativeai.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.PartMaker;
-import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import lombok.extern.java.Log;
+import com.google.cloud.vertexai.api.*;
+import com.google.cloud.vertexai.generativeai.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Arrays;
-@Log
+@Slf4j
 public class RecipeTasteFinder {
     public static void main(String[] args) throws IOException {
 
@@ -50,8 +42,8 @@ public class RecipeTasteFinder {
                     )
                     .build();
 
-            log.info("Function declaration h1:");
-            log.info(""+functionDeclaration);
+            log.debug("Function declaration h1:");
+            log.debug(""+functionDeclaration);
 
 
             Tool tool = Tool.newBuilder()
@@ -67,29 +59,29 @@ public class RecipeTasteFinder {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
             // The model will most likely return a function call to the declared
             // function `getRecipeTaste` with "Paneer Butter Masala" as the value for the
             // argument `recipe`.
-            log.info("\nPrint response 1 : ");
-            log.info(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get("recipe").getStringValue());
-            log.info(ResponseHandler.getText(response));
+            log.debug("\nPrint response 1 : ");
+            log.debug(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap().get("recipe").getStringValue());
+            log.debug(ResponseHandler.getText(response));
 
             Content content =
                     ContentMaker.fromMultiModalData(
                             PartMaker.fromFunctionResponse(
                                     "getRecipeTaste",
                                     IndianFoodRecipes.getRecipe()));
-            log.info("Provide the function response 1: ");
-            log.info(""+content);
+            log.debug("Provide the function response 1: ");
+            log.debug(""+content);
             response = chat.sendMessage(content);
 
             // See what the model replies now
-            log.info("Print response: ");
+            log.debug("Print response: ");
             String finalAnswer = ResponseHandler.getText(response);
-            log.info(finalAnswer);
+            log.debug(finalAnswer);
 
             return finalAnswer;
         }

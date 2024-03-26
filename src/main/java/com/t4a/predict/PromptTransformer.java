@@ -12,7 +12,7 @@ import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.t4a.api.JavaClassExecutor;
 import com.t4a.processor.AIProcessingException;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ import java.util.Map;
  * {"lastName":"Gupta","firstName":"Vinod","reasonForCalling":"computer is not working","dateJoined":"12 May 2008","location":"Toronto"}
  *
  */
-@Log
+@Slf4j
 
 public class PromptTransformer {
     Gson gson;
@@ -61,8 +61,8 @@ public class PromptTransformer {
             JavaClassExecutor generator = new JavaClassExecutor(gson);
             FunctionDeclaration functionDeclaration = generator.buildFunctionFromClass(className,funName,description);
 
-            log.info("Function declaration h1:");
-            log.info(functionDeclaration.toString());
+            log.debug("Function declaration h1:");
+            log.debug(functionDeclaration.toString());
 
 
             //add the function to the tool
@@ -79,15 +79,15 @@ public class PromptTransformer {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info(ResponseHandler.getContent(response).toString());
+            log.debug("\nPrint response 1 : ");
+            log.debug(ResponseHandler.getContent(response).toString());
             Map<String,Object> map=  generator.getPropertyValuesMapMap(response);
 
             String jsonString = getGson().toJson(map);
-            log.info(jsonString);
+            log.debug(jsonString);
             return generator.action(response,jsonString);
 
 
@@ -122,8 +122,8 @@ public class PromptTransformer {
             JavaClassExecutor generator = new JavaClassExecutor(gson);
             FunctionDeclaration functionDeclaration = generator.buildFunction(map,funName,description);
 
-            log.info("Function declaration h1:");
-            log.info(functionDeclaration.toString());
+            log.debug("Function declaration h1:");
+            log.debug(functionDeclaration.toString());
 
 
             //add the function to the tool
@@ -140,15 +140,15 @@ public class PromptTransformer {
                             .build();
             ChatSession chat = model.startChat();
 
-            log.info(String.format("Ask the question 1: %s", promptText));
+            log.debug(String.format("Ask the question 1: %s", promptText));
             GenerateContentResponse response = chat.sendMessage(promptText);
 
-            log.info("\nPrint response 1 : ");
-            log.info(ResponseHandler.getContent(response).toString());
+            log.debug("\nPrint response 1 : ");
+            log.debug(ResponseHandler.getContent(response).toString());
             Map<String,Object> mapReturn=  generator.getPropertyValuesMapMap(response);
 
             jsonString = getGson().toJson(mapReturn);
-            log.info(jsonString);
+            log.debug(jsonString);
             return jsonString;
 
         } catch (JsonProcessingException e) {

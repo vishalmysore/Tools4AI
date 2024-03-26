@@ -9,14 +9,15 @@ import com.google.gson.Gson;
 import com.google.protobuf.ListValue;
 import com.google.protobuf.Struct;
 import com.google.protobuf.Value;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
  * This is the base class for all the java based executors with common functionality
  */
-@Log
+@Slf4j
 public abstract class JavaActionExecutor implements AIActionExecutor {
 
 
@@ -85,6 +86,47 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
         }
 
     }
+    public  Schema mapClassToFun(String className, String funName, String discription) throws ClassNotFoundException {
+
+        Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
+
+
+        Class childpojoClass = Class.forName(className);;
+
+        // Create a Map to store field names and types
+
+
+        // Get all the declared fields of the POJO class
+        Field[] fields = childpojoClass.getDeclaredFields();
+
+        // Iterate over the fields
+        for (Field field : fields) {
+            // Get the name of the field
+            String fieldName = field.getName();
+
+            // Get the type of the field
+            Type fieldType = mapTypeForPojo(field.getType());
+
+            if(fieldType == Type.OBJECT) {
+                schemaBuilder.putProperties(fieldName, mapClassToFun(field.getType().getName(),funName,discription))
+                        .addRequired(fieldName);
+            } else{
+
+                Schema.Builder propertySchemaBuilder = Schema.newBuilder()
+                        .setType(fieldType)
+                        .setDescription(fieldName);
+                schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
+                        .addRequired(fieldName);
+              //  if(getProperties() != null) {
+                //    getProperties().put(fieldName, fieldType);
+               // }
+            }
+        }
+
+        Schema sc =  schemaBuilder.build();
+        return sc;
+
+    }
 
 
     /**
@@ -105,7 +147,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                     .setDescription(property);
 
             if(type == Type.OBJECT) {
-                log.info(property);
+                log.debug(property);
                 if(value instanceof Map) {
                     Map<String, Object> mapOfMapsForJasonRecursive = (Map<String, Object>) value;
                     propertySchemaBuilder.putProperties(property, getBuildForJson(mapOfMapsForJasonRecursive));
@@ -115,7 +157,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                     for (Object listVal:list
                          ) {
 
-                        log.info(getBuildForJson((Map<String, Object>) listVal).toString());
+                        log.debug(getBuildForJson((Map<String, Object>) listVal).toString());
                     }
                 }
             }
@@ -126,23 +168,33 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
         return schemaBuilder.build();
     }
-    protected Schema getBuild(Map<String, Type> properties) {
+    protected Schema getBuild(Map<String, Object> properties) {
         Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
 
-        for (Map.Entry<String, Type> entry : properties.entrySet()) {
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
             String property = entry.getKey();
-            Type type = (Type)entry.getValue();
+            Object value = entry.getValue();
+            if (value instanceof Type) {
+                Type type = (Type) entry.getValue();
 
-            Schema propertySchema = Schema.newBuilder()
-                    .setType(type)
-                    .setDescription(property)
-                    .build();
-            if(type == Type.OBJECT) {
-                log.info(property);
+                Schema propertySchema = Schema.newBuilder()
+                        .setType(type)
+                        .setDescription(property)
+                        .build();
+                if (type == Type.OBJECT) {
+                    log.debug(property);
+                }
+
+                schemaBuilder.putProperties(property, propertySchema)
+                        .addRequired(property);
+            }else  {
+                try {
+                    Class valueClass = (Class)value;
+                    schemaBuilder.putProperties(property,mapClassToFun(valueClass.getName(),valueClass.getSimpleName()," adding sub component"));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            schemaBuilder.putProperties(property, propertySchema)
-                    .addRequired(property);
         }
 
         return schemaBuilder.build();
@@ -240,6 +292,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
 
     }
 
+
     public Map<String, Object> getPropertyValuesMap(String responseFromAI) {
         List<String> dataList = Arrays.asList(responseFromAI.split(","));
         // Create a new Map to store key-value pairs
@@ -254,7 +307,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                 Object value = parts[1]; // Object type allows for flexibility
                 map.put(key, value);
             } else {
-                log.warning("Invalid entry: " + data);
+                log.warn("Invalid entry: " + data);
             }
         }
         return map;
@@ -267,7 +320,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
      */
     public Map<String, Object> getPropertyValuesMap(GenerateContentResponse response) {
         List<String> propertyNames = new ArrayList<>(getProperties().keySet());
-        log.info(" Trying to parse "+ResponseHandler.getContent(response));
+        log.debug(" Trying to parse "+ResponseHandler.getContent(response));
         Map<String, Object> propertyValues = new HashMap<>();
         for (String propertyName : propertyNames) {
             if(ResponseHandler.getContent(response).getPartsList().size() > 0) {
@@ -341,7 +394,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
         String jsonString = getGson().toJson(ResponseHandler.getContent(response).getParts(0).getFunctionCall().getArgs().getFieldsMap());
         return jsonString;
     }
-    protected abstract Map<String,Type> getProperties();
+    protected abstract Map<String,Object> getProperties();
     protected abstract Gson getGson();
 
 

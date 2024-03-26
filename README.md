@@ -27,7 +27,7 @@
 🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
 
 # 💡 Tools4AI
-Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integraetion with enterprise 
+Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integration with enterprise 
 Java applications.
 This project illustrates the integration of AI with enterprise tools or external tools, converting natural language prompts
 into <span style="font-size: larger;">**actionable behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>

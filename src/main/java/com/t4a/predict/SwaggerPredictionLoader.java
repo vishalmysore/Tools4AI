@@ -18,7 +18,7 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.parser.OpenAPIV3Parser;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Log
+@Slf4j
 public class SwaggerPredictionLoader {
 
     private  String yamlFile = "swagger_actions.json";
@@ -48,7 +48,7 @@ public class SwaggerPredictionLoader {
             resourceUrl = SwaggerPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
         if (resourceUrl == null) {
-            log.warning("File not found: " + yamlFile);
+            log.warn("File not found: " + yamlFile);
             return;
         }
         Gson gson = new Gson();
@@ -142,7 +142,7 @@ public class SwaggerPredictionLoader {
                                     if (mediaType.getSchema().get$ref() != null) {
                                         // Resolve $ref if present
                                         String jsonString = JsonUtils.convertClassObjectToJsonString(resolveSchema(openAPI, mediaType.getSchema().get$ref()));
-                                      //  log.info(jsonString + " for "+ actionName);
+                                      //  log.debug(jsonString + " for "+ actionName);
                                         ObjectMapper objectMapper = new ObjectMapper();
                                         Map<String, Object> map = objectMapper.readValue(jsonString, Map.class);
                                         httpAction.setRequestBodyJson(jsonString);
@@ -151,7 +151,7 @@ public class SwaggerPredictionLoader {
 
                                     } else {
                                         // Return the schema directly
-                                        log.info("Schema not found for "+actionName+" "+jsonURL);
+                                        log.debug("Schema not found for "+actionName+" "+jsonURL);
                                     }
                                 }
                             }
@@ -159,18 +159,18 @@ public class SwaggerPredictionLoader {
 
                     }
                     } else {
-                        log.info("nothing found for "+actionName+" it could be direct call without parameters");
+                        log.debug("nothing found for "+actionName+" it could be direct call without parameters");
                     }
                     inputParameters.add(inputParameter);
                     httpAction.setInputObjects(inputParameters);
 
                     if(predictions.containsKey(actionName)) {
-                        log.info(actionName+" is present");
+                        log.debug(actionName+" is present");
                         actionName = getModifiedActionName(httpAction);
-                        log.info(actionName+" is new the name ");
+                        log.debug(actionName+" is new the name ");
                     }
                     if(predictions.containsKey(actionName)) {
-                        log.warning("cannot put action as its already there "+actionName);
+                        log.warn("cannot put action as its already there "+actionName);
                     }else {
                         predictions.put(actionName, httpAction);
                         actionNameList.append("," + actionName);

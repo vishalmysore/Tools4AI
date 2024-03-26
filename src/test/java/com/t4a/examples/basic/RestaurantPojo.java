@@ -11,6 +11,10 @@ public class RestaurantPojo {
     public RestaurantPojo() {
     }
 
+    public RestaurantDetails getRestaurantDetails() {
+        return restaurantDetails;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

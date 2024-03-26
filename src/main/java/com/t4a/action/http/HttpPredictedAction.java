@@ -7,7 +7,7 @@ import com.t4a.api.PredictedAIAction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -63,7 +63,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@Log
+@Slf4j
 @NoArgsConstructor
 public final class HttpPredictedAction implements PredictedAIAction {
     private Map<String, Object> jsonMap;
@@ -120,14 +120,14 @@ public final class HttpPredictedAction implements PredictedAIAction {
 
         }
         try {
-            log.info("sending request to "+url);
+            log.debug("sending request to "+url);
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 // Convert response entity to JSON string
                 String jsonResponse = EntityUtils.toString(entity);
-                log.info("Response: from Url "+url+" is " + jsonResponse);
+                log.debug("Response: from Url "+url+" is " + jsonResponse);
                 // Further processing of jsonResponse...
                 return jsonResponse;
             }
@@ -153,7 +153,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
         HttpResponse response = client.execute(request);
         // Handle response...
        String respStr =  EntityUtils.toString(response.getEntity());
-       log.info("Response from url "+url+" is "+respStr);
+       log.debug("Response from url "+url+" is "+respStr);
        return respStr;
     }
 

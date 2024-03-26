@@ -1,8 +1,9 @@
 package com.t4a.examples;
 
 import com.t4a.predict.PredictionLoader;
-import lombok.extern.java.Log;
-@Log
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class ShowActionsExample {
 
     public ShowActionsExample() throws Exception {
@@ -16,6 +17,6 @@ public class ShowActionsExample {
     }
 
     private void showActionList() {
-        log.info(PredictionLoader.getInstance().getActionNameList().toString());
+        log.debug(PredictionLoader.getInstance().getActionNameList().toString());
     }
 }

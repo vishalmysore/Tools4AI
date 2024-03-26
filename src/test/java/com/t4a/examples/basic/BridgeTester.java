@@ -5,18 +5,18 @@ import com.google.gson.GsonBuilder;
 import com.t4a.examples.actions.Customer;
 import com.t4a.predict.PromptTransformer;
 import com.t4a.processor.AIProcessingException;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
-@Log
+@Slf4j
 public class BridgeTester {
     public BridgeTester(){
 
     }
     public static void main(String[] args) throws AIProcessingException {
 
-        log.info("Hello");
+        log.debug("Hello");
         String projectId = "cookgptserver";
         String location = "us-central1";
         String modelName = "gemini-1.0-pro";
@@ -25,11 +25,11 @@ public class BridgeTester {
 
       //  String promptText = "can you book a dinner reseration for Vishal and 4 other people at Maharaj on 15th august and make sure its cancellable";
      //  String status = bridge.testJavaClass(projectId, location, modelName, promptText);
-     //   log.info(promptText+ " : "+status);
+     //   log.debug(promptText+ " : "+status);
 
         String promptText  = "can you book a dinner reseration in name of Vishal and his family of 4 at Maharaj restaurant on Indian Independence day and make sure its cancellable";
         String status = bridge.testJavaClass(projectId, location, modelName, promptText);
-        log.info(promptText+ " : "+status);
+        log.debug(promptText+ " : "+status);
     }
     public String testJavaClass(String projectId, String location, String modelName,String promptText) throws AIProcessingException {
 

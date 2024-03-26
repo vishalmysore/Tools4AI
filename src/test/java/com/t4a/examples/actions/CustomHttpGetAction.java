@@ -2,7 +2,7 @@ package com.t4a.examples.actions;
 
 import com.t4a.api.JavaMethodAction;
 import com.t4a.predict.Predict;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,7 +17,7 @@ import java.net.URL;
  * if you are planning to ue it for commercial purpose please visit https://open-meteo.com/en/pricing/
  */
 
-@Log
+@Slf4j
 @Predict(actionName = "getTemperature", description ="get weather for city" )
 public class CustomHttpGetAction implements JavaMethodAction {
     public double getTemperature(String cityName) {
@@ -40,14 +40,14 @@ public class CustomHttpGetAction implements JavaMethodAction {
                 double longitude = result.getDouble("longitude");
 
                 // Print latitude and longitude
-                log.info("Latitude: " + latitude);
-                log.info("Longitude: " + longitude);
+                log.debug("Latitude: " + latitude);
+                log.debug("Longitude: " + longitude);
 
 
             weatherURlStr = weatherURlStr+latitude+"&longitude="+longitude+"&current=temperature_2m";
             response = getResponseFromURl(weatherURlStr);
 
-            log.info(response.toString());
+            log.debug(response.toString());
             jsonObject = new JSONObject(response.toString());
             // Get the "current" object
             JSONObject currentObject = jsonObject.getJSONObject("current");
@@ -56,9 +56,9 @@ public class CustomHttpGetAction implements JavaMethodAction {
             temperature = currentObject.getDouble("temperature_2m");
 
             // Print the temperature value
-            log.info("Temperature: " + temperature + " °C");
+            log.debug("Temperature: " + temperature + " °C");
             } else {
-                log.info("No results found for the longitude and latidue for the city , city is invalid");
+                log.debug("No results found for the longitude and latidue for the city , city is invalid");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class CustomHttpGetAction implements JavaMethodAction {
 
         // Get the response code
         int responseCode = connection.getResponseCode();
-        log.info("Response Code: " + responseCode);
+        log.debug("Response Code: " + responseCode);
 
         // Read the response body
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
