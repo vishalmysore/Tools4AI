@@ -288,7 +288,7 @@ public class PredictionLoader {
 
     }
 
-    private AIAction getAiAction(String actionName) {
+    public AIAction getAiAction(String actionName) {
         log.debug(" Trying to load "+actionName);
         AIAction action = predictions.get(actionName);
         if(action != null) {

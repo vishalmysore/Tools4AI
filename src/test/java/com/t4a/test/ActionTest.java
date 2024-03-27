@@ -102,4 +102,23 @@ public class ActionTest {
         log.debug(success);
         Assertions.assertTrue("True".equalsIgnoreCase(success));
     }
+
+    @Test
+    public void testHighRiskAction() throws AIProcessingException, IOException {
+        ActionProcessor processor = new ActionProcessor();
+        String ecomActionPrmt = "Hey This is Vishal, the ecommerce Server is very slow and users are not able to do online shopping";
+        String result = (String)processor.processSingleAction(ecomActionPrmt);
+        log.info(result);
+        Assertions.assertNotNull(result);
+        String success = TestAIHelper.getInstance().sendMessage("Look at this message - "+result+" - was it a success? - Reply in true or false only");
+        log.debug(success);
+        Assertions.assertTrue("false".equalsIgnoreCase(success));
+
+        result = (String)processor.processSingleAction(ecomActionPrmt,"restartTheECOMServer");
+        log.info(result);
+        Assertions.assertNotNull(result);
+        success = TestAIHelper.getInstance().sendMessage("Look at this message - "+result+" - was it a success? - Reply in true or false only");
+        log.debug(success);
+        Assertions.assertTrue("true".equalsIgnoreCase(success));
+    }
 }

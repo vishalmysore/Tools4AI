@@ -9,6 +9,7 @@ import com.google.cloud.vertexai.generativeai.*;
 import com.google.gson.Gson;
 import com.t4a.action.BlankAction;
 import com.t4a.api.AIAction;
+import com.t4a.api.ActionRisk;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.chain.Prompt;
@@ -51,6 +52,10 @@ public class ActionProcessor implements AIProcessor{
 
             if(predictedAction == null) {
                 predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
+                if(predictedAction.getActionRisk() == ActionRisk.HIGH) {
+                    log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI "+predictedAction.getActionName());
+                    return "This is a high risk action will not proceed "+predictedAction.getActionName();
+                }
             }
 
 
@@ -126,7 +131,11 @@ public class ActionProcessor implements AIProcessor{
         } catch (IllegalAccessException e) {
             log.error(e.getMessage());
             throw new AIProcessingException(e);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return "failed";
         }
+
     }
 
     /**
@@ -140,10 +149,33 @@ public class ActionProcessor implements AIProcessor{
         return processSingleAction(promptText, null, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 
+    /**
+     * Directly pass the action object with the prompt , this is useful in case of spring beans as the actions can be
+     * initialized as spring boot as beans with other dependency
+     * @param promptText
+     * @param action
+     * @return
+     * @throws AIProcessingException
+     */
     public Object processSingleAction(String promptText, AIAction action)  throws AIProcessingException {
         return processSingleAction(promptText, action, null,null);
     }
 
+    /**
+     * Trigger the action by specifically passing the name, prediction wont be called . This action will be executed
+     * Parameters for the action will be taken from the prompt
+     * @param promptText
+     * @param actionName
+     * @return
+     * @throws AIProcessingException
+     */
+    public Object processSingleAction(String promptText, String actionName)  throws AIProcessingException {
+        AIAction action = PredictionLoader.getInstance().getAiAction(actionName);
+        if(action == null) {
+            throw new AIProcessingException(" action now found "+actionName);
+        }
+        return processSingleAction(promptText, action, null,null);
+    }
     public List<Object> processMultipleAction(String promptText, int num) throws AIProcessingException  {
         return processMultipleAction(promptText, num,new LoggingHumanDecision(), new LogginggExplainDecision());
     }
@@ -236,6 +268,15 @@ public class ActionProcessor implements AIProcessor{
         }
     }
 
+    /**
+     * Converts one big prompt into JSON and process them as single prompts one by one or parallely based on dependency order
+     * @param promptText
+     * @param humanVerification
+     * @param explain
+     * @return
+     * @throws AIProcessingException
+     */
+
     public String processMultipleActionDynamically(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException{
         String jsonPrompts = PredictionLoader.getInstance().getPredictedActionMultiStep(promptText);
         log.debug(jsonPrompts);
@@ -308,5 +349,13 @@ public class ActionProcessor implements AIProcessor{
     private static boolean hasProcessed(String id) {
         // Dummy implementation to simulate processing
         return true;
+    }
+
+    /**
+     * Return all the actions comma seperated
+     * @return
+     */
+    public String getActionList() {
+        return PredictionLoader.getInstance().getActionNameList().toString();
     }
 }

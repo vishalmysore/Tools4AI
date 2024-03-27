@@ -22,6 +22,10 @@ public interface JavaMethodAction extends AIAction{
        return this.getClass().getAnnotation(Predict.class).description();
     }
 
+    public default ActionRisk getActionRisk(){
+        return this.getClass().getAnnotation(Predict.class).riskLevel();
+    }
+
     public default boolean isComplexMethod(){
         boolean iscomplex = false;
         Method[] met = this.getClass().getMethods();
