@@ -50,6 +50,7 @@ public class PredictionLoader {
     private ChatSession chat;
     private ChatSession chatExplain;
     private ChatSession chatMulti;
+    private ChatSession chatScript;
     private String projectId;
     private String location;
     private String modelName;
@@ -83,10 +84,15 @@ public class PredictionLoader {
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
-
+            GenerativeModel scriptCommand =
+                    new GenerativeModel.Builder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
             chat = model.startChat();
             chatExplain = modelExplain.startChat();
             chatMulti = multiCommand.startChat();
+            chatScript = scriptCommand.startChat();
         }
         if(openAiKey!=null) {
             openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
@@ -288,6 +294,31 @@ public class PredictionLoader {
 
     }
 
+    public String scriptDecision(String prompt, String context)  {
+        GenerateContentResponse response = null;
+        try {
+            response = chatExplain.sendMessage("these are the results of previous actions - "+context+" - should we proceed with this step - " +prompt+" - provide an answer as yes or no only");
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  ResponseHandler.getText(response);
+
+
+    }
+
+    public String summarize(String prompt)  {
+        GenerateContentResponse response = null;
+        try {
+            response = chatExplain.sendMessage("summarize this - "+prompt);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  ResponseHandler.getText(response);
+
+
+    }
     public AIAction getAiAction(String actionName) {
         log.debug(" Trying to load "+actionName);
         AIAction action = predictions.get(actionName);
