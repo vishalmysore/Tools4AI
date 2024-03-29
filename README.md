@@ -19,8 +19,9 @@
   - [Reference Examples](#-Reference-Examples)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
-    - [Hallucination](#hallucination)
-- [Autonomous Agent] (#autonomous-agent)
+    - [Hallucination](#hallucination)   
+- [Autonomous Agent](#autonomous-agent)
+
   
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
@@ -31,7 +32,7 @@
 Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integration with enterprise 
 Java applications.
 This project illustrates the integration of AI with enterprise tools or external tools, converting natural language prompts
-into <span style="font-size: larger;">**actionable behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>
+into <span style="font-size: larger;">**actiona ble behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>
 or <span style="font-size: larger;">**"actionable prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
 with complex systems, enhancing productivity and innovation across diverse applications.<br>
 
