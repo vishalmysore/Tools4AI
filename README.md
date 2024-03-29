@@ -20,6 +20,7 @@
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)
+- [Autonomous Agent] (#autonomous-agent)
   
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
@@ -341,6 +342,27 @@ The ```ExtendedPredictionLoader``` offers a mechanism for creating custom predic
 
 To create custom implementations of ExtendedPredictionLoader, you need to annotate the loader class with ```@ActivateLoader.``` Prediction loader will then identify all classes with this annotation and call the ```getExtendedActions()``` method. This method should return the action names along with their corresponding ExtendedPredictOptions, allowing for the seamless integration of custom actions into the prediction system.
 
+## Autonomous Agent 
+
+### Action Script
+If you have a complete script written in English , ScriptProcessor will process the script and provide consolidated results
+
+```
+ ScriptProcessor script = new ScriptProcessor();
+ ScriptResult result =  script.process("complexTest.action");
+ String resultsString = script.summarize(result)
+ log.info(resultsString)
+
+```
+
+Sample script is here
+
+``` 
+can you reserve the flight for Vishal from Toronto to Bangalore for 3 Days on 7th december
+If flight booking is successful, can you reserve the car for Vishal from Bangalore to Toronto for 10 Days on 17th december
+if car booking is successful and flight cost are less than $1000 then book the sight seeing attraction called 5 star palace
+if car booking is successful and flight cost are more than $1000 then book the sight seeing attraction called peanut palace
+```
 
 ## Response Validation
 
