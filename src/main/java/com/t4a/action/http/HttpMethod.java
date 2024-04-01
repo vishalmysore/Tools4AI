@@ -5,5 +5,7 @@ public enum HttpMethod {
     POST,
     PUT,
     DELETE,
+    PATCH,
+    HEAD, OPTIONS, TRACE, CONNECT
     // Add other HTTP methods as needed
 }

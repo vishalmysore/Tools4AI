@@ -18,6 +18,7 @@ import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.parser.OpenAPIV3Parser;
+import io.swagger.v3.parser.converter.SwaggerConverter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,19 +66,34 @@ public class SwaggerPredictionLoader {
                 String swaggerurl = endpoint.get("swaggerurl").getAsString();
                 String id = endpoint.get("id").getAsString();
                 String baseurl = endpoint.get("baseurl").getAsString();
-                loadURL(swaggerurl, predictions,  actionNameList,baseurl);
+                JsonArray headersArray = endpoint.getAsJsonArray("headers");
+                Map<String, String> headers = new HashMap<>();
+                if(headersArray != null) {
+                    for (JsonElement headerElement : headersArray) {
+                        JsonObject headerObj = headerElement.getAsJsonObject();
+                        String key = headerObj.get("key").getAsString();
+                        String value = headerObj.get("value").getAsString();
+                        headers.put(key, value);
+                    }
+                }
+                loadURL(swaggerurl, predictions,  actionNameList,baseurl,headers);
 
             }
         }
     }
 
 
-    public  void loadURL(String jsonURL,Map<String,AIAction> predictions, StringBuffer actionNameList, String baseURL ) {
+    public  void loadURL(String jsonURL,Map<String,AIAction> predictions, StringBuffer actionNameList, String baseURL,Map<String, String> headers ) {
 
 
         try {
 
+            boolean swagger2 = false;
             OpenAPI openAPI = new OpenAPIV3Parser().readLocation(jsonURL, null, null).getOpenAPI();
+            if(openAPI == null ) {
+                openAPI = new SwaggerConverter().readLocation(jsonURL, null, null).getOpenAPI();
+                swagger2= true;
+            }
             Map<String, PathItem> paths = openAPI.getPaths();
 
             // Iterate over each endpoint
@@ -110,7 +127,7 @@ public class SwaggerPredictionLoader {
                         actionName = method.name().toLowerCase()+resourceName;
                     }
                     httpAction.setActionName(actionName); // Use method name as action name
-
+                    httpAction.setHeaders(headers);
                     httpAction.setUrl(baseURL + path); // Construct URL
                     httpAction.setType(HttpMethod.valueOf(method.name())); // Set HTTP method type
 
@@ -119,7 +136,12 @@ public class SwaggerPredictionLoader {
                     InputParameter inputParameter = null;
                     if (operation.getParameters() != null) {
                         for (io.swagger.v3.oas.models.parameters.Parameter parameter : operation.getParameters()) {
+
                             String paraName = parameter.getName();
+                            if((paraName == null)&&(swagger2)) {
+                                paraName = parameter.get$ref().substring(parameter.get$ref().lastIndexOf("/") + 1);
+                                parameter = openAPI.getComponents().getParameters().get(paraName);
+                            }
                             String paraType = parameter.getSchema().getType();
                             inputParameter = new InputParameter(paraName,paraType,"");
                             if ("query".equals(parameter.getIn())) {
@@ -161,7 +183,9 @@ public class SwaggerPredictionLoader {
                     } else {
                         log.debug("nothing found for "+actionName+" it could be direct call without parameters");
                     }
-                    inputParameters.add(inputParameter);
+                    if(inputParameter!=null) {
+                        inputParameters.add(inputParameter);
+                    }
                     httpAction.setInputObjects(inputParameters);
 
                     if(predictions.containsKey(actionName)) {

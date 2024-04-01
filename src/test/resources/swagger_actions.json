@@ -1,14 +1,16 @@
 {
   "endpoints" : [
+
     {
-      "swaggerurl": "https://fakerestapi.azurewebsites.net/swagger/v1/swagger.json",
-      "baseurl": "https://fakerestapi.azurewebsites.net/",
-      "id": "fakerestapi"
-    },
-    {
-      "swaggerurl": "https://petstore3.swagger.io/api/v3/openapi.json",
-      "baseurl": "https://petstore3.swagger.io/",
-      "id": "petstore"
+      "swaggerurl": "https://huggingface.co/spaces/VishalMysore/mock/raw/main/kibernetes.json",
+      "baseurl": "https://vishalmysore-mock.hf.space",
+      "id": "openshift",
+      "headers": [
+        {
+          "key": "Authorization",
+          "value": "apiKey=samplekey"
+        }
+      ]
     }
   ]
 }

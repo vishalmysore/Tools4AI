@@ -172,7 +172,7 @@ public class ActionProcessor implements AIProcessor{
     public Object processSingleAction(String promptText, String actionName)  throws AIProcessingException {
         AIAction action = PredictionLoader.getInstance().getAiAction(actionName);
         if(action == null) {
-            throw new AIProcessingException(" action now found "+actionName);
+            throw new AIProcessingException(" action not found "+actionName);
         }
         return processSingleAction(promptText, action, null,null);
     }

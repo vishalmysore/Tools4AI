@@ -67,6 +67,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public final class HttpPredictedAction implements PredictedAIAction {
     private Map<String, Object> jsonMap;
+    Map<String, String> headers;
     private String actionName;
     private String url;
     private HttpMethod type;
@@ -122,6 +123,9 @@ public final class HttpPredictedAction implements PredictedAIAction {
         try {
             log.debug("sending request to "+url);
             HttpGet request = new HttpGet(url);
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                request.addHeader(header.getKey(), header.getValue());
+            }
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
@@ -148,6 +152,9 @@ public final class HttpPredictedAction implements PredictedAIAction {
 
         // Execute HTTP POST request using the provided URL and JSON payload
         HttpPost request = new HttpPost(url);
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            request.addHeader(header.getKey(), header.getValue());
+        }
         request.setEntity(new StringEntity(jsonPayload, ContentType.APPLICATION_JSON));
 
         HttpResponse response = client.execute(request);
