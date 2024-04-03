@@ -2,6 +2,7 @@ package com.t4a.predict;
 
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.api.AIAction;
+import com.t4a.api.ActionList;
 import lombok.NoArgsConstructor;
 import lombok.extern.java.Log;
 import org.yaml.snakeyaml.Yaml;
@@ -36,10 +37,10 @@ public class ShellPredictionLoader {
 
 
 
-    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList, ActionList listOfActions) throws LoaderException {
 
         try {
-            loadYamlFile(predictions,actionNameList);
+            loadYamlFile(predictions,actionNameList,listOfActions);
         } catch (URISyntaxException e) {
             throw new LoaderException(e);
         }
@@ -47,7 +48,7 @@ public class ShellPredictionLoader {
 
     }
 
-    public  void loadYamlFile(Map<String,AIAction> predictions,StringBuffer actionNameList) throws URISyntaxException {
+    public  void loadYamlFile(Map<String,AIAction> predictions,StringBuffer actionNameList, ActionList listOfActions) throws URISyntaxException {
         if(resourceUrl == null)
         resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -60,28 +61,41 @@ public class ShellPredictionLoader {
              InputStreamReader reader = new InputStreamReader(inputStream)) {
 
             Yaml yaml = new Yaml();
-            List<Map<String, String>> data = yaml.load(reader);
+            Map<String, List<Map<String, Object>>> data = yaml.load(reader);
+
+            for (Map.Entry<String, List<Map<String, Object>>> groupEntry : data.entrySet()) {
+
+                List<Map<String, Object>> groupInfo = groupEntry.getValue();
 
 
-            for (Map<String, String> scriptInfo : data) {
-                String scriptName = scriptInfo.get("scriptName");
-                String actionName = scriptInfo.get("actionName");
-                String parameterNames = scriptInfo.get("parameters");
-                String description = scriptInfo.get("description");
+                for (Map<String, Object> group : groupInfo) {
+                    String groupDescription = (String) group.get("description");
+                    String groupName = (String) group.get("name");
+                    log.info("Group Name: " + groupName);
+                    log.info("Description: " + groupDescription);
+
+                    List<Map<String, String>> scripts = (List<Map<String, String>>) group.get("scripts");
+                    for (Map<String, String> scriptInfo : scripts) {
+                        String scriptName = scriptInfo.get("scriptName");
+                        String actionName = scriptInfo.get("actionName");
+                        String parameterNames = scriptInfo.get("parameters");
+                        String description = scriptInfo.get("description");
 
 
-                ShellPredictedAction shellAction = new ShellPredictedAction();
-                shellAction.setActionName(actionName);
-                shellAction.setScriptPath(scriptName);
-                shellAction.setParameterNames(parameterNames);
-                shellAction.setDescription(description);
+                        ShellPredictedAction shellAction = new ShellPredictedAction();
+                        shellAction.setActionName(actionName);
+                        shellAction.setScriptPath(scriptName);
+                        shellAction.setParameterNames(parameterNames);
+                        shellAction.setDescription(description);
 
-
-                actionNameList.append(actionName+",");
-                predictions.put(actionName,shellAction);
+                        shellAction.setGroup(groupName);
+                        shellAction.setGroupDescription(groupDescription);
+                        actionNameList.append(actionName + ",");
+                        predictions.put(actionName, shellAction);
+                        listOfActions.addAction(shellAction);
+                    }
+                }
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
 

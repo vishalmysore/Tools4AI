@@ -11,6 +11,7 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.action.http.ParamLocation;
 import com.t4a.api.AIAction;
+import com.t4a.api.ActionList;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.PathItem;
@@ -35,17 +36,17 @@ public class SwaggerPredictionLoader {
 
     private  String yamlFile = "swagger_actions.json";
     private URL resourceUrl = null;
-    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList, ActionList listOfActions) throws LoaderException {
 
         try {
-            parseConfig(predictions,actionNameList);
+            parseConfig(predictions,actionNameList,listOfActions);
         } catch ( IOException e) {
             throw new LoaderException(e);
         }
 
 
     }
-    public  void parseConfig(Map<String,AIAction> predictions, StringBuffer actionNameList) throws IOException {
+    public  void parseConfig(Map<String,AIAction> predictions, StringBuffer actionNameList,ActionList listOfActions) throws IOException {
         if (resourceUrl == null)
             resourceUrl = SwaggerPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -64,6 +65,12 @@ public class SwaggerPredictionLoader {
             for (JsonElement obj : endpoints) {
                 JsonObject endpoint = obj.getAsJsonObject();
                 String swaggerurl = endpoint.get("swaggerurl").getAsString();
+                String group = endpoint.get("group").getAsString();
+                String groupDiscription = endpoint.get("description").getAsString();
+                if(group == null) {
+                    group = "default";
+                    groupDiscription= "default";
+                }
                 String id = endpoint.get("id").getAsString();
                 String baseurl = endpoint.get("baseurl").getAsString();
                 JsonArray headersArray = endpoint.getAsJsonArray("headers");
@@ -76,14 +83,14 @@ public class SwaggerPredictionLoader {
                         headers.put(key, value);
                     }
                 }
-                loadURL(swaggerurl, predictions,  actionNameList,baseurl,headers);
+                loadURL(swaggerurl, predictions,  actionNameList,baseurl,headers,group,groupDiscription,listOfActions);
 
             }
         }
     }
 
 
-    public  void loadURL(String jsonURL,Map<String,AIAction> predictions, StringBuffer actionNameList, String baseURL,Map<String, String> headers ) {
+    public  void loadURL(String jsonURL,Map<String,AIAction> predictions, StringBuffer actionNameList, String baseURL,Map<String, String> headers , String group,String groupDiscription,ActionList listOfActions) {
 
 
         try {
@@ -108,6 +115,8 @@ public class SwaggerPredictionLoader {
 
                     // Extract relevant information and create HttpPredictedAction object
                     HttpPredictedAction httpAction = new HttpPredictedAction();
+                    httpAction.setGroup(group);
+                    httpAction.setGroupDescription(groupDiscription);
                     String actionName = operation.getOperationId();
                     if((actionName == null) || (actionName.trim().equals(""))) {
                         String[] segments = path.split("/");
@@ -198,6 +207,7 @@ public class SwaggerPredictionLoader {
                     }else {
                         predictions.put(actionName, httpAction);
                         actionNameList.append("," + actionName);
+                        listOfActions.addAction(httpAction);
                     }
                 }
             }

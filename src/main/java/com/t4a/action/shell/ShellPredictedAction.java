@@ -51,6 +51,8 @@ public class ShellPredictedAction implements PredictedAIAction {
 
     private String parameterNames;
 
+    private String group;
+    private String groupDescription;
 
     public  void executeShell(String arguments[]) throws IOException, InterruptedException {
         scriptPath = loadScript(scriptPath);
@@ -76,6 +78,11 @@ public class ShellPredictedAction implements PredictedAIAction {
         // Wait for the script to finish execution
         int exitCode = process.waitFor();
         log.debug("Script exited with code " + exitCode);
+    }
+
+    @Override
+    public String getActionGroup() {
+        return group;
     }
 
     public static String detectPathType(String scriptPath) {

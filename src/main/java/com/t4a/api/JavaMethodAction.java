@@ -26,6 +26,16 @@ public interface JavaMethodAction extends AIAction{
         return this.getClass().getAnnotation(Predict.class).riskLevel();
     }
 
+    @Override
+    public default String getActionGroup() {
+         return this.getClass().getAnnotation(Predict.class).groupName();
+    }
+
+    @Override
+    default String getGroupDescription() {
+        return this.getClass().getAnnotation(Predict.class).groupDescription();
+    }
+
     public default boolean isComplexMethod(){
         boolean iscomplex = false;
         Method[] met = this.getClass().getMethods();

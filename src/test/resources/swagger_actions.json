@@ -1,8 +1,23 @@
 {
   "endpoints" : [
-
+    {
+      "swaggerurl": "https://fakerestapi.azurewebsites.net/swagger/v1/swagger.json",
+      "group": "Books Author Activity",
+      "description": "This is for all the actions related books , Authors, photos and users trying to read books and view photos",
+      "baseurl": "https://fakerestapi.azurewebsites.net/",
+      "id": "fakerestapi"
+    },
+    {
+      "swaggerurl": "https://petstore3.swagger.io/api/v3/openapi.json",
+      "baseurl": "https://petstore3.swagger.io/",
+      "group": "Petstore API",
+      "description": "This is for all the actions related to pets",
+      "id": "petstore"
+    },
     {
       "swaggerurl": "https://huggingface.co/spaces/VishalMysore/mock/raw/main/kibernetes.json",
+      "group": "kubernetes cluster",
+      "description": "This is for all the actions related to the  kubernetes cluster management",
       "baseurl": "https://vishalmysore-mock.hf.space",
       "id": "openshift",
       "headers": [

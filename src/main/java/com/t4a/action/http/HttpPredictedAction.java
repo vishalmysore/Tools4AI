@@ -78,6 +78,8 @@ public final class HttpPredictedAction implements PredictedAIAction {
     private  final HttpClient client = HttpClientBuilder.create().build();
     private String requestBodyJson;
     private boolean hasJson;
+    private String group;
+    private String groupDescription;
     private final Gson gson = new Gson();
     public HttpPredictedAction(String actionName, String url, HttpMethod type, List<InputParameter> inputObjects, JsonObject outputObject, JsonObject authInterface, String description) {
         this.actionName = actionName;
@@ -97,6 +99,11 @@ public final class HttpPredictedAction implements PredictedAIAction {
             url = url.replace(placeholder, value);
         }
         return url;
+    }
+
+    @Override
+    public String getActionGroup() {
+        return group;
     }
 
     private  String executeHttpGet(Map<String, Object> parameters) throws UnsupportedEncodingException {

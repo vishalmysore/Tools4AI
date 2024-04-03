@@ -5,10 +5,13 @@ import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.google.gson.Gson;
 import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.api.AIAction;
+import com.t4a.api.ActionGroup;
+import com.t4a.api.ActionList;
 import com.t4a.api.ActionType;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -37,19 +40,21 @@ public class PredictionLoader {
     @Getter
     private Map<String,AIAction> predictions = new HashMap<String,AIAction>();
     private StringBuffer actionNameList = new StringBuffer();
+    private ActionList actionGroupList = new ActionList();
     private static PredictionLoader predictionLoader =null;
 
     private final String PREACTIONCMD = "here is my prompt - ";
-    private final  String ACTIONCMD = "- what action do you think we should take ";
+    private final  String ACTIONCMD = "- what action do you think we should take out of these  - {  ";
 
     private final String OPEN_AIPRMT = "here is your prompt - prompt_str - here is you action- action_name(params_values) - what parameter should you pass to this function. give comma separated name=values only and nothing else";
-    private final  String POSTACTIONCMD = " - reply back with ";
+    private final  String POSTACTIONCMD = " } - reply back with ";
     private final  String NUMACTION = " action only. Make sure Action matches exactly from this list";
 
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     private ChatSession chat;
     private ChatSession chatExplain;
     private ChatSession chatMulti;
+    private ChatSession chatGroupFinder;
     private ChatSession chatScript;
     private String projectId;
     private String location;
@@ -58,6 +63,7 @@ public class PredictionLoader {
     private String openAiKey;
     @Getter
     private String serperKey;
+    private String actionGroupJson;
     private ApplicationContext springContext;
 
     /**
@@ -89,10 +95,16 @@ public class PredictionLoader {
                             .setModelName(modelName)
                             .setVertexAi(vertexAI)
                             .build();
+            GenerativeModel chatGroupFinderCommand =
+                    new GenerativeModel.Builder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
             chat = model.startChat();
             chatExplain = modelExplain.startChat();
             chatMulti = multiCommand.startChat();
             chatScript = scriptCommand.startChat();
+            chatGroupFinder = chatGroupFinderCommand.startChat();
         }
         if(openAiKey!=null) {
             openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
@@ -149,11 +161,19 @@ public class PredictionLoader {
         }
     }
 
+    public ActionList getActionGroupList() {
+        return actionGroupList;
+    }
+
     public List<AIAction> getPredictedAction(String prompt, int num)  {
         GenerateContentResponse response = null;
         List<AIAction> actionList = new ArrayList<AIAction>();
         try {
-            response = chat.sendMessage(buildPrompt(prompt,num));
+            String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt -"+prompt+" - which group does it belong "+actionGroupJson+" - just provide the group name and nothing else"));
+            log.info(" will look in group "+groupName);
+            String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+            log.info(" list of actions "+actionNameList);
+            response = chat.sendMessage(buildPrompt(prompt,num,actionNameList));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -203,12 +223,16 @@ public class PredictionLoader {
         AIAction action = null;
         try {
             if(AIPlatform.GEMINI == aiProvider) {
-                response = chat.sendMessage(buildPrompt(prompt, 1));
+                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else"));
+                log.info(" will look in group "+groupName);
+                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+                log.info(" list of actions "+actionNameList);
+                response = chat.sendMessage(buildPrompt(prompt, 1,actionNameList));
                 actionName = ResponseHandler.getText(response);
                 if(!actionNameList.toString().contains(","+actionName+",")) {
                     while(numRetries++<NUM_OF_RETRIES) {
                         log.debug(" got "+actionName+" Trying again "+numRetries);
-                        response = chat.sendMessage(buildPrompt(prompt, 1));
+                        response = chat.sendMessage(buildPrompt(prompt, 1,actionNameList));
                         actionName = ResponseHandler.getText(response);
                         if(actionNameList.toString().contains(","+actionName+",")) {
                             break;
@@ -220,6 +244,7 @@ public class PredictionLoader {
                 log.debug(" Predicted action by AI is "+actionName);
                 action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
+
                 actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1));
                 actionName = actionName.replace("()","");
                 action = getAiAction(actionName);
@@ -357,11 +382,16 @@ public class PredictionLoader {
             predictionLoader.loadShellCommands();
             predictionLoader.loadHttpCommands();
             predictionLoader.loadSwaggerHttpActions();
+            predictionLoader.buildGroupInfo();
 
         }
         return predictionLoader;
     }
 
+    private  void buildGroupInfo(){
+        Gson gson = new Gson();
+        actionGroupJson = gson.toJson(getActionGroupList().getGroupInfo());
+    }
 
     public void setSpringContext(ApplicationContext springContext) {
         this.springContext = springContext;
@@ -370,7 +400,7 @@ public class PredictionLoader {
     private void loadShellCommands()  {
         ShellPredictionLoader shellLoader = new ShellPredictionLoader();
         try {
-            shellLoader.load(predictions,actionNameList);
+            shellLoader.load(predictions,actionNameList,actionGroupList);
         } catch (LoaderException e) {
             log.error(e.getMessage());
         }
@@ -378,7 +408,7 @@ public class PredictionLoader {
     private void loadSwaggerHttpActions() {
         SwaggerPredictionLoader httpLoader = new SwaggerPredictionLoader();
         try {
-            httpLoader.load(predictions,actionNameList);
+            httpLoader.load(predictions,actionNameList,actionGroupList);
         } catch (LoaderException e) {
             log.error(e.getMessage());
         }
@@ -441,6 +471,7 @@ public class PredictionLoader {
             for (String key : extendedPredictOptionsMap.keySet()) {
                 log.debug(" names "+actionNameList);
                 actionNameList.append(key).append(",");
+
                 predictions.put(key,extendedPredictOptionsMap.get(key));
             }
 
@@ -464,6 +495,7 @@ public class PredictionLoader {
         String actionName = instance.getActionName();
 
         actionNameList.append(actionName+",");
+        actionGroupList.addAction(instance);
         predictions.put(actionName,instance);
     }
 
@@ -475,11 +507,11 @@ public class PredictionLoader {
         return actionNameList;
     }
 
-    private String buildPrompt(String prompt, int number) {
+    private String buildPrompt(String prompt, int number, String actionNameList) {
         String append = NUMACTION;
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
-        String query = PREACTIONCMD+prompt+ACTIONCMD+actionNameList.toString()+POSTACTIONCMD+number +append;
+        String query = PREACTIONCMD+ "{ "+prompt+" }"+ACTIONCMD+"{ " +actionNameList.toString() +" }"+POSTACTIONCMD+number +append;
         log.debug(query);
         return query;
     }

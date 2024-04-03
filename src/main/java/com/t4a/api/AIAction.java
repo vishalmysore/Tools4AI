@@ -104,4 +104,11 @@ public interface AIAction {
     public default ActionRisk getActionRisk() {
         return ActionRisk.LOW;
     }
+
+    public default String getActionGroup() {
+        return "default";
+    }
+    public default String getGroupDescription() {
+        return "default";
+    }
 }

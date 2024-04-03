@@ -5,9 +5,9 @@ import com.t4a.processor.ActionProcessor;
 import lombok.extern.java.Log;
 
 @Log
-public class OpenShiftAction {
+public class OpenShiftActionExample {
     public static void main(String[] args) throws AIProcessingException {
         ActionProcessor processor = new ActionProcessor();
-        log.info(processor.processSingleAction("can you provide me list of core V1 component status").toString());
+        log.info(processor.processSingleAction("can you provide me list of core V1 component status for the kubernetes cluster").toString());
     }
 }
