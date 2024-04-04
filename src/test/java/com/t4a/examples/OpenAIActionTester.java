@@ -21,6 +21,9 @@ public class OpenAIActionTester  {
         prompt = "Post a book with title Harry Poster and Problem rat, id of the book is 887 and discription is about harry ";
       //  process(prompt) ;
         prompt = "Customer name is Vishal Mysore, his computer needs repair and he is in Toronto";
+      //  process(prompt) ;
+        prompt = "sachin tendular is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
+                "Maharaja restaurant in toronto with 4 of his friends on Indian Independence Day, can you notify him and the restarurant";
         process(prompt) ;
     }
 

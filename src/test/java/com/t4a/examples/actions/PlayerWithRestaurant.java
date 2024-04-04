@@ -18,6 +18,6 @@ public class PlayerWithRestaurant implements JavaMethodAction {
         log.debug(restaurantPojo.toString());
         this.player = player;
         this.restaurantPojo = restaurantPojo;
-        return "notified";
+        return "yes i have notified";
     }
 }
