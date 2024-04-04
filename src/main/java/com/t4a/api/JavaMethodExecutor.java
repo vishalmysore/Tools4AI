@@ -302,6 +302,19 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             return obj;
         }
     }
+    public Object action(Object[] params, AIAction instance) {
+        Object obj = null;
+        try {
+            obj = method.invoke(instance, params);
+        }catch (Exception e) {
+            log.warn("could not invoke method returning values"+e.getMessage());
+        }
+        if(obj == null) {
+            obj = "{failed}";
+        }
+        return obj;
+    }
+
     public Object action(String params, AIAction instance) throws InvocationTargetException, IllegalAccessException {
 
         Map<String, Object> propertyValuesMap = getPropertyValuesMap(params);

@@ -1,5 +1,10 @@
 package com.t4a.predict;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
@@ -72,39 +77,41 @@ public class PredictionLoader {
     private final int NUM_OF_RETRIES = 2;
     private PredictionLoader() {
         initProp();
-        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
+        if((modelName!=null)&&(projectId!=null)&&(location!=null)) {
+            try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
 
-            GenerativeModel model =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .build();
-            GenerativeModel modelExplain =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .build();
-            GenerativeModel multiCommand =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .build();
-            GenerativeModel scriptCommand =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .build();
-            GenerativeModel chatGroupFinderCommand =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .build();
-            chat = model.startChat();
-            chatExplain = modelExplain.startChat();
-            chatMulti = multiCommand.startChat();
-            chatScript = scriptCommand.startChat();
-            chatGroupFinder = chatGroupFinderCommand.startChat();
+                GenerativeModel model =
+                        new GenerativeModel.Builder()
+                                .setModelName(modelName)
+                                .setVertexAi(vertexAI)
+                                .build();
+                GenerativeModel modelExplain =
+                        new GenerativeModel.Builder()
+                                .setModelName(modelName)
+                                .setVertexAi(vertexAI)
+                                .build();
+                GenerativeModel multiCommand =
+                        new GenerativeModel.Builder()
+                                .setModelName(modelName)
+                                .setVertexAi(vertexAI)
+                                .build();
+                GenerativeModel scriptCommand =
+                        new GenerativeModel.Builder()
+                                .setModelName(modelName)
+                                .setVertexAi(vertexAI)
+                                .build();
+                GenerativeModel chatGroupFinderCommand =
+                        new GenerativeModel.Builder()
+                                .setModelName(modelName)
+                                .setVertexAi(vertexAI)
+                                .build();
+                chat = model.startChat();
+                chatExplain = modelExplain.startChat();
+                chatMulti = multiCommand.startChat();
+                chatScript = scriptCommand.startChat();
+                chatGroupFinder = chatGroupFinderCommand.startChat();
+            }
         }
         if(openAiKey!=null) {
             openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
@@ -145,6 +152,9 @@ public class PredictionLoader {
             openAiKey = prop.getProperty("openAiKey");
             if(openAiKey != null)
                 openAiKey = openAiKey.trim();
+            if(openAiKey == null || openAiKey.trim().length() <1) {
+                openAiKey = System.getProperty("openAiKey");
+            }
             serperKey = prop.getProperty("serperKey");
             if(serperKey == null || serperKey.trim().length() <1) {
                 serperKey = System.getProperty("serperKey");
@@ -156,6 +166,7 @@ public class PredictionLoader {
             log.debug("location: " + location);
             log.debug("modelName: " + modelName);
             log.debug("serperKey: " + serperKey);
+            log.debug("openAiKey: " + openAiKey);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -211,7 +222,37 @@ public class PredictionLoader {
         log.debug(prmpt);
         return openAiChatModel.generate(prmpt);
     }
+    public Object[] getComplexActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params, Gson gson)  {
+        Object[] paramsRet = new Object[params.keySet().size()];
+        int i  = 0 ;
+        for (String key: params.keySet()
+             ) {
+            String json = null;
+            try {
+                Object value = params.get(key);
+                json = classToJson((Class)value);
 
+            String response = openAiChatModel.generate(" here is you prompt { "+prompt+"} and here is your json "+json+" - fill the json with values and return");
+            Object ret = gson.fromJson(response,((Class)value) )   ;
+            paramsRet[i] = ret;
+            i++;
+
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return paramsRet;
+    }
+
+    private String classToJson(Class cazz) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
+        mapper.acceptJsonFormatVisitor(cazz, visitor);
+        JsonSchema jsonSchema = visitor.finalSchema();
+        JsonNode propertiesNode = mapper.valueToTree(jsonSchema).path("properties");
+
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(propertiesNode);
+    }
     public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params,String result)  {
 
         return openAiChatModel.generate(prompt+" result "+result);
@@ -244,8 +285,10 @@ public class PredictionLoader {
                 log.debug(" Predicted action by AI is "+actionName);
                 action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
-
-                actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1));
+                String groupName = openAiChatModel.generate(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else");
+                log.info(" will look in group "+groupName);
+                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+                actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuffer(actionNameList)));
                 actionName = actionName.replace("()","");
                 action = getAiAction(actionName);
                 if(action == null) {
@@ -258,7 +301,7 @@ public class PredictionLoader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
-            log.error(" Please make sure actions are configured");
+            log.error(" Please make sure actions are configured"+e.getMessage());
         }
 
         return action;
@@ -511,7 +554,7 @@ public class PredictionLoader {
         String append = NUMACTION;
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
-        String query = PREACTIONCMD+ "{ "+prompt+" }"+ACTIONCMD+"{ " +actionNameList.toString() +" }"+POSTACTIONCMD+number +append;
+        String query = PREACTIONCMD+ "{ "+prompt+" }"+ACTIONCMD+actionNameList.toString() +POSTACTIONCMD+number +append;
         log.debug(query);
         return query;
     }
@@ -530,7 +573,7 @@ public class PredictionLoader {
         }
         return modifiedString.toString();
     }
-    private String buildPromptForOpenAI(String prompt, int number) {
+    private String buildPromptForOpenAI(String prompt, int number, StringBuffer actionNameList) {
         String append = NUMACTION;
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;

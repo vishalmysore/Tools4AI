@@ -6,7 +6,7 @@
 
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
 
     <name>Tools For Artificial Intelligence</name>
     <description>
@@ -68,6 +68,12 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jsonSchema</artifactId>
+            <version>2.13.0</version>
+        </dependency>
         <dependency>
 
         <groupId>org.springframework</groupId>

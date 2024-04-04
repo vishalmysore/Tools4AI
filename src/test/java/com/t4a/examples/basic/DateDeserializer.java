@@ -24,7 +24,7 @@ public class DateDeserializer implements JsonDeserializer<Date> {
         try {
             return dateFormat.parse(json.getAsString().replaceAll("(st|nd|rd|th),", ","));
         } catch (ParseException e) {
-            throw new JsonParseException(e);
+            return new Date();
         }
     }
 }
