@@ -292,6 +292,10 @@ public class PredictionLoader {
                 actionName = actionName.replace("()","");
                 action = getAiAction(actionName);
                 if(action == null) {
+                    actionName = openAiChatModel.generate("provide action name from this and nothing else - "+actionName);
+                    action = getAiAction(actionName);
+                }
+                if(action == null) {
                     log.debug("action not found , trying again");
                     actionName = fetchActionNameFromList(actionName);
                     log.debug("Predicted action by AI is "+actionName);
