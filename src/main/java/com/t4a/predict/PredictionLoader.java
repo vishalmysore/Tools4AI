@@ -64,6 +64,7 @@ public class PredictionLoader {
     private String projectId;
     private String location;
     private String modelName;
+    @Getter
     private ChatLanguageModel openAiChatModel;
     private String openAiKey;
     @Getter

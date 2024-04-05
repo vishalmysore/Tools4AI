@@ -2,8 +2,15 @@ package com.t4a;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.swagger.v3.oas.models.media.*;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.Date;
 import java.util.Map;
 
 public class JsonUtils {
@@ -18,6 +25,45 @@ public class JsonUtils {
 
         // Convert the JSON node to a string
         return rootNode.toString();
+    }
+
+    public String convertMethodTOJsonString(Method method) {
+
+
+        JSONObject methodJson = new JSONObject();
+        methodJson.put("methodName", method.getName());
+
+        JSONArray parameters = new JSONArray();
+        for (Parameter parameter : method.getParameters()) {
+            JSONObject paramJson = new JSONObject();
+
+            paramJson.put("name", parameter.getName());
+
+            // Handle custom object types by inspecting their structure
+            if (!parameter.getType().isPrimitive() && !parameter.getType().equals(String.class)
+                    && !parameter.getType().equals(Date.class)) {
+                JSONArray fieldDetails = new JSONArray();
+                for (Field field : parameter.getType().getDeclaredFields()) {
+                    JSONObject fieldJson = new JSONObject();
+                    fieldJson.put("fieldName", field.getName());
+                    fieldJson.put("fieldType", field.getType().getSimpleName());
+                    fieldDetails.put(fieldJson);
+                }
+                paramJson.put("fields", fieldDetails);
+                paramJson.put("type", parameter.getType().getName());
+            } else {
+                paramJson.put("type", parameter.getType().getSimpleName());
+            }
+
+            parameters.put(paramJson);
+        }
+
+        methodJson.put("parameters", parameters);
+        methodJson.put("returnType", method.getReturnType().getSimpleName());
+
+        System.out.println(methodJson.toString(4)); // Pretty print with indentation
+        return methodJson.toString(4);
+
     }
 
     private static void processProperties(ObjectNode parentNode, Map<String, Schema> properties) {

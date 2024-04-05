@@ -12,4 +12,7 @@ public class LocalAIActionProcessor implements AIProcessor {
     public Object processSingleAction(String promptText, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         return null;
     }
+    public Object processSingleAction(String promptText)  throws AIProcessingException {
+        return processSingleAction(promptText, null, new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
 }

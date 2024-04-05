@@ -1,0 +1,47 @@
+{
+  "methodName": "computerRepairWithDetails",
+  "parameters": [
+    {
+      "name": "customer",
+      "fields": [
+        {
+          "fieldName": "firstName",
+          "fieldType": "String",
+          "value": "John"
+        },
+        {
+          "fieldName": "lastName",
+          "fieldType": "String",
+          "value": "Doe"
+        },
+        {
+          "fieldName": "reasonForCalling",
+          "fieldType": "String",
+          "value": "Laptop Repair"
+        },
+        {
+          "fieldName": "location",
+          "fieldType": "String",
+          "value": "New York"
+        },
+        {
+          "fieldName": "dateJoined",
+          "fieldType": "Date",
+          "value": "2019-08-24"
+        }
+      ],
+      "type": "com.t4a.examples.actions.Customer"
+    },
+    {
+      "name": "dateOfComp",
+      "type": "Date",
+      "value": "2024-04-05"
+    },
+    {
+      "name": "query",
+      "type": "String",
+      "value": "Screen replacement"
+    }
+  ],
+  "returnType": "String"
+}

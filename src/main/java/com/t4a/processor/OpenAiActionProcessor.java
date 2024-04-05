@@ -11,6 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * Uses Json conversion to convert method and java pojo to jsons and then  call the openai , your objects have complex
+ * parameters like custom dates etc then its better to pass a custom GSON , otherwise it will use the default gson
+ */
 @Slf4j
 public class OpenAiActionProcessor implements AIProcessor{
     private Gson gson ;

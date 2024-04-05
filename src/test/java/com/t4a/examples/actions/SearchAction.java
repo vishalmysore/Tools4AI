@@ -15,8 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @Predict(actionName = "googleSearch", description = "search the web for information")
 public class SearchAction implements JavaMethodAction {
 
-
     public String googleSearch(String searchString, boolean isNews)  {
+        return "bhelpuri, panipuri";
+    }
+
+    public String googleRealSearch(String searchString, boolean isNews)  {
         log.debug(searchString+" : "+isNews);
         HttpResponse<String> response = Unirest.post("https://google.serper.dev/search")
                 .header("X-API-KEY", PredictionLoader.getInstance().getSerperKey())

@@ -118,7 +118,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             if(!methodAction.isComplexMethod()) {
                 return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
             } else {
-                log.warn("method has pojos or complex data type , Will try to convert them, if it fails  please use PromptTransformer");
+                log.warn("method has pojos or complex data type , Will try to convert them, if it fails  please use GeminiPromptTransformer");
                 return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
             }
         } else

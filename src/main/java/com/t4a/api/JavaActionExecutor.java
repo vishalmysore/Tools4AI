@@ -305,7 +305,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
             if (parts.length == 2) {
                 String key = parts[0];
                 Object value = parts[1]; // Object type allows for flexibility
-                map.put(key, value);
+                map.put(key.trim(), value);
             } else {
                 log.warn("Invalid entry: " + data);
             }

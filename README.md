@@ -15,6 +15,7 @@
   - [SetUp](#setup)
   - [JavaDocs](#-JavaDocs)
   - [GCLOUD](#GCLOUD)
+  - [OpenAI](#OpenAi)
   - [Tools Integration](#-Tools-Integration)
   - [Reference Examples](#-Reference-Examples)  
 - [Prediction Loaders](#-prediction-loaders)  
@@ -91,6 +92,11 @@ Make sure you have gcloud project set up and have enabled vertex API
         String modelName = "gemini-1.0-pro";
 ```
 You have to mention your project id from Gcloud 
+
+## OpenAI
+
+If you plan to use OpenAI instead of Gemini you will need OpenAI api key
+
 
 ## 👉 Quick Start
 ```

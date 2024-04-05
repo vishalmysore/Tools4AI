@@ -14,4 +14,7 @@ public class ImageActionProcessor implements AIProcessor{
     public Object processSingleAction(String promptText, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) {
         return null;
     }
+    public Object processSingleAction(String promptText)  throws AIProcessingException {
+        return processSingleAction(promptText, null, new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
 }

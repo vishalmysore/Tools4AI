@@ -6,7 +6,7 @@ import com.t4a.examples.actions.Customer;
 import com.t4a.examples.actions.PlayerWithRestaurant;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.basic.RestaurantPojo;
-import com.t4a.predict.PromptTransformer;
+import com.t4a.predict.GeminiPromptTransformer;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.ActionProcessor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class ActionTest {
     @Test
     public void testRestaurantPojo() throws AIProcessingException {
         String promptText = "can you book a dinner reseration in name of Vishal and his family of 4 at Maharaj restaurant in Toronto, on Indian Independence day and make sure its cancellable";
-        PromptTransformer tools = new PromptTransformer();
+        GeminiPromptTransformer tools = new GeminiPromptTransformer();
         RestaurantPojo pojo = (RestaurantPojo) tools.transformIntoPojo(promptText, "com.t4a.examples.basic.RestaurantPojo", "RestaurantClass", "Create Pojo from the prompt");
         Assertions.assertTrue(pojo != null);
         Assertions.assertEquals(pojo.getName(), "Vishal");
@@ -37,7 +37,7 @@ public class ActionTest {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer("dd MMMM yyyy"));
         Gson gson = gsonBuilder.create();
-        PromptTransformer tools2 = new PromptTransformer(gson);
+        GeminiPromptTransformer tools2 = new GeminiPromptTransformer(gson);
 
         Customer pojo = (Customer) tools2.transformIntoPojo("I went to the part yesterday and met someone it was so good to meet an old friend. A customer is complaining that his computer is not working, his name is Vinod Gupta,  and he stays in Toronto he joined on 12 May 2008", Customer.class.getName(),"Customer", "get Customer details");
         Assertions.assertTrue(pojo != null);
