@@ -1,9 +1,11 @@
 package com.t4a.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.text.ParseException;
@@ -11,7 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Slf4j
 public class JavaMethodInvoker {
     public JavaMethodInvoker() {
 
@@ -84,7 +86,18 @@ public class JavaMethodInvoker {
                 e.printStackTrace();
                 return null;
             }
-        } else {
+        }else if (type.isArray()) {
+            // Handle array types
+            JSONArray jsonArray = (JSONArray) value;
+            int length = jsonArray.length();
+            Class<?> componentType = type.getComponentType();
+            Object array = Array.newInstance(componentType, length);
+            for (int i = 0; i < length; i++) {
+                Object elementValue = getValue(jsonArray.get(i), componentType);
+                Array.set(array, i, elementValue);
+            }
+            return array;
+        }else {
             // Handle custom class types
             return value;
         }
@@ -92,6 +105,12 @@ public class JavaMethodInvoker {
     @NotNull
     private  Class<?> getType(String type) throws ClassNotFoundException {
         Class<?> parameterType;
+        if (type.endsWith("[]")) {
+            // This is an array type
+            String componentTypeName = type.substring(0, type.length() - 2); // Remove "[]"
+            Class<?> componentType = getType(componentTypeName); // Recursively get the component type
+            return Array.newInstance(componentType, 0).getClass(); // Create an array class of the component type
+        }
         if (type.equals("String")) {
             parameterType = String.class;
         } else if (type.equals("int")) {

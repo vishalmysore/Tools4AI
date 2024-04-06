@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.t4a.predict.Tools;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,7 +16,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Date;
 import java.util.Map;
-
+@Slf4j
 public class JsonUtils {
 
     public static String convertClassObjectToJsonString(Schema classSchema) {
@@ -83,7 +84,7 @@ public class JsonUtils {
         methodJson.put("parameters", parameters);
         methodJson.put("returnType", method.getReturnType().getSimpleName());
 
-        System.out.println(methodJson.toString(4)); // Pretty print with indentation
+        log.info(methodJson.toString(4)); // Pretty print with indentation
         return methodJson.toString(4);
 
     }

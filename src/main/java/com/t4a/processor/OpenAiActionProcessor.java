@@ -51,7 +51,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             }
 
             String jsonStr = utils.convertMethodTOJsonString(m);
-            jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue ");
+            jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
             System.out.println(jsonStr);
             JavaMethodInvoker invoke = new JavaMethodInvoker();
             Object obj[] = invoke.parse(jsonStr);
