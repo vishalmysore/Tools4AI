@@ -254,7 +254,7 @@ public class PredictionLoader {
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(propertiesNode);
     }
-    public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params,String result)  {
+    public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider,String result)  {
 
         return openAiChatModel.generate(prompt+" result "+result);
     }

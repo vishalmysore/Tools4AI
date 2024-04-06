@@ -1,5 +1,6 @@
 package com.t4a.examples.actions;
 
+import com.t4a.predict.Tools;
 import lombok.*;
 
 import java.util.Date;
@@ -15,5 +16,6 @@ public class Customer {
     private String lastName;
     private String reasonForCalling;
     private String location;
+    @Tools(format = "yyyy-MM-dd")
     private Date dateJoined;
 }

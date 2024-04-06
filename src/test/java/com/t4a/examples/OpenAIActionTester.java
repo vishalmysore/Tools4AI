@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.t4a.api.AIAction;
-import com.t4a.examples.actions.SearchAction;
+import com.t4a.examples.actions.file.FileWriteAction;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.LoggingHumanDecision;
@@ -19,9 +19,11 @@ public class OpenAIActionTester  {
 
 
         String prompt = "My friends name is Vishal ,I dont know what to cook for him today.";
-      //  process(prompt) ;
+       // process(prompt) ;
         prompt = "Post a book with title Harry Poster and Problem rat, id of the book is 887 and discription is about harry ";
-      //  process(prompt) ;
+        process(prompt) ;
+        prompt = "save these indian recipe names to a file eggcurry, paneer butter";
+        process(prompt, new FileWriteAction()) ;
         prompt = "Customer name is Vishal Mysore, his computer needs repair and he is in Toronto";
       //  process(prompt) ;
         prompt = "sachin tendular is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
@@ -32,7 +34,7 @@ public class OpenAIActionTester  {
         prompt = "can you provide me list of core V1 component status for the kubernetes cluster";
       //  process(prompt) ;
         prompt = "search google for Indian Recipes";
-        process(prompt,new SearchAction()) ;
+       // process(prompt,new SearchAction()) ;
     }
     public static void process(String prompt) throws AIProcessingException {
     process(prompt,null);

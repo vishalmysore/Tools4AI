@@ -1,15 +1,15 @@
 package com.t4a.processor;
 
 import com.google.gson.Gson;
-import com.t4a.api.AIAction;
-import com.t4a.api.ActionType;
-import com.t4a.api.JavaMethodAction;
-import com.t4a.api.JavaMethodExecutor;
+import com.t4a.JsonUtils;
+import com.t4a.api.*;
 import com.t4a.predict.AIPlatform;
 import com.t4a.predict.PredictionLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * Uses Json conversion to convert method and java pojo to jsons and then  call the openai , your objects have complex
@@ -33,6 +33,80 @@ public class OpenAiActionProcessor implements AIProcessor{
     }
 
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
+        if (action == null) {
+            action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
+        }
+        if(action.getActionType() == ActionType.JAVAMETHOD) {
+            log.debug(action + "");
+            JsonUtils utils = new JsonUtils();
+            Method m = null;
+            Class clazz = action.getClass();
+            Method[] methods = clazz.getMethods();
+            for (Method m1 : methods
+            ) {
+                if (m1.getName().equals(action.getActionName())) {
+                    m = m1;
+                    break;
+                }
+            }
+
+            String jsonStr = utils.convertMethodTOJsonString(m);
+            jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue ");
+            System.out.println(jsonStr);
+            JavaMethodInvoker invoke = new JavaMethodInvoker();
+            Object obj[] = invoke.parse(jsonStr);
+            List<Object> parameterValues = (List<Object>) obj[1];
+            List<Class<?>> parameterTypes = (List<Class<?>>) obj[0];
+            Method method = null;
+            try {
+                method = clazz.getMethod(m.getName(), parameterTypes.toArray(new Class<?>[0]));
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+            Object instance = null;
+            try {
+                instance = clazz.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+            Object result = null;
+            try {
+                result = method.invoke(instance, parameterValues.toArray());
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+            return result;
+        } else {
+            log.debug(action+"");
+            JavaMethodExecutor methodExecutor = new JavaMethodExecutor();
+            methodExecutor.mapMethod(action);
+            log.debug(methodExecutor.getProperties()+"");
+            String params = PredictionLoader.getInstance().getActionParams(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties());
+            Object obj = null;
+            try {
+                if(humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
+                    obj = methodExecutor.action(params, action);
+                    log.debug(" the action returned "+obj);
+                }
+            } catch (InvocationTargetException e) {
+                throw new AIProcessingException(e);
+            } catch (IllegalAccessException e) {
+                throw new AIProcessingException(e);
+            }
+            return obj;
+
+        }
+    }
+
+    public Object processSingleNonJava(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         if(action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
         }
@@ -64,7 +138,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             }
         }
 
-        return PredictionLoader.getInstance().postActionProcessing(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties(),(String)objReturnFromAI);
+        return PredictionLoader.getInstance().postActionProcessing(action,prompt,AIPlatform.OPENAI,(String)objReturnFromAI);
     }
     public Object processSingleAction(String prompt) throws AIProcessingException{
         return processSingleAction(prompt, new LoggingHumanDecision(),new LogginggExplainDecision());
