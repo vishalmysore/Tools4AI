@@ -9,6 +9,11 @@ public class LocalAIActionProcessor implements AIProcessor {
     }
 
     @Override
+    public String query(String promptText) throws AIProcessingException {
+        return null;
+    }
+
+    @Override
     public Object processSingleAction(String promptText, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         return null;
     }

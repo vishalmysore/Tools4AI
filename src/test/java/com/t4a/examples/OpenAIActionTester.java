@@ -24,8 +24,8 @@ public class OpenAIActionTester  {
         //process(prompt) ;
         prompt = "save these indian recipe names to a file eggcurry, paneer butter";
         process(prompt, new FileWriteAction()) ;
-        prompt = "Customer name is Vishal Mysore, his computer needs repair and he is in Toronto";
-       // process(prompt) ;
+        prompt = "Customer name is Vishal Mysore, his computer needs repair and he is in Toronto he complained on labor day";
+        process(prompt) ;
         prompt = "sachin tendular is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
                 "Maharaja restaurant in toronto with 4 of his friends on Indian Independence Day, can you notify him and the restarurant";
        // process(prompt) ;

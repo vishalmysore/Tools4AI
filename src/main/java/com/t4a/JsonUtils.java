@@ -2,7 +2,7 @@ package com.t4a;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.t4a.predict.Tools;
+import com.t4a.predict.Prompt;
 import io.swagger.v3.oas.models.media.ObjectSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.extern.slf4j.Slf4j;
@@ -62,17 +62,17 @@ public class JsonUtils {
                 paramJson.put("type", parameter.getType().getSimpleName());
                 Annotation[] annotations = parameter.getDeclaredAnnotations();
                 JSONObject fieldJson = new JSONObject();
-                if (parameter.isAnnotationPresent(Tools.class)) {
-                    Tools toolsAnnotation = parameter.getAnnotation(Tools.class);
+                if (parameter.isAnnotationPresent(Prompt.class)) {
+                    Prompt promptAnnotation = parameter.getAnnotation(Prompt.class);
 
-                    // Check if describe field is present in @Tools annotation
-                    if (!toolsAnnotation.describe().isEmpty()) {
-                        paramJson.put("fieldDescription", toolsAnnotation.describe());
+                    // Check if describe field is present in @Prompt annotation
+                    if (!promptAnnotation.describe().isEmpty()) {
+                        paramJson.put("fieldDescription", promptAnnotation.describe());
                     }
 
-                    // Check if format field is present in @Tools annotation
-                    if (!toolsAnnotation.format().isEmpty()) {
-                        paramJson.put("dateFormat", toolsAnnotation.format());
+                    // Check if format field is present in @Prompt annotation
+                    if (!promptAnnotation.dateFormat().isEmpty()) {
+                        paramJson.put("dateFormat", promptAnnotation.dateFormat());
                     }
                 }
                 paramJson.put("fieldValue", "");
@@ -93,17 +93,17 @@ public class JsonUtils {
     private static Object getJsonObject(Field field) {
         Annotation[] annotations = field.getDeclaredAnnotations();
         JSONObject fieldJson = new JSONObject();
-        if (field.isAnnotationPresent(Tools.class)) {
-            Tools toolsAnnotation = field.getAnnotation(Tools.class);
+        if (field.isAnnotationPresent(Prompt.class)) {
+            Prompt promptAnnotation = field.getAnnotation(Prompt.class);
 
-            // Check if describe field is present in @Tools annotation
-            if (!toolsAnnotation.describe().isEmpty()) {
-                fieldJson.put("fieldDescription", toolsAnnotation.describe());
+            // Check if describe field is present in @Prompt annotation
+            if (!promptAnnotation.describe().isEmpty()) {
+                fieldJson.put("fieldDescription", promptAnnotation.describe());
             }
 
-            // Check if format field is present in @Tools annotation
-            if (!toolsAnnotation.format().isEmpty()) {
-                fieldJson.put("dateFormat", toolsAnnotation.format());
+            // Check if format field is present in @Prompt annotation
+            if (!promptAnnotation.dateFormat().isEmpty()) {
+                fieldJson.put("dateFormat", promptAnnotation.dateFormat());
             }
         }
         fieldJson.put("fieldName", field.getName());

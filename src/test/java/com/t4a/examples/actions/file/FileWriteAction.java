@@ -9,7 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 @Slf4j
-@Predict(actionName = "saveInformationToLocalFile",description = "saves the information in local file")
+@Predict(actionName = "saveInformationToLocalFile",description = "saves the information in local file",groupName = "personal", groupDescription = "all personal stuff")
 public class FileWriteAction implements JavaMethodAction {
 
     public Object saveInformationToLocalFile(String args[]) {

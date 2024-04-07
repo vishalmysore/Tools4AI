@@ -1,7 +1,6 @@
 package com.t4a.processor.scripts;
 
 import com.google.gson.Gson;
-import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.AIProcessor;
 import com.t4a.processor.ActionProcessor;
@@ -60,7 +59,8 @@ public  class ScriptProcessor {
                 String previousResult = getGson().toJson(result);
                 log.info(previousResult);
                 if(result.getResults().size() > 0 ) {
-                    decision = PredictionLoader.getInstance().scriptDecision(line,previousResult);
+                    String prompt = "these are the results of previous actions - "+previousResult+" - should we proceed with this step - " +line+" - provide an answer as yes or no only";
+                    decision = getActionProcessor().query(prompt);
                 }
                 if(decision.toLowerCase().contains("yes")) {
                     resultStr =  (String) processor.processSingleAction(line + " - here are previous action results "+previousResult);
@@ -86,7 +86,11 @@ public  class ScriptProcessor {
     }
 
     public String summarize(ScriptResult result) {
-        return PredictionLoader.getInstance().summarize(getGson().toJson(result));
+        try {
+            return getActionProcessor().query(" Summarize this - "+getGson().toJson(result));
+        } catch (AIProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

@@ -23,6 +23,11 @@ public class OpenAiActionProcessor implements AIProcessor{
         this.gson = gson;
     }
 
+
+    @Override
+    public String query(String promptText) throws AIProcessingException {
+        return PredictionLoader.getInstance().getOpenAiChatModel().generate(promptText);
+    }
     public OpenAiActionProcessor() {
         this.gson = new Gson();
     }
@@ -32,9 +37,23 @@ public class OpenAiActionProcessor implements AIProcessor{
         return processSingleAction(promptText,null,humanVerification,explain);
     }
 
+    public Object processSingleAction(String promptText, AIAction action)  throws AIProcessingException {
+        return processSingleAction(promptText, action, null,null);
+    }
+    public Object processSingleAction(String promptText, String actionName)  throws AIProcessingException {
+        AIAction action = PredictionLoader.getInstance().getAiAction(actionName);
+        if(action == null) {
+            throw new AIProcessingException(" action not found "+actionName);
+        }
+        return processSingleAction(promptText, action, null,null);
+    }
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         if (action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
+            if(action.getActionRisk() == ActionRisk.HIGH) {
+                log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI "+action.getActionName());
+                return "This is a high risk action will not proceed "+action.getActionName();
+            }
         }
         if(action.getActionType() == ActionType.JAVAMETHOD) {
             log.debug(action + "");
@@ -63,21 +82,10 @@ public class OpenAiActionProcessor implements AIProcessor{
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-            Object instance = null;
-            try {
-                instance = clazz.getDeclaredConstructor().newInstance();
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
+
             Object result = null;
             try {
-                result = method.invoke(instance, parameterValues.toArray());
+                result = method.invoke(action, parameterValues.toArray());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {

@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER})
-public @interface Tools {
+public @interface Prompt {
     String describe() default ""; // Optional field for describing the field
-    String format() default "";  // Optional field for specifying the format
+    String dateFormat() default "";  // Optional field for specifying the format
 }

@@ -37,6 +37,18 @@ import java.util.List;
 @Slf4j
 public class ActionProcessor implements AIProcessor{
 
+    @Override
+    public String query(String promptText) throws AIProcessingException {
+        GenerateContentResponse response = null;
+        try {
+            response = PredictionLoader.getInstance().getChatExplain().sendMessage(promptText);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  ResponseHandler.getText(response);
+    }
+
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
        return processSingleAction( promptText, null,  humanVerification,  explain) ;
     }

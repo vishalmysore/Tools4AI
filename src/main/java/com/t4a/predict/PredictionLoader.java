@@ -57,6 +57,7 @@ public class PredictionLoader {
 
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     private ChatSession chat;
+    @Getter
     private ChatSession chatExplain;
     private ChatSession chatMulti;
     private ChatSession chatGroupFinder;
@@ -266,7 +267,7 @@ public class PredictionLoader {
         try {
             if(AIPlatform.GEMINI == aiProvider) {
                 String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else"));
-                log.info(" will look in group "+groupName);
+                log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
                 String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
                 log.info(" list of actions "+actionNameList);
                 response = chat.sendMessage(buildPrompt(prompt, 1,actionNameList));
@@ -287,7 +288,7 @@ public class PredictionLoader {
                 action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
                 String groupName = openAiChatModel.generate(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else");
-                log.info(" will look in group "+groupName);
+                log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
                 String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
                 actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuffer(actionNameList)));
                 actionName = actionName.replace("()","");
@@ -367,31 +368,6 @@ public class PredictionLoader {
 
     }
 
-    public String scriptDecision(String prompt, String context)  {
-        GenerateContentResponse response = null;
-        try {
-            response = chatExplain.sendMessage("these are the results of previous actions - "+context+" - should we proceed with this step - " +prompt+" - provide an answer as yes or no only");
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return  ResponseHandler.getText(response);
-
-
-    }
-
-    public String summarize(String prompt)  {
-        GenerateContentResponse response = null;
-        try {
-            response = chatExplain.sendMessage("summarize this - "+prompt);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return  ResponseHandler.getText(response);
-
-
-    }
     public AIAction getAiAction(String actionName) {
         log.debug(" Trying to load "+actionName);
         AIAction action = predictions.get(actionName);

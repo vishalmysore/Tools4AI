@@ -17,4 +17,9 @@ public class ImageActionProcessor implements AIProcessor{
     public Object processSingleAction(String promptText)  throws AIProcessingException {
         return processSingleAction(promptText, null, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
+
+    @Override
+    public String query(String promptText) throws AIProcessingException {
+        return null;
+    }
 }

@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  * You need to set serperKey in tools4ai.properties or as System property
  */
 @Slf4j
-@Predict(actionName = "googleSearch", description = "search the web for information")
+@Predict(actionName = "googleSearch", description = "search the web for information", groupName = "personal", groupDescription = "all personal actions are here")
 public class SearchAction implements JavaMethodAction {
 
     public String googleSearch(String searchString, boolean isNews)  {
