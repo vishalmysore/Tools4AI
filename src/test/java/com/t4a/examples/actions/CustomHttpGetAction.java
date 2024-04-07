@@ -1,7 +1,7 @@
 package com.t4a.examples.actions;
 
 import com.t4a.api.JavaMethodAction;
-import com.t4a.predict.Predict;
+import com.t4a.annotations.Predict;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;

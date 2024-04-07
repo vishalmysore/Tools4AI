@@ -1,8 +1,8 @@
 package com.t4a.examples.actions;
 
 import com.t4a.api.JavaMethodAction;
-import com.t4a.predict.Predict;
-import com.t4a.predict.Prompt;
+import com.t4a.annotations.Predict;
+import com.t4a.annotations.Prompt;
 
 import java.util.Date;
 

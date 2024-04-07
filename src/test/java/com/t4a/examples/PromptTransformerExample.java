@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.t4a.examples.actions.Customer;
 import com.t4a.examples.basic.DateDeserializer;
+import com.t4a.examples.pojo.Organization;
 import com.t4a.predict.GeminiPromptTransformer;
 import com.t4a.predict.OpenAIPromptTransformer;
 import com.t4a.predict.PromptTransformer;
@@ -18,6 +19,15 @@ public class PromptTransformerExample {
 
     }
     public static void main(String[] args) throws AIProcessingException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+       // System.out.println(tra.transformIntoPojo(" Customer name is Vishal and he is Toronto , his complaint is computer not working date is labor day", Customer.class.getName(),"",""));
+        String promptText  = "can you book a dinner reseration in name of Vishal and his family of 4 at Maharaj restaurant on Indian Independence day and make sure its cancellable";
+       // System.out.println(tra.transformIntoPojo(promptText, RestaurantPojo.class.getName(),"",""));
+        promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing";
+        System.out.println(tra.transformIntoPojo(promptText, Organization.class.getName(),"",""));
+    }
+
+    public static void main1(String[] args) throws AIProcessingException {
 
         log.debug("Hello");
         String projectId = "cookgptserver";

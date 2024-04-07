@@ -39,7 +39,7 @@ public class JavaMethodInvoker {
                 Object value;
 
                 if (paramObj.has("fieldValue")) {
-                    value = getValue(paramObj.get("fieldValue"),parameterType);
+                    value = getValue(paramObj.get("fieldValue"),parameterType,paramObj);
                 } else if (paramObj.has("fields")) {
                     value = createPOJO(paramObj.getJSONArray("fields"), Class.forName(type));
                 } else {
@@ -64,7 +64,7 @@ public class JavaMethodInvoker {
         }
         return new Object[0];
     }
-    private  Object getValue(Object value, Class<?> type) {
+    private  Object getValue(Object value, Class<?> type,JSONObject paramObj) {
         if (type == String.class) {
             return value.toString();
         } else if (type == int.class || type == Integer.class) {
@@ -79,7 +79,7 @@ public class JavaMethodInvoker {
             try {
                 String dateStr = (String) value;
                 if((dateStr != null) && (dateStr.trim().length() > 1))
-                  return new SimpleDateFormat("yyyy-MM-dd").parse((String) value);
+                  return new SimpleDateFormat(paramObj.getString("dateFormat")).parse((String) value);
                 else
                     return null;
             } catch (ParseException e) {
@@ -93,7 +93,7 @@ public class JavaMethodInvoker {
             Class<?> componentType = type.getComponentType();
             Object array = Array.newInstance(componentType, length);
             for (int i = 0; i < length; i++) {
-                Object elementValue = getValue(jsonArray.get(i), componentType);
+                Object elementValue = getValue(jsonArray.get(i), componentType,null);
                 Array.set(array, i, elementValue);
             }
             return array;
@@ -141,7 +141,7 @@ public class JavaMethodInvoker {
             Class<?> parameterType = getType(fieldType);
             Object fieldValue =null;// getValue(fieldObj.get("fieldValue"),parameterType);
             if (fieldObj.has("fieldValue")) {
-                fieldValue = getValue(fieldObj.get("fieldValue"),parameterType);
+                fieldValue = getValue(fieldObj.get("fieldValue"),parameterType,fieldObj);
             } else if (fieldObj.has("fields")) {
                 fieldValue = createPOJO(fieldObj.getJSONArray("fields"), Class.forName(fieldType));
             } else {

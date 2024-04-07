@@ -1,4 +1,4 @@
-package com.t4a.predict;
+package com.t4a.annotations;
 
 import com.t4a.api.ActionRisk;
 

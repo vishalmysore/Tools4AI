@@ -2,7 +2,7 @@ package com.t4a.examples.actions;
 
 import com.t4a.api.JavaMethodAction;
 import com.t4a.examples.basic.RestaurantPojo;
-import com.t4a.predict.Predict;
+import com.t4a.annotations.Predict;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

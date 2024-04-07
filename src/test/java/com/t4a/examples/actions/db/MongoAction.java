@@ -1,7 +1,7 @@
 package com.t4a.examples.actions.db;
 
 import com.t4a.api.JavaMethodAction;
-import com.t4a.predict.Predict;
+import com.t4a.annotations.Predict;
 
 /**
  * This is an action class for MongoDB it takes a prompt and inject the values into MongoDatabase

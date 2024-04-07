@@ -1,7 +1,7 @@
 package com.t4a.examples.actions;
 
 import com.t4a.api.JavaMethodAction;
-import com.t4a.predict.Predict;
+import com.t4a.annotations.Predict;
 import com.t4a.predict.PredictionLoader;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;

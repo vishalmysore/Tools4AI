@@ -7,9 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
 import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.google.gson.Gson;
+import com.t4a.JsonUtils;
 import com.t4a.processor.AIProcessingException;
 import dev.langchain4j.model.chat.ChatLanguageModel;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class OpenAIPromptTransformer implements PromptTransformer{
     private Gson gson ;
     private ChatLanguageModel openAiChatModel;
@@ -22,8 +25,8 @@ public class OpenAIPromptTransformer implements PromptTransformer{
         openAiChatModel = PredictionLoader.getInstance().getOpenAiChatModel();
     }
 
-    @Override
-    public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
+
+    public Object transformIntoPojoDeprecated(String prompt, String className, String funName, String description) throws AIProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
         Class clazz  = null;
@@ -48,10 +51,27 @@ public class OpenAIPromptTransformer implements PromptTransformer{
         }
 
     }
+    @Override
+    public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
+        try {
+            JsonUtils util = new JsonUtils();
+            String jsonStr = util.convertClassToJSONString(Class.forName(className));
+            log.info(jsonStr);
+            jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
+            log.info(jsonStr);
+            return util.populateClassFromJson(jsonStr);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     @Override
     public String transformIntoJson(String json, String prompt, String funName, String description) throws AIProcessingException {
         return openAiChatModel.generate(" here is you prompt { "+prompt+"} and here is your json "+json+" - fill the json with values and return");
 
     }
+
+
 }

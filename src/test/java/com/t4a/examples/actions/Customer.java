@@ -1,6 +1,6 @@
 package com.t4a.examples.actions;
 
-import com.t4a.predict.Prompt;
+import com.t4a.annotations.Prompt;
 import lombok.*;
 
 import java.util.Date;
@@ -14,7 +14,9 @@ import java.util.Date;
 public class Customer {
     private String firstName;
     private String lastName;
+    @Prompt(describe = "convert this to Hindi")
     private String reasonForCalling;
+    @Prompt(ignore = true)
     private String location;
     @Prompt(dateFormat = "yyyy-MM-dd")
     private Date dateJoined;

@@ -14,6 +14,8 @@ import com.google.gson.Gson;
 import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
+import com.t4a.annotations.ActivateLoader;
+import com.t4a.annotations.Predict;
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionGroup;
 import com.t4a.api.ActionList;

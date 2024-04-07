@@ -1,6 +1,6 @@
 package com.t4a.api;
 
-import com.t4a.predict.Predict;
+import com.t4a.annotations.Predict;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
