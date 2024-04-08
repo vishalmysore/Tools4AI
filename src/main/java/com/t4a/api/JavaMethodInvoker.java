@@ -1,5 +1,6 @@
 package com.t4a.api;
 
+import com.t4a.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -35,7 +36,7 @@ public class JavaMethodInvoker {
             for (int i = 0; i < parametersArray.length(); i++) {
                 JSONObject paramObj = parametersArray.getJSONObject(i);
                 String type = paramObj.getString("type");
-                Class<?> parameterType = getType(type);
+                Class<?> parameterType = getType(type,paramObj);
                 Object value;
 
                 if (paramObj.has("fieldValue")) {
@@ -65,6 +66,7 @@ public class JavaMethodInvoker {
         return new Object[0];
     }
     private  Object getValue(Object value, Class<?> type,JSONObject paramObj) {
+        log.info("parsing value "+type.getName()+" value "+value);
         if (type == String.class) {
             return value.toString();
         } else if (type == int.class || type == Integer.class) {
@@ -87,42 +89,63 @@ public class JavaMethodInvoker {
                 return null;
             }
         }else if (type.isArray()) {
+
             // Handle array types
-            JSONArray jsonArray = (JSONArray) value;
+            JSONArray jsonArray = paramObj.getJSONArray("fieldValue");
             int length = jsonArray.length();
             Class<?> componentType = type.getComponentType();
             Object array = Array.newInstance(componentType, length);
             for (int i = 0; i < length; i++) {
-                Object elementValue = getValue(jsonArray.get(i), componentType,null);
+                JsonUtils utils = new JsonUtils();
+                Object elementValue = null;
+                try {
+                    elementValue = utils.populateObject(jsonArray.getJSONObject(i));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
                 Array.set(array, i, elementValue);
             }
             return array;
+        }else if (type.getName().equalsIgnoreCase("java.util.List")) {
+            return value;
         }else {
             // Handle custom class types
+            JsonUtils jsonUtils = new JsonUtils();
+            try {
+                Constructor<?> constructor = type.getDeclaredConstructor(); // Specify parameter types
+                constructor.setAccessible(true); // Make it accessible if it's private
+                value = constructor.newInstance(); // Provide arguments
+            } catch (Exception e) {
+                e.printStackTrace(); // Handle exceptions appropriately
+            }
+
             return value;
         }
     }
     @NotNull
-    private  Class<?> getType(String type) throws ClassNotFoundException {
+    private  Class<?> getType(String type,JSONObject jsonObject) throws ClassNotFoundException {
         Class<?> parameterType;
         if (type.endsWith("[]")) {
             // This is an array type
             String componentTypeName = type.substring(0, type.length() - 2); // Remove "[]"
-            Class<?> componentType = getType(componentTypeName); // Recursively get the component type
+            Class<?> componentType = getType(jsonObject.getString("className"),jsonObject); // Recursively get the component type
             return Array.newInstance(componentType, 0).getClass(); // Create an array class of the component type
         }
-        if (type.equals("String")) {
+        if (type.equalsIgnoreCase("String")) {
             parameterType = String.class;
-        } else if (type.equals("int")) {
+        } else if (type.equalsIgnoreCase("int")) {
             parameterType = int.class;
-        } else if (type.equals("double")) {
+        } else if (type.equalsIgnoreCase("double")) {
             parameterType = double.class;
-        } else if (type.equals("boolean")) {
+        } else if (type.equalsIgnoreCase("boolean")) {
             parameterType = boolean.class;
-        } else if (type.equals("Date")) {
+        } else if (type.equalsIgnoreCase("Date")) {
             parameterType = java.util.Date.class;
             // Convert string value to Date
-        } else {
+        } else if (type.equalsIgnoreCase("list")) {
+            parameterType = Class.forName("java.util.List");
+        }        else {
             // Handle custom class types
             parameterType = Class.forName(type);
         }
@@ -138,7 +161,7 @@ public class JavaMethodInvoker {
             JSONObject fieldObj = fieldsArray.getJSONObject(i);
             String fieldName = fieldObj.getString("fieldName");
             String fieldType = fieldObj.getString("fieldType");
-            Class<?> parameterType = getType(fieldType);
+            Class<?> parameterType = getType(fieldType,fieldObj);
             Object fieldValue =null;// getValue(fieldObj.get("fieldValue"),parameterType);
             if (fieldObj.has("fieldValue")) {
                 fieldValue = getValue(fieldObj.get("fieldValue"),parameterType,fieldObj);
@@ -152,10 +175,39 @@ public class JavaMethodInvoker {
 
             // Resolve nested POJOs recursively
             if (fieldValue instanceof JSONObject || fieldValue instanceof JSONArray) {
+                if(fieldType.equalsIgnoreCase("list")) {
+
+                    JSONArray listArray = fieldObj.getJSONArray("fieldValue");
+                    String classNameList = fieldObj.getString("className");
+                    Class listClazz = Class.forName(classNameList);
+
+                    List objList = new ArrayList();
+                    for (Object obj:listArray
+                    ) {
+                        if (!listClazz.isPrimitive()
+                                && !listClazz.equals(String.class)
+                                && !listClazz.equals(Date.class)
+                                && !listClazz.isArray()
+                                && !List.class.isAssignableFrom(listClazz)) {
+                            JsonUtils util = new JsonUtils();
+                            objList.add(listClazz.cast(util.populateObject((JSONObject) obj)));
+                        } else {
+                            objList.add(listClazz.cast(obj));
+                        }
+                    }
+
+                    fieldValue = objList;
+
+                }else {
                 fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
+
+                }
+                field.set(instance, fieldValue);
+            } else {
+                field.set(instance, fieldValue);
             }
 
-            field.set(instance, fieldValue);
+
         }
 
         return instance;

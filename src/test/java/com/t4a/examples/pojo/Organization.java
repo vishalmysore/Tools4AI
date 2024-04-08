@@ -1,6 +1,10 @@
 package com.t4a.examples.pojo;
 
+import com.t4a.annotations.ListType;
+import com.t4a.examples.actions.Customer;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -9,5 +13,9 @@ import lombok.*;
 @ToString
 public class Organization {
     String name;
-    Employee em;
+    @ListType(Employee.class)
+    List<Employee> em;
+    @ListType(String.class)
+    List<String> locations;
+    Customer[] customers;
 }

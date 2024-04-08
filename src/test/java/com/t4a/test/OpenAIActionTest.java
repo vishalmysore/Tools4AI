@@ -2,10 +2,13 @@ package com.t4a.test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.t4a.examples.ArrayAction;
 import com.t4a.examples.actions.Customer;
+import com.t4a.examples.actions.ListAction;
 import com.t4a.examples.actions.PlayerWithRestaurant;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.basic.RestaurantPojo;
+import com.t4a.examples.pojo.Organization;
 import com.t4a.predict.OpenAIPromptTransformer;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.OpenAiActionProcessor;
@@ -102,6 +105,45 @@ public class OpenAIActionTest {
         log.debug(success);
         Assertions.assertTrue("True".equalsIgnoreCase(success));
     }
+    @Test
+    public void testActionWithList() throws AIProcessingException, IOException {
+        OpenAiActionProcessor processor = new OpenAiActionProcessor();
+        String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay.Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
+        ListAction action = new ListAction();
+        Organization org = (Organization) processor.processSingleAction(promptText,action);
+        Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
+        Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
+    }
+
+    @Test
+    public void testActionWithListAndArray() throws AIProcessingException, IOException {
+        OpenAiActionProcessor processor = new OpenAiActionProcessor();
+        String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay.Hrithik roshan is another employee of MovieHits inc based in Chennai his taks are jumping and Gym he joined on Indian Independce Day.Vishal Mysore is customer of MovieHits inc and he styas in Paris the reason he is not happy is that he did nto like the movie date is labor day. Deepak Rao is another customer for MovieHits inc date is independence day";
+        ListAction action = new ListAction();
+        Organization org = (Organization) processor.processSingleAction(promptText,action);
+        Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
+        Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
+    }
+    @Test
+    public void testActionWithArray() throws AIProcessingException, IOException {
+        OpenAiActionProcessor processor = new OpenAiActionProcessor();
+        String promptText = "Vishal Mysore is customer of MovieHits inc and he styas in Paris the reason he is not happy is that he did nto like the movie date is labor day. Deepak Rao is another customer for MovieHits inc date is independence day";
+        ArrayAction action = new ArrayAction();
+        Customer[] org = (Customer[]) processor.processSingleAction(promptText,action);
+        Assertions.assertTrue(org.length == 2);
+
+
+    }
+    @Test
+    public void testPojoWithList() throws AIProcessingException, IOException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
+        Organization org = (Organization) tra.transformIntoPojo(promptText, Organization.class.getName(),"","");
+        Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
+        Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
+    }
+
+
 
     @Test
     public void testHighRiskAction() throws AIProcessingException, IOException {

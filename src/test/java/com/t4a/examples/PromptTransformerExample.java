@@ -2,15 +2,19 @@ package com.t4a.examples;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.t4a.JsonUtils;
 import com.t4a.examples.actions.Customer;
+import com.t4a.examples.actions.ListAction;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.pojo.Organization;
 import com.t4a.predict.GeminiPromptTransformer;
 import com.t4a.predict.OpenAIPromptTransformer;
+import com.t4a.predict.PredictionLoader;
 import com.t4a.predict.PromptTransformer;
 import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 
 @Slf4j
@@ -18,12 +22,37 @@ public class PromptTransformerExample {
     public PromptTransformerExample(){
 
     }
-    public static void main(String[] args) throws AIProcessingException {
+
+    public static void main(String[] args) {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay.Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
+        JsonUtils utils = new JsonUtils();
+        String jsonStr = utils.convertClassToJSONString(Organization.class);
+        System.out.println(jsonStr);
+        System.out.println("=============================");
+        jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + promptText + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
+        System.out.println(jsonStr);
+        System.out.println("=============================");
+        Method[] met = ListAction.class.getMethods();
+        for (Method m:met
+        ) {
+            if(m.getName().equals("addOrganization")){
+                 jsonStr = utils.convertMethodTOJsonString(m);
+                System.out.println(jsonStr);
+                System.out.println("=============================");
+                jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + promptText + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
+                System.out.println(jsonStr);
+            }
+        }
+
+
+    }
+    public static void main2(String[] args) throws AIProcessingException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
        // System.out.println(tra.transformIntoPojo(" Customer name is Vishal and he is Toronto , his complaint is computer not working date is labor day", Customer.class.getName(),"",""));
         String promptText  = "can you book a dinner reseration in name of Vishal and his family of 4 at Maharaj restaurant on Indian Independence day and make sure its cancellable";
        // System.out.println(tra.transformIntoPojo(promptText, RestaurantPojo.class.getName(),"",""));
-        promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing";
+        promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay";
         System.out.println(tra.transformIntoPojo(promptText, Organization.class.getName(),"",""));
     }
 
