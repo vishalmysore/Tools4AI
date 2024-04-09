@@ -11,9 +11,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
 @Slf4j
 public class JavaMethodInvoker {
     public JavaMethodInvoker() {
@@ -152,65 +151,75 @@ public class JavaMethodInvoker {
         return parameterType;
     }
 
+
+
     // Create POJO using reflection
-    private  Object createPOJO(JSONArray fieldsArray, Class<?> clazz) throws Exception {
-        Constructor<?> constructor = clazz.getConstructor();
-        Object instance = constructor.newInstance();
+    public  Object createPOJO(JSONArray fieldsArray, Class<?> clazz) throws Exception {
+        Object instance = null;
+        if(clazz.getName().equalsIgnoreCase("java.util.Map")){
+            instance = new HashMap<>();
+            JsonUtils utls = new JsonUtils();
+            utls.buildMapFromJsonArray(fieldsArray,(Map)instance);
+            return instance;
+        } else {
+            Constructor<?> constructor = clazz.getConstructor();
+            instance = constructor.newInstance();
 
-        for (int i = 0; i < fieldsArray.length(); i++) {
-            JSONObject fieldObj = fieldsArray.getJSONObject(i);
-            String fieldName = fieldObj.getString("fieldName");
-            String fieldType = fieldObj.getString("fieldType");
-            Class<?> parameterType = getType(fieldType,fieldObj);
-            Object fieldValue =null;// getValue(fieldObj.get("fieldValue"),parameterType);
-            if (fieldObj.has("fieldValue")) {
-                fieldValue = getValue(fieldObj.get("fieldValue"),parameterType,fieldObj);
-            } else if (fieldObj.has("fields")) {
-                fieldValue = createPOJO(fieldObj.getJSONArray("fields"), Class.forName(fieldType));
-            } else {
-                throw new IllegalArgumentException("No value or fields found for parameter: " + fieldObj.getString("name"));
-            }
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-
-            // Resolve nested POJOs recursively
-            if (fieldValue instanceof JSONObject || fieldValue instanceof JSONArray) {
-                if(fieldType.equalsIgnoreCase("list")) {
-
-                    JSONArray listArray = fieldObj.getJSONArray("fieldValue");
-                    String classNameList = fieldObj.getString("className");
-                    Class listClazz = Class.forName(classNameList);
-
-                    List objList = new ArrayList();
-                    for (Object obj:listArray
-                    ) {
-                        if (!listClazz.isPrimitive()
-                                && !listClazz.equals(String.class)
-                                && !listClazz.equals(Date.class)
-                                && !listClazz.isArray()
-                                && !List.class.isAssignableFrom(listClazz)) {
-                            JsonUtils util = new JsonUtils();
-                            objList.add(listClazz.cast(util.populateObject((JSONObject) obj)));
-                        } else {
-                            objList.add(listClazz.cast(obj));
-                        }
-                    }
-
-                    fieldValue = objList;
-
-                }else {
-                fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
-
+            for (int i = 0; i < fieldsArray.length(); i++) {
+                JSONObject fieldObj = fieldsArray.getJSONObject(i);
+                String fieldName = fieldObj.getString("fieldName");
+                String fieldType = fieldObj.getString("fieldType");
+                Class<?> parameterType = getType(fieldType, fieldObj);
+                Object fieldValue = null;// getValue(fieldObj.get("fieldValue"),parameterType);
+                if (fieldObj.has("fieldValue")) {
+                    fieldValue = getValue(fieldObj.get("fieldValue"), parameterType, fieldObj);
+                } else if (fieldObj.has("fields")) {
+                    fieldValue = createPOJO(fieldObj.getJSONArray("fields"), Class.forName(fieldType));
+                } else {
+                    throw new IllegalArgumentException("No value or fields found for parameter: " + fieldObj.getString("name"));
                 }
-                field.set(instance, fieldValue);
-            } else {
-                field.set(instance, fieldValue);
+                Field field = clazz.getDeclaredField(fieldName);
+                field.setAccessible(true);
+
+                // Resolve nested POJOs recursively
+                if (fieldValue instanceof JSONObject || fieldValue instanceof JSONArray) {
+                    if (fieldType.equalsIgnoreCase("list")) {
+
+                        JSONArray listArray = fieldObj.getJSONArray("fieldValue");
+                        String classNameList = fieldObj.getString("className");
+                        Class listClazz = Class.forName(classNameList);
+
+                        List objList = new ArrayList();
+                        for (Object obj : listArray
+                        ) {
+                            if (!listClazz.isPrimitive()
+                                    && !listClazz.equals(String.class)
+                                    && !listClazz.equals(Date.class)
+                                    && !listClazz.isArray()
+                                    && !List.class.isAssignableFrom(listClazz)) {
+                                JsonUtils util = new JsonUtils();
+                                objList.add(listClazz.cast(util.populateObject((JSONObject) obj)));
+                            } else {
+                                objList.add(listClazz.cast(obj));
+                            }
+                        }
+
+                        fieldValue = objList;
+
+                    } else {
+                        fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
+
+                    }
+                    field.set(instance, fieldValue);
+                } else {
+                    field.set(instance, fieldValue);
+                }
+
+
             }
 
-
+            return instance;
         }
-
-        return instance;
     }
 
     // Overloaded method for handling nested arrays

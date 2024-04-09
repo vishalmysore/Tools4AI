@@ -55,13 +55,24 @@ public class OpenAIPromptTransformer implements PromptTransformer{
     public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
         try {
             JsonUtils util = new JsonUtils();
-            String jsonStr = util.convertClassToJSONString(Class.forName(className));
+            Class clazz = Class.forName(className);
+            String jsonStr = null;
+            if(clazz.getName().equalsIgnoreCase("java.util.Map")) {
+                jsonStr = util.buildBlankMapJsonObject(null).toString(4); ;
+
+            } if(clazz.getName().equalsIgnoreCase("java.util.List")) {
+                jsonStr = util.buildBlankListJsonObject(null).toString(4); ;
+
+            }else {
+                jsonStr = util.convertClassToJSONString(clazz);
+            }
             log.info(jsonStr);
             jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
             log.info(jsonStr);
             return util.populateClassFromJson(jsonStr);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
 

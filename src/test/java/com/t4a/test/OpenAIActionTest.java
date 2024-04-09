@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.t4a.examples.ArrayAction;
 import com.t4a.examples.actions.Customer;
 import com.t4a.examples.actions.ListAction;
+import com.t4a.examples.actions.MapAction;
 import com.t4a.examples.actions.PlayerWithRestaurant;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.basic.RestaurantPojo;
+import com.t4a.examples.pojo.Dictionary;
 import com.t4a.examples.pojo.Organization;
 import com.t4a.predict.OpenAIPromptTransformer;
 import com.t4a.processor.AIProcessingException;
@@ -18,6 +20,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 public class OpenAIActionTest {
     @Test
@@ -123,6 +128,52 @@ public class OpenAIActionTest {
         Organization org = (Organization) processor.processSingleAction(promptText,action);
         Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
         Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
+    }
+
+    @Test
+    public void testActionWithMap() throws AIProcessingException, IOException {
+        OpenAiActionProcessor processor = new OpenAiActionProcessor();
+        String promptText = "id of Cricket is 1 and then Polo is at 5, Footbal is at 9";
+        MapAction action = new MapAction();
+        Map<Integer,String> map = (Map<Integer,String>) processor.processSingleAction(promptText,action);
+        Assertions.assertEquals(map.keySet().size(),3);
+        Assertions.assertEquals(map.get("1"),"Cricket");
+
+    }
+
+    @Test
+    public void testPojoWithMap() throws AIProcessingException, IOException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "id of Cricket is 1 and then Polo is at 5, Footbal is at 9";
+        Map map = (Map) tra.transformIntoPojo(promptText, Map.class.getName(),"","");
+        Assertions.assertEquals(map.keySet().size(),3);
+        Assertions.assertEquals(map.get("1"),"Cricket");
+    }
+
+    @Test
+    public void testPojoWithMapInsideClass() throws AIProcessingException, IOException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "Create a dictionary with name Hindi Kosh, add words big=large thing , small=tiny thing in it";
+        Dictionary dict = (Dictionary) tra.transformIntoPojo(promptText, Dictionary.class.getName(),"","");
+        Assertions.assertEquals(dict.getWordMeanings().keySet().size(),2);
+        Assertions.assertEquals(dict.getWordMeanings().get("small"),"tiny thing");
+    }
+    @Test
+    public void testPojoWithMapAndArrayInsideClass() throws AIProcessingException, IOException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "Create a dictionary with name Hindi Kosh, add words big=large thing , small=tiny thing in it, publish this dictionary in toronto and bangalore";
+        Dictionary dict = (Dictionary) tra.transformIntoPojo(promptText, Dictionary.class.getName(),"","");
+        Assertions.assertEquals(dict.getWordMeanings().keySet().size(),2);
+        Assertions.assertEquals(dict.getWordMeanings().get("small"),"tiny thing");
+    }
+
+    @Test
+    public void testPojoArray() throws AIProcessingException, IOException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "Create a dictionary with name Hindi Kosh, add words big=large thing , small=tiny thing in it, publish this dictionary in toronto and bangalore. I just need list of locations fomr here";
+        List dict = (List) tra.transformIntoPojo(promptText, List.class.getName(),"","");
+        Assertions.assertTrue(dict.size()==2);
+        Assertions.assertTrue(dict.get(0).equals("Toronto"));
     }
     @Test
     public void testActionWithArray() throws AIProcessingException, IOException {
