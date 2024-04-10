@@ -18,6 +18,6 @@ public class Customer {
     private String reasonForCalling;
     @Prompt(ignore = true)
     private String location;
-    @Prompt(dateFormat = "yyyy-MM-dd")
+    @Prompt(dateFormat = "yyyy-MM-dd" ,describe = "if you dont find date provide todays date in fieldValue")
     private Date dateJoined;
 }

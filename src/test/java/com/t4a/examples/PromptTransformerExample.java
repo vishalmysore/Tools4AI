@@ -23,7 +23,7 @@ public class PromptTransformerExample {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws AIProcessingException{
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay.Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
         JsonUtils utils = new JsonUtils();

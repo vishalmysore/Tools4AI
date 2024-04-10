@@ -3,13 +3,11 @@ package com.t4a.test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.t4a.examples.ArrayAction;
-import com.t4a.examples.actions.Customer;
-import com.t4a.examples.actions.ListAction;
-import com.t4a.examples.actions.MapAction;
-import com.t4a.examples.actions.PlayerWithRestaurant;
+import com.t4a.examples.actions.*;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.basic.RestaurantPojo;
 import com.t4a.examples.pojo.Dictionary;
+import com.t4a.examples.pojo.MyDiary;
 import com.t4a.examples.pojo.Organization;
 import com.t4a.predict.OpenAIPromptTransformer;
 import com.t4a.processor.AIProcessingException;
@@ -158,6 +156,23 @@ public class OpenAIActionTest {
         Assertions.assertEquals(dict.getWordMeanings().keySet().size(),2);
         Assertions.assertEquals(dict.getWordMeanings().get("small"),"tiny thing");
     }
+
+    @Test
+    public void testPojoWithSeveralObjects() throws AIProcessingException, IOException {
+        OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+        String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
+        MyDiary dict = (MyDiary) tra.transformIntoPojo(promptText, MyDiary.class.getName(),"","");
+        log.info(dict.toString());
+    }
+
+    @Test
+    public void testActionWithSeveralObjects() throws AIProcessingException, IOException {
+        OpenAiActionProcessor tra = new OpenAiActionProcessor();
+        String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
+        MyDiaryAction action = new MyDiaryAction();
+        MyDiary dict = (MyDiary) tra.processSingleAction(promptText,action);
+        log.info(dict.toString());
+    }
     @Test
     public void testPojoWithMapAndArrayInsideClass() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
@@ -182,6 +197,17 @@ public class OpenAIActionTest {
         ArrayAction action = new ArrayAction();
         Customer[] org = (Customer[]) processor.processSingleAction(promptText,action);
         Assertions.assertTrue(org.length == 2);
+
+
+    }
+
+    @Test
+    public void testActionWithArrayOfObject() throws AIProcessingException, IOException {
+        OpenAiActionProcessor processor = new OpenAiActionProcessor();
+        String promptText = "Vishal Mysore is going to restaurant on 2nd August, he is going to gym on 3rd septembr and then he is Celebrating Diwali on 11 Nov";
+        ArrayOfObjectAction action = new ArrayOfObjectAction();
+        String[] org = (String[]) processor.processSingleAction(promptText,action);
+        Assertions.assertTrue(org.length == 3);
 
 
     }

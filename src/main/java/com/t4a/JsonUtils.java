@@ -62,6 +62,10 @@ public class JsonUtils {
     public Object populateObject(JSONObject jsonObject) throws Exception {
         String className = jsonObject.getString("className");
         Class<?> clazz = Class.forName(className);
+        return populateObject(clazz,jsonObject);
+    }
+
+    public Object populateObject(Class clazz,JSONObject jsonObject) throws Exception {
         Object instance = null;
         if (clazz.getName().equalsIgnoreCase("java.util.Map")) {
             instance = new HashMap<>();
@@ -120,6 +124,15 @@ public class JsonUtils {
                             for (int j = 0; j < jsonArray.length(); j++) {
                                 Array.set(array, j, jsonArray.optString(j));
                             }
+                        }else if ("Date".equalsIgnoreCase(componentType)) {
+                            array = new Date[jsonArray.length()];
+                            for (int j = 0; j < jsonArray.length(); j++) {
+                                String dateFormat = fieldObj.optString("dateFormat");
+                                if(dateFormat.trim().length()<1)
+                                    dateFormat = "yyyy-MM-dd";
+                                SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+                                Array.set(array, j, format.parse(jsonArray.optString(j)));
+                            }
                         } else {
                             // Handle other component types or custom objects
                             array = null; // Placeholder, adjust as necessary
@@ -128,13 +141,15 @@ public class JsonUtils {
                         field.set(instance, array);
                     }
                 } else if ("date".equalsIgnoreCase(fieldType)) {
+                    String dateStr = null;
                     try {
-                        String dateStr = (String) fieldObj.getString("fieldValue");
+                         dateStr = (String) fieldObj.getString("fieldValue");
                         SimpleDateFormat sdf = new SimpleDateFormat(fieldObj.getString("dateFormat"));
                         Date d = sdf.parse(dateStr);
                         field.set(instance, d);
 
                     } catch (ParseException e) {
+                        log.error("error parsing "+dateStr+" in format "+fieldObj.getString("dateFormat")+" for "+fieldName+" for "+instance.getClass().getName());
                         e.printStackTrace();
 
                     }
@@ -464,6 +479,7 @@ public class JsonUtils {
 
 
         JSONObject methodJson = new JSONObject();
+
         methodJson.put("methodName", method.getName());
 
         JSONArray parameters = new JSONArray();
@@ -515,21 +531,20 @@ public class JsonUtils {
                 paramJson.put("type", parameter.getType().getSimpleName());
                 Annotation[] annotations = parameter.getDeclaredAnnotations();
                 JSONObject fieldJson = new JSONObject();
-                if (promptAnnotation != null) {
-
-                    // Check if describe field is present in @Prompt annotation
-                    if (!promptAnnotation.describe().isEmpty()) {
-                        paramJson.put("fieldDescription", promptAnnotation.describe());
-                    }
-
-                    // Check if format field is present in @Prompt annotation
-                    if (!promptAnnotation.dateFormat().isEmpty()) {
-                        paramJson.put("dateFormat", promptAnnotation.dateFormat());
-                    }
-                }
                 paramJson.put("fieldValue", "");
             }
+            if (promptAnnotation != null) {
 
+                // Check if describe field is present in @Prompt annotation
+                if (!promptAnnotation.describe().isEmpty()) {
+                    paramJson.put("fieldDescription", promptAnnotation.describe());
+                }
+
+                // Check if format field is present in @Prompt annotation
+                if (!promptAnnotation.dateFormat().isEmpty()) {
+                    paramJson.put("dateFormat", promptAnnotation.dateFormat());
+                }
+            }
             parameters.put(paramJson);
         }
 

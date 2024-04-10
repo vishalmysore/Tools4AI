@@ -98,7 +98,13 @@ public class JavaMethodInvoker {
                 JsonUtils utils = new JsonUtils();
                 Object elementValue = null;
                 try {
-                    elementValue = utils.populateObject(jsonArray.getJSONObject(i));
+
+                    Object insideObject = jsonArray.get(i);
+                    if(insideObject instanceof JSONObject){
+                        elementValue = utils.populateObject((JSONObject) insideObject);
+                    } else {
+                        elementValue = getValue(insideObject,componentType,paramObj);
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

@@ -68,10 +68,17 @@ public class OpenAiActionProcessor implements AIProcessor{
                     break;
                 }
             }
-
+            if(m== null) {
+                throw new AIProcessingException("Method name should matches the actionName  "+action.getActionName()+" class "+action.getClass().getName());
+            }
             String jsonStr = utils.convertMethodTOJsonString(m);
-            jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
-            System.out.println(jsonStr);
+            try {
+                jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
+            }
+            catch(Exception e) {
+             throw new AIProcessingException(" Make sure openAiKey is set either in tools4Ai.properties or as runtime parameter -DopenAiKey=");
+            }
+            log.info(jsonStr);
             JavaMethodInvoker invoke = new JavaMethodInvoker();
             Object obj[] = invoke.parse(jsonStr);
             List<Object> parameterValues = (List<Object>) obj[1];

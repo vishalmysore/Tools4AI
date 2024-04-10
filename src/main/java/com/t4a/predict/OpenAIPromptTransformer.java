@@ -51,6 +51,9 @@ public class OpenAIPromptTransformer implements PromptTransformer{
         }
 
     }
+
+
+
     @Override
     public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
         try {
@@ -60,7 +63,7 @@ public class OpenAIPromptTransformer implements PromptTransformer{
             if(clazz.getName().equalsIgnoreCase("java.util.Map")) {
                 jsonStr = util.buildBlankMapJsonObject(null).toString(4); ;
 
-            } if(clazz.getName().equalsIgnoreCase("java.util.List")) {
+            } else if(clazz.getName().equalsIgnoreCase("java.util.List")) {
                 jsonStr = util.buildBlankListJsonObject(null).toString(4); ;
 
             }else {
