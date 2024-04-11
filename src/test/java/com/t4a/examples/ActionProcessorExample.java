@@ -2,13 +2,13 @@ package com.t4a.examples;
 
 import com.t4a.examples.actions.PlayerWithRestaurant;
 import com.t4a.processor.AIProcessingException;
-import com.t4a.processor.ActionProcessor;
+import com.t4a.processor.GeminiActionProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ActionProcessorExample {
     public static void main(String[] args) throws AIProcessingException {
-       ActionProcessor processor = new ActionProcessor();
+       GeminiActionProcessor processor = new GeminiActionProcessor();
        String result = (String)processor.processSingleAction(" Customer name is Vishal Mysore, his computer needs repair and he is in Toronto");
        log.debug(result);
 

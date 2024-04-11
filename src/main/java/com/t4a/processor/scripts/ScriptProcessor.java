@@ -3,7 +3,7 @@ package com.t4a.processor.scripts;
 import com.google.gson.Gson;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.AIProcessor;
-import com.t4a.processor.ActionProcessor;
+import com.t4a.processor.GeminiActionProcessor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ public  class ScriptProcessor {
 
     public ScriptProcessor() {
         gson = new Gson();
-        actionProcessor = new ActionProcessor();
+        actionProcessor = new GeminiActionProcessor();
     }
     public ScriptProcessor(Gson gson) {
         this.gson = gson;

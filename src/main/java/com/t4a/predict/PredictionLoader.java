@@ -224,7 +224,15 @@ public class PredictionLoader {
         String realParms = getCommaSeparatedKeys(params);
         prmpt = prmpt.replace("params_values",realParms);
         log.debug(prmpt);
-        return openAiChatModel.generate(prmpt);
+        if(aiProvider == AIPlatform.OPENAI) {
+            return openAiChatModel.generate(prmpt);
+        } else {
+            try {
+                return ResponseHandler.getText(chatExplain.sendMessage(prmpt));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     public Object[] getComplexActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params, Gson gson)  {
         Object[] paramsRet = new Object[params.keySet().size()];
@@ -270,17 +278,24 @@ public class PredictionLoader {
             if(AIPlatform.GEMINI == aiProvider) {
                 String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else"));
                 log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
-                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName.trim())).getGroupInfo()).trim();
                 log.info(" list of actions "+actionNameList);
                 response = chat.sendMessage(buildPrompt(prompt, 1,actionNameList));
-                actionName = ResponseHandler.getText(response);
+                actionName = ResponseHandler.getText(response).trim();
+                actionNameList = ","+actionNameList+",";
                 if(!actionNameList.toString().contains(","+actionName+",")) {
-                    while(numRetries++<NUM_OF_RETRIES) {
-                        log.debug(" got "+actionName+" Trying again "+numRetries);
-                        response = chat.sendMessage(buildPrompt(prompt, 1,actionNameList));
-                        actionName = ResponseHandler.getText(response);
-                        if(actionNameList.toString().contains(","+actionName+",")) {
-                            break;
+                    response = chat.sendMessage("give me just the action name from this query { "+actionName+"}");
+                    actionName = ResponseHandler.getText(response).trim();
+                    if(actionNameList.toString().contains(","+actionName+",")) {
+                        log.info(" Got the name correct "+actionName);
+                    } else {
+                        while (numRetries++ < NUM_OF_RETRIES) {
+                            log.debug(" got " + actionName + " Trying again " + numRetries);
+                            response = chat.sendMessage(buildPrompt(prompt, 1, actionNameList));
+                            actionName = ResponseHandler.getText(response);
+                            if (actionNameList.toString().contains("," + actionName + ",")) {
+                                break;
+                            }
                         }
                     }
 

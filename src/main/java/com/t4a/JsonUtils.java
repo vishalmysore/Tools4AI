@@ -26,7 +26,20 @@ import java.util.*;
 @Slf4j
 public class JsonUtils {
 
-    public static String convertClassObjectToJsonString(Schema classSchema) {
+
+    public  String extractJson(String jsonString) {
+        // Find the index of the first opening bracket
+        int startIndex = jsonString.indexOf('{');
+        // Find the index of the last closing bracket
+        int endIndex = jsonString.lastIndexOf('}');
+
+        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+            // Extract the substring between the first '{' and the last '}'
+            return jsonString.substring(startIndex, endIndex + 1);
+        }
+        return null; // Return null if the structure is not as expected
+    }
+    public  String convertClassObjectToJsonString(Schema classSchema) {
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();

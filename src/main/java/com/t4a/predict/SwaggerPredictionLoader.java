@@ -172,7 +172,8 @@ public class SwaggerPredictionLoader {
                                     // Check if the schema is a reference
                                     if (mediaType.getSchema().get$ref() != null) {
                                         // Resolve $ref if present
-                                        String jsonString = JsonUtils.convertClassObjectToJsonString(resolveSchema(openAPI, mediaType.getSchema().get$ref()));
+                                        JsonUtils utils = new JsonUtils();
+                                        String jsonString = utils.convertClassObjectToJsonString(resolveSchema(openAPI, mediaType.getSchema().get$ref()));
                                       //  log.debug(jsonString + " for "+ actionName);
                                         ObjectMapper objectMapper = new ObjectMapper();
                                         Map<String, Object> map = objectMapper.readValue(jsonString, Map.class);

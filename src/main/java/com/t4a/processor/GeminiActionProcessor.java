@@ -25,7 +25,7 @@ import java.util.List;
 
 /**
  * <pre>
- * The main processor class, can execute single action or multiple action in sequence
+ * The main processor class, can execute single action or multiple action in sequence Uses Gemini Function calling
  * - based on prompt can predict and trigger action
  * - based on prompt can predict and trigger multiple actions sequentially
  * - based on prompt can predict and trigger multiple actions parallely
@@ -35,7 +35,7 @@ import java.util.List;
  * </pre>
  */
 @Slf4j
-public class ActionProcessor implements AIProcessor{
+public class GeminiActionProcessor implements AIProcessor{
 
     @Override
     public String query(String promptText) throws AIProcessingException {

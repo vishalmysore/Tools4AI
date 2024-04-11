@@ -8,7 +8,7 @@ import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.basic.RestaurantPojo;
 import com.t4a.predict.GeminiPromptTransformer;
 import com.t4a.processor.AIProcessingException;
-import com.t4a.processor.ActionProcessor;
+import com.t4a.processor.GeminiActionProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -51,7 +51,7 @@ public class ActionTest {
 
     @Test
     public void testComplexAction() throws AIProcessingException, IOException {
-        ActionProcessor processor = new ActionProcessor();
+        GeminiActionProcessor processor = new GeminiActionProcessor();
         String prm = "Sachin Tendulkar is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
                 "Maharaja restaurant in toronto with 4 of his friends on Indian Independence Day, can you notify him and the restarurant";
         PlayerWithRestaurant playerAc = new PlayerWithRestaurant();
@@ -66,7 +66,7 @@ public class ActionTest {
 
     @Test
     public void testHttpAction() throws AIProcessingException, IOException {
-        ActionProcessor processor = new ActionProcessor();
+        GeminiActionProcessor processor = new GeminiActionProcessor();
         String postABook = "post a book harry poster with id 189 the publish date is 2024-03-22 and the description is about harry who likes poster its around 500 pages  ";
         String result = (String)processor.processSingleAction(postABook);
         Assertions.assertNotNull(result);
@@ -79,7 +79,7 @@ public class ActionTest {
 
     @Test
     public void testShellAction() throws AIProcessingException, IOException {
-        ActionProcessor processor = new ActionProcessor();
+        GeminiActionProcessor processor = new GeminiActionProcessor();
         String shellAction = "An Employee joined the organization, his name is Vishal and his location is Toronto, save this information ";
         String result = (String)processor.processSingleAction(shellAction);
         Assertions.assertNotNull(result);
@@ -90,7 +90,7 @@ public class ActionTest {
 
     @Test
     public void testJavaMethod() throws AIProcessingException, IOException {
-        ActionProcessor processor = new ActionProcessor();
+        GeminiActionProcessor processor = new GeminiActionProcessor();
         String weatherAction = "ey I am in Toronto do you think i can go out without jacket";
         String result = (String)processor.processSingleAction(weatherAction);
         Assertions.assertNotNull(result);
@@ -100,7 +100,7 @@ public class ActionTest {
     }
     @Test
     public void testJavaMethodForFile() throws AIProcessingException, IOException {
-        ActionProcessor processor = new ActionProcessor();
+        GeminiActionProcessor processor = new GeminiActionProcessor();
         String weatherAction = "My friends name is Vishal ,he lives in toronto.I want save this info locally";
         String result = (String)processor.processSingleAction(weatherAction);
         Assertions.assertNotNull(result);
@@ -111,7 +111,7 @@ public class ActionTest {
 
     @Test
     public void testHighRiskAction() throws AIProcessingException, IOException {
-        ActionProcessor processor = new ActionProcessor();
+        GeminiActionProcessor processor = new GeminiActionProcessor();
         String ecomActionPrmt = "Hey This is Vishal, the ecommerce Server is very slow and users are not able to do online shopping";
         String result = (String)processor.processSingleAction(ecomActionPrmt);
         log.info(result);

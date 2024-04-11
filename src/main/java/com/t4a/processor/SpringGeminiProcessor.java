@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContext;
  * creating the new one , the advantage of that is we can maintain spring dependency injection for all the beans
  * Uses Gemini for processing
  */
-public class SpringGeminiProcessor extends ActionProcessor{
+public class SpringGeminiProcessor extends GeminiActionProcessor {
 
     public SpringGeminiProcessor(ApplicationContext context)  {
         PredictionLoader.getInstance(context);
