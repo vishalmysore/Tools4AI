@@ -1,10 +1,8 @@
 package com.t4a.examples.basic;
 
-import com.t4a.annotations.Prompt;
-
 public class RestaurantDetails {
     String name;
-    @Prompt(describe = "convert location to hindi")
+    //@Prompt(describe = "convert location to hindi")
     String location;
 
     public String getLocation() {

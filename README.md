@@ -16,6 +16,7 @@
   - [JavaDocs](#-JavaDocs)
   - [GCLOUD](#GCLOUD)
   - [OpenAI](#OpenAi)
+  - [Anthropic](#anthropic)
   - [Tools Integration](#-Tools-Integration)
   - [Reference Examples](#-Reference-Examples)  
 - [Prediction Loaders](#-prediction-loaders)  
@@ -28,6 +29,9 @@
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
 
 🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
+
+👉 Live Demo - https://huggingface.co/spaces/VishalMysore/EnterpriseAIHub
+
 
 # 💡 Tools4AI
 Tools4AI is 100% Java implementation of Large Action Model (LAM) and can act as LLM agent for integration with enterprise 
@@ -97,6 +101,9 @@ You have to mention your project id from Gcloud
 
 If you plan to use OpenAI instead of Gemini you will need OpenAI api key
 
+## Anthropic
+
+If you plan to use Anthropic you will need anthropic api key https://docs.anthropic.com/claude/reference/getting-started-with-the-api
 
 ## 👉 Quick Start
 ```

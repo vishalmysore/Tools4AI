@@ -1,4 +1,4 @@
-package com.t4a.predict;
+package com.t4a.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,9 @@ import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.t4a.api.JavaClassExecutor;
+import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
+import com.t4a.transform.PromptTransformer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

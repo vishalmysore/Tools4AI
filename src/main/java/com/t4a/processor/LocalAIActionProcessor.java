@@ -1,6 +1,8 @@
 package com.t4a.processor;
 
 import com.t4a.api.AIAction;
+import com.t4a.detect.ExplainDecision;
+import com.t4a.detect.HumanInLoop;
 
 public class LocalAIActionProcessor implements AIProcessor {
     @Override

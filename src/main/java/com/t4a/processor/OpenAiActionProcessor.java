@@ -3,7 +3,9 @@ package com.t4a.processor;
 import com.google.gson.Gson;
 import com.t4a.JsonUtils;
 import com.t4a.api.*;
-import com.t4a.predict.AIPlatform;
+import com.t4a.api.AIPlatform;
+import com.t4a.detect.ExplainDecision;
+import com.t4a.detect.HumanInLoop;
 import com.t4a.predict.PredictionLoader;
 import lombok.extern.slf4j.Slf4j;
 

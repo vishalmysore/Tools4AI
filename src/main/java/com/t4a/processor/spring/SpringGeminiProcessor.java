@@ -1,6 +1,7 @@
-package com.t4a.processor;
+package com.t4a.processor.spring;
 
 import com.t4a.predict.PredictionLoader;
+import com.t4a.processor.GeminiActionProcessor;
 import org.springframework.context.ApplicationContext;
 
 /**

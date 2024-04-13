@@ -1,4 +1,4 @@
-package com.t4a.processor;
+package com.t4a.detect;
 /**
  * The {@code ExplainDecision} interface represents a mechanism for AI to explain decisions
  * regarding a particular prompt text, method name, and reason. AI will call this back

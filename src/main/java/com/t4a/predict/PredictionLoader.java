@@ -16,10 +16,8 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.annotations.ActivateLoader;
 import com.t4a.annotations.Predict;
-import com.t4a.api.AIAction;
-import com.t4a.api.ActionGroup;
-import com.t4a.api.ActionList;
-import com.t4a.api.ActionType;
+import com.t4a.api.*;
+import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.Getter;
@@ -67,9 +65,17 @@ public class PredictionLoader {
     private String projectId;
     private String location;
     private String modelName;
+
+    @Getter
+    private ChatLanguageModel anthropicChatModel;
+    private String anthropicModelName;
+    private boolean anthropicLogReqFlag;
+    private boolean anthropicLogResFlag;
+
     @Getter
     private ChatLanguageModel openAiChatModel;
     private String openAiKey;
+    private String claudeKey;
     @Getter
     private String serperKey;
     private String actionGroupJson;
@@ -121,6 +127,15 @@ public class PredictionLoader {
             openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
         }
 
+        if(claudeKey!=null) {
+             anthropicChatModel = AnthropicChatModel.builder()
+                    .apiKey(claudeKey)
+                    .modelName(anthropicModelName)
+                    .logRequests(anthropicLogReqFlag)
+                    .logResponses(anthropicLogResFlag)
+                     .maxTokens(4000)
+                    .build();
+        }
     }
 
     public String getProjectId() {
@@ -144,20 +159,29 @@ public class PredictionLoader {
             Properties prop = new Properties();
             prop.load(inputStream);
             // Read properties
-            projectId = prop.getProperty("projectId");
+            projectId = prop.getProperty("gemini.projectId");
             if(projectId != null)
                 projectId = projectId.trim();
-            location = prop.getProperty("location");
+            location = prop.getProperty("gemini.location");
             if(location != null)
                 location = location.trim();
-            modelName = prop.getProperty("modelName");
+            modelName = prop.getProperty("gemini.modelName");
             if(modelName != null)
                     modelName = modelName.trim();
+
+            anthropicModelName = prop.getProperty("anthropic.modelName");
+            anthropicLogReqFlag = Boolean.parseBoolean(prop.getProperty("anthropic.logRequests", "false"));
+            anthropicLogResFlag = Boolean.parseBoolean(prop.getProperty("anthropic.logResponse", "false"));
+            if(anthropicModelName != null)
+                anthropicModelName = anthropicModelName.trim();
             openAiKey = prop.getProperty("openAiKey");
             if(openAiKey != null)
                 openAiKey = openAiKey.trim();
             if(openAiKey == null || openAiKey.trim().length() <1) {
                 openAiKey = System.getProperty("openAiKey");
+            }
+            if(claudeKey == null || claudeKey.trim().length() <1) {
+                claudeKey = System.getProperty("claudeKey");
             }
             serperKey = prop.getProperty("serperKey");
             if(serperKey == null || serperKey.trim().length() <1) {
@@ -171,6 +195,7 @@ public class PredictionLoader {
             log.debug("modelName: " + modelName);
             log.debug("serperKey: " + serperKey);
             log.debug("openAiKey: " + openAiKey);
+            log.debug("claudeKey: " + claudeKey);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -226,6 +251,8 @@ public class PredictionLoader {
         log.debug(prmpt);
         if(aiProvider == AIPlatform.OPENAI) {
             return openAiChatModel.generate(prmpt);
+        } if(aiProvider == AIPlatform.ANTHROPIC) {
+            return anthropicChatModel.generate(prmpt);
         } else {
             try {
                 return ResponseHandler.getText(chatExplain.sendMessage(prmpt));
@@ -312,6 +339,23 @@ public class PredictionLoader {
                 action = getAiAction(actionName);
                 if(action == null) {
                     actionName = openAiChatModel.generate("provide action name from this and nothing else - "+actionName);
+                    action = getAiAction(actionName);
+                }
+                if(action == null) {
+                    log.debug("action not found , trying again");
+                    actionName = fetchActionNameFromList(actionName);
+                    log.debug("Predicted action by AI is "+actionName);
+                    action = getAiAction(actionName);
+                }
+            }else if (AIPlatform.ANTHROPIC == aiProvider) {
+                String groupName = anthropicChatModel.generate(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else");
+                log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
+                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+                actionName = anthropicChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuffer(actionNameList)));
+                actionName = actionName.replace("()","");
+                action = getAiAction(actionName);
+                if(action == null) {
+                    actionName = anthropicChatModel.generate("provide action name from this and nothing else - "+actionName);
                     action = getAiAction(actionName);
                 }
                 if(action == null) {

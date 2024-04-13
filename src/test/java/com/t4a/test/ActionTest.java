@@ -6,7 +6,7 @@ import com.t4a.examples.actions.Customer;
 import com.t4a.examples.actions.PlayerWithRestaurant;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.basic.RestaurantPojo;
-import com.t4a.predict.GeminiPromptTransformer;
+import com.t4a.transform.GeminiPromptTransformer;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.GeminiActionProcessor;
 import lombok.extern.slf4j.Slf4j;

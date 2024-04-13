@@ -1,13 +1,15 @@
-package com.t4a.predict;
+package com.t4a.transform;
 
 import com.google.gson.Gson;
 import com.t4a.JsonUtils;
+import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
+import com.t4a.transform.PromptTransformer;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class OpenAIPromptTransformer implements PromptTransformer{
+public class OpenAIPromptTransformer implements PromptTransformer {
     private Gson gson ;
     private ChatLanguageModel openAiChatModel;
     public OpenAIPromptTransformer(Gson gson) {

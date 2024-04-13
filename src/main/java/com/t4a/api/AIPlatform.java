@@ -1,4 +1,4 @@
-package com.t4a.predict;
+package com.t4a.api;
 
 /**
  * Multi Cloud AI platform
@@ -6,5 +6,6 @@ package com.t4a.predict;
 public enum AIPlatform {
     GEMINI,
     OPENAI,
-    LOCALAI
+    LOCALAI,
+    ANTHROPIC
 }

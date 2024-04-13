@@ -1,6 +1,5 @@
 package com.t4a.processor;
 
-import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.t4a.JsonUtils;
 import com.t4a.api.*;
@@ -13,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+
 @Slf4j
-public class GeminiV2ActionProcessor implements AIProcessor{
-    private Gson gson ;
-    public GeminiV2ActionProcessor(Gson gson) {
+public class AnthropicActionProcessor implements AIProcessor {
+    private Gson gson;
+
+    public AnthropicActionProcessor(Gson gson) {
 
         this.gson = gson;
     }
@@ -24,36 +25,39 @@ public class GeminiV2ActionProcessor implements AIProcessor{
 
     @Override
     public String query(String promptText) throws AIProcessingException {
-        return PredictionLoader.getInstance().getOpenAiChatModel().generate(promptText);
+        return PredictionLoader.getInstance().getAnthropicChatModel().generate(promptText);
     }
-    public GeminiV2ActionProcessor() {
+
+    public AnthropicActionProcessor() {
         this.gson = new Gson();
     }
 
     @Override
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
-        return processSingleAction(promptText,null,humanVerification,explain);
+        return processSingleAction(promptText, null, humanVerification, explain);
     }
 
-    public Object processSingleAction(String promptText, AIAction action)  throws AIProcessingException {
-        return processSingleAction(promptText, action, null,null);
+    public Object processSingleAction(String promptText, AIAction action) throws AIProcessingException {
+        return processSingleAction(promptText, action, null, null);
     }
-    public Object processSingleAction(String promptText, String actionName)  throws AIProcessingException {
+
+    public Object processSingleAction(String promptText, String actionName) throws AIProcessingException {
         AIAction action = PredictionLoader.getInstance().getAiAction(actionName);
-        if(action == null) {
-            throw new AIProcessingException(" action not found "+actionName);
+        if (action == null) {
+            throw new AIProcessingException(" action not found " + actionName);
         }
-        return processSingleAction(promptText, action, null,null);
+        return processSingleAction(promptText, action, null, null);
     }
+
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         if (action == null) {
-            action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.GEMINI);
-            if(action.getActionRisk() == ActionRisk.HIGH) {
-                log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI "+action.getActionName());
-                return "This is a high risk action will not proceed "+action.getActionName();
+            action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.ANTHROPIC);
+            if (action.getActionRisk() == ActionRisk.HIGH) {
+                log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI " + action.getActionName());
+                return "This is a high risk action will not proceed " + action.getActionName();
             }
         }
-        if(action.getActionType() == ActionType.JAVAMETHOD) {
+        if (action.getActionType() == ActionType.JAVAMETHOD) {
             log.debug(action + "");
             JsonUtils utils = new JsonUtils();
             Method m = null;
@@ -66,18 +70,17 @@ public class GeminiV2ActionProcessor implements AIProcessor{
                     break;
                 }
             }
-            if(m== null) {
-                throw new AIProcessingException("Method name should matches the actionName  "+action.getActionName()+" class "+action.getClass().getName());
+            if (m == null) {
+                throw new AIProcessingException("Method name should matches the actionName  " + action.getActionName() + " class " + action.getClass().getName());
             }
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
-                jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json"));
-            }
-            catch(Exception e) {
-                throw new AIProcessingException(" Make sure Gemini properties are set in tools4Ai.properties ");
+                jsonStr = PredictionLoader.getInstance().getAnthropicChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
+            } catch (Exception e) {
+                throw new AIProcessingException(" Make sure Anthropic properties are set in tools4Ai.properties ");
             }
             log.info(jsonStr);
-            if(!jsonStr.trim().startsWith("{")) {
+            if (!jsonStr.trim().startsWith("{")) {
                 jsonStr = utils.extractJson(jsonStr.trim());
             }
             JavaMethodInvoker invoke = new JavaMethodInvoker();
@@ -101,16 +104,16 @@ public class GeminiV2ActionProcessor implements AIProcessor{
             }
             return result;
         } else {
-            log.debug(action+"");
+            log.debug(action + "");
             JavaMethodExecutor methodExecutor = new JavaMethodExecutor();
             methodExecutor.mapMethod(action);
-            log.debug(methodExecutor.getProperties()+"");
-            String params = PredictionLoader.getInstance().getActionParams(action,prompt,AIPlatform.GEMINI,methodExecutor.getProperties());
+            log.debug(methodExecutor.getProperties() + "");
+            String params = PredictionLoader.getInstance().getActionParams(action, prompt, AIPlatform.ANTHROPIC, methodExecutor.getProperties());
             Object obj = null;
             try {
-                if(humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
+                if (humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
                     obj = methodExecutor.action(params, action);
-                    log.debug(" the action returned "+obj);
+                    log.debug(" the action returned " + obj);
                 }
             } catch (InvocationTargetException e) {
                 throw new AIProcessingException(e);
@@ -123,7 +126,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
     }
 
 
-    public Object processSingleAction(String prompt) throws AIProcessingException{
-        return processSingleAction(prompt, new LoggingHumanDecision(),new LogginggExplainDecision());
+    public Object processSingleAction(String prompt) throws AIProcessingException {
+        return processSingleAction(prompt, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 }

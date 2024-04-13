@@ -1,4 +1,4 @@
-package com.t4a.processor;
+package com.t4a.detect;
 
 public interface FeedbackLoop {
     boolean isAIResponseValid();

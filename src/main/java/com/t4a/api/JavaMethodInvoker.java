@@ -106,7 +106,8 @@ public class JavaMethodInvoker {
                         elementValue = getValue(insideObject,componentType,paramObj);
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    log.warn("not able to populate "+paramObj);
+                    //throw new RuntimeException(e);
                 }
 
                 Array.set(array, i, elementValue);

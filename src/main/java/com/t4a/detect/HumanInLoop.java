@@ -1,4 +1,4 @@
-package com.t4a.processor;
+package com.t4a.detect;
 
 import java.util.Map;
 

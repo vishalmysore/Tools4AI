@@ -1,5 +1,7 @@
 package com.t4a.processor;
 
+import com.t4a.detect.FeedbackLoop;
+import com.t4a.detect.HumanInLoop;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -9,7 +11,7 @@ import java.util.Map;
  * human validation and return true or false
  */
 @Slf4j
-public class LoggingHumanDecision implements HumanInLoop{
+public class LoggingHumanDecision implements HumanInLoop {
     @Override
     public FeedbackLoop allow(String promptText, String methodName, Map<String, Object> params) {
 

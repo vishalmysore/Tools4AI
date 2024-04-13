@@ -7,10 +7,10 @@ import com.t4a.examples.actions.Customer;
 import com.t4a.examples.actions.ListAction;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.pojo.Organization;
-import com.t4a.predict.GeminiPromptTransformer;
-import com.t4a.predict.OpenAIPromptTransformer;
+import com.t4a.transform.GeminiPromptTransformer;
+import com.t4a.transform.OpenAIPromptTransformer;
 import com.t4a.predict.PredictionLoader;
-import com.t4a.predict.PromptTransformer;
+import com.t4a.transform.PromptTransformer;
 import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 

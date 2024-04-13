@@ -1,6 +1,7 @@
-package com.t4a.processor;
+package com.t4a.processor.spring;
 
 import com.t4a.predict.PredictionLoader;
+import com.t4a.processor.OpenAiActionProcessor;
 import org.springframework.context.ApplicationContext;
 /**
  * This will ensure that the action classes are loaded from Spring Applicaiton Context rather than
