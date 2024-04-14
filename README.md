@@ -16,9 +16,8 @@
   - [JavaDocs](#-JavaDocs)
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
-  - [Anthropic](#anthropic)
-  - [Tools Integration](#-Tools-Integration)
-  - [Reference Examples](#-Reference-Examples)  
+  - [Anthropic](#anthropic)  
+  - [Reference Examples](#-reference-examples)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)   
@@ -106,81 +105,59 @@ Instructions here https://help.openai.com/en/articles/4936850-where-do-i-find-my
 
 If you plan to use Anthropic you will need anthropic api key https://docs.anthropic.com/claude/reference/getting-started-with-the-api
 
-## 👉 Quick Start
-```
-mvn exec:java
-```
-The above command will run ```WeatherSearchExample``` with a prompt ```Hey I am in Toronto do you think i can go out without jacket``` 
-as we all know Gemini AI (or any other AI) does not have real time weather information, Tools4AI will pick the location information from the query 
-and do an api call to https://open-meteo.com/ for real time weather infomraiton which is fed back to Gemini which gives back the answer 
-<br>
-If you rerun this program with a new prompt ```"Hey I am in Delhi do you think i can go out without jacket, also let me know best places to visit here"``` this
-will get the weather information and feed it back to Gemini and again go back with additional question and gets back with landmarks in delhi
-
-## 🛠️ Tools Integration
-```
-   AITools tools = new AITools(projectId,location,modelName);
-   RestaurantPojo pojo = (RestaurantPojo)tools.invokeClass(promptText,"test.com.ta.bridge.RestaurantPojo","RestaurantClass","Create Pojo from the prompt");
-   return pojo.toString();
-
-```
-The above code can be executed with prompts like this <br> 
-```
-can you book a dinner reseration for Vishal and his family of 4 at Maharaj on Indian Independence day and make sure its cancellable
-
-```
-and it will create Pojo and can invoke method directly <br>
-
-for example here is how a java method is mapped
-
-```
-tools.invokeMethod (prompt, JavaClassNAME, JavaMethodName)
-```
-The above code will map the NLP prompt to a  java method and execute the method , the argment in the method will be  
-pouplated from the prompt directly so for example if you have prompt like this  
-```
-prompt ="give me all the Hindi movie showtimes for sunday"
-```
-
-and Map it to a JavaClass ```MovieImpl``` with Method ```getShowTime("language","day") ```
-then the ```tools.invoke``` should be called with ```tools.invokeMethod(prompt,"com.package.MovieImpl","getShowTime") ```
-The parameters and everything will be mapped automtically using AI and method will get invoked results will be parsed to  
-AI and other tools can be chained together, in this case ```language``` will be hindi and ```day``` will be mapped to sunday    
-
-Other Such invoke integrations are
-```
-tools.invokeTibco // this will create a json object and inject in Tibco based on the parameters extracted from prompts
-tools.invokeDatabase //this will insert the data directly into sql db based on prompts
-tools.invokeCustomApplication //parameters can be extracted from prompt and coverted into xml or json which can then be used  
-                              //to call custom applicaiton for example Jira ALM etc
-tools.invokeSolace
-tools.invokeHTTPPOST // Call rest api based on prompt
-tools.invokeHTTPGET  // call rest post method
-tools.invokeMongo
-```
-These can be called with one single action method as well
-```
-tools.action(ActionType.HTTPGET, <list of arguments including prompt>)
-```
-
-or
-
-```
-tools.action(ActionType.JAVAMETHOD, <list of arguments including prompt>)
-
-```
 
 ## ✈️ Reference Examples
-These are references which i have created using the above AIAction , this shows how the actionable prompts work  
-``` RecipeTasteFinder  ```  This class demonstrates function calling with mapped Hashmap response <br>
-``` RecipeTasteAndDiet  ```  Execute the class for function chaining with 2 functions mapped Hashmap response <br>
-``` MultiBot  ```  Run this class for function chaining with 2 functions Airline booking and restaurant booking<br>
-``` UdoKhaoDekho  ```  3 functions Flight , Restaurant and Movie <br>
+
+[OpenAI](src/test/java/com/t4a/test/OpenAIActionTest.java)
+[Gemini](src/test/java/com/t4a/test/ActionTest.java)
+[Anthropic](src/test/java/com/t4a/test/AnthropicActionTest.java)
+[Gemini1.5Pro](src/test/java/com/t4a/test/AnthropicActionTest.java)
+
+
+Convert prompt to Pojo
+```
+OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
+Organization org = (Organization) tra.transformIntoPojo(promptText, Organization.class.getName(),"","");
+Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
+Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
+```
+The above code will map the prompt and convert into Organization Pojo object 
+
+Call action based on prompt, in case its MyDiary action [MyDiaryAction](src/test/java/com/t4a/examples/actions/MyDiaryAction.java)
+
+```
+ OpenAiActionProcessor tra = new OpenAiActionProcessor();
+ String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
+ MyDiaryAction action = new MyDiaryAction();
+ MyDiary dict = (MyDiary) tra.processSingleAction(promptText,action);
+ log.info(dict.toString()); 
+```
+
+If you do not specify any action then it will be predicted based on prompt and groups
+
+```
+MyDiary dict = (MyDiary) tra.processSingleAction(promptText)
+```
+
+A simple Java action can be written like this 
+
+```
+@Predict(actionName = "buildMyDiary" , description = "This is my diary details")
+public class MyDiaryAction implements JavaMethodAction {
+    public MyDiary buildMyDiary(MyDiary diary) {
+        //take whatever action you want to take
+        return diary;
+    }
+} 
+```
+Here the actionName is ```buildMyDiary```
+
 
 ## 🚀 Actionable Prompts
 These are the example of actionable prompts , directly take action based on the prompts
 
-```public class MongoAction implements AIAction {``` 
+```public class MongoAction implements JavaMethodAction {``` 
 The MongoAction class implements the AIAction interface, indicating that it defines an action to be performed
 within an AI system. Specifically, this class is responsible for inserting data into a MongoDB database.
 Method within the MongoAction class will be automatically invoked when this action is triggered,
