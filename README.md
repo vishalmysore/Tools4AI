@@ -17,7 +17,7 @@
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)  
-  - [Reference Examples](##%EF%B8%8F-reference-examples)  
+  - [Reference Examples](#%EF%B8%8F-reference-examples)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)   
@@ -117,7 +117,10 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 Convert prompt to Pojo
 ```
 OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
-String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
+String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on 
+Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Hrithik roshan is 
+another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce
+ Day";
 Organization org = (Organization) tra.transformIntoPojo(promptText, Organization.class.getName(),"","");
 Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
 Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
@@ -128,7 +131,10 @@ Call action based on prompt, in case its MyDiary action [MyDiaryAction](src/test
 
 ```
  OpenAiActionProcessor tra = new OpenAiActionProcessor();
- String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
+ String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August 
+ and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are 
+ coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.
+ My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
  MyDiaryAction action = new MyDiaryAction();
  MyDiary dict = (MyDiary) tra.processSingleAction(promptText,action);
  log.info(dict.toString()); 
@@ -151,53 +157,68 @@ public class MyDiaryAction implements JavaMethodAction {
     }
 } 
 ```
-Here the actionName is ```buildMyDiary```
+Here the actionName is ```buildMyDiary```, MyDiary pojo will be created automatically based on prompt
 
+Action groups
 
-## 🚀 Actionable Prompts
-These are the example of actionable prompts , directly take action based on the prompts
-
-```public class MongoAction implements JavaMethodAction {``` 
-The MongoAction class implements the AIAction interface, indicating that it defines an action to be performed
-within an AI system. Specifically, this class is responsible for inserting data into a MongoDB database.
-Method within the MongoAction class will be automatically invoked when this action is triggered,
-typically in response to specific user prompts or interactions.
-
-## 🛸 Predictable Prompts
 ```
-@Predict 
-public class MongoAction implements AIAction { 
+@Predict(actionName = "googleSearch", description = "search the web for information",
+ groupName = "personal", groupDescription = "all personal actions are here") 
+```
+Actions have to be annontated with @Predict to be added to prediction list , they can be grouped together with
+the groupName.
+
+Custom Pojo
+
+There are different annontations which be used for special Pojo mapping
+
+Mapping list
+
+```
+    @ListType(Employee.class)
+    List<Employee> em;
+    @ListType(String.class)
+    List<String> locations; 
+```
+
+Mapping Maps in objects
 ``` 
-```@Predict```Annotation will make our action predictable ,By annotating the MongoAction class with @Predict,
-we are indicating that this action is predictable. This annotation instructs the AI system to automatically
-call the methods within the MongoAction class when it determines that the user prompt matches the action.
-In other words, if the input prompt provided by the user aligns with the behavior represented by the
-MongoAction, the AI system will invoke the corresponding method within MongoAction to execute the action of 
-inserting data into the MongoDB database. This predictive capability streamlines user interactions by 
-automatically executing relevant actions based on user prompts.
+@Predict(actionName = "addSports",description = "add new Sports into the map")
+public class MapAction implements JavaMethodAction {
 
-```
-@Predict
-public class SendEmailAction implements AIAction {
-public void sendEmail(String recipient, String message) {
-// Logic to send an email to the specified recipient with the given message
-}
-}
-```
-This action is responsible for sending an email. When annotated with @Predict, the AI system will automatically
-call the execute method of SendEmailAction when it predicts that the user prompt is related to sending an email.
+    public Map<Integer,String> addSports(@MapKeyType(Integer.class)  @MapValueType(String.class) Map<Integer,String> mapOfSportsName) {
 
-```
-@Predict
-public class SearchAction implements AIAction {
-    public void search(String query) {
-        // Logic to perform a search with the specified query
+        return mapOfSportsName;
     }
 }
 
 ```
-When annotated with @Predict, the AI system will call the execute method of SearchAction when it 
-predicts that the user prompt is related to searching for information.
+
+Special Instructions
+
+``` 
+@Prompt(describe = "convert this to Hindi")
+private String reasonForCalling;
+```
+
+The above instruciton will fetch the resson for calling from the user prompt and convert it into Hindi and put it
+inside the reasonForCalling String
+
+Ignore Field
+```
+    @Prompt(ignore = true)
+    private String location;
+```
+If you do not want to populate a filed you can annontate it as ignore
+
+Format Date
+
+```
+    @Prompt(dateFormat = "yyyy-MM-dd" ,describe = "if you dont find date provide todays date in fieldValue")
+    private Date dateJoined;
+```
+The above will fetch the dateJoined from the prompt and convert it into the format.
+
 
 ## 🧱 Prediction Loaders
 
