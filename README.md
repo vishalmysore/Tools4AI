@@ -14,7 +14,7 @@
 - [Tools4AI](#-Tools4AI)
   - [SetUp](#setup)
   - [JavaDocs](#-JavaDocs)
-  - [GCLOUD](#GCLOUD)
+  - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)
   - [Tools Integration](#-Tools-Integration)
@@ -88,7 +88,7 @@ check for latest version here  https://repo1.maven.org/maven2/io/github/vishalmy
 Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools4ai/latest/index.html
 
 
-## GCLOUD
+## Gemini
 Make sure you have gcloud project set up and have enabled vertex API
 ```     
         String projectId = "cookgptserver" // this can be any server name you create in your GCloud
@@ -100,6 +100,7 @@ You have to mention your project id from Gcloud
 ## OpenAI
 
 If you plan to use OpenAI instead of Gemini you will need OpenAI api key
+Instructions here https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key
 
 ## Anthropic
 
