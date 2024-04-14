@@ -292,8 +292,8 @@ Result will look something like this
 
 ``` MyTranslatePojo(answerInHindi=पनीर इतना अच्छा है, answerInPunJabi=ਪਨੀਰ ਬਹੁਤ ਵਧੀਆ ਹੈ, answerInTamil=பனீர் எப்படி நல்லது) ```
 
-High Risk Actions
-There might be some actions which you do not want to be triggered automatically but passed explictly in the processor
+**High Risk Actions**  
+There might be some actions which you do not want to be triggered automatically but passed explicitly in the processor
 such actions can be annotated with HighRisk
 
 ```
