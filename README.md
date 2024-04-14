@@ -117,13 +117,13 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 Convert prompt to Pojo
 ```
 OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
-String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on 
-Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Hrithik roshan is 
+String promptText = "Mhahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on 
+Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Krithik roshan is 
 another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce
  Day";
 Organization org = (Organization) tra.transformIntoPojo(promptText, Organization.class.getName(),"","");
-Assertions.assertTrue(org.getEm().get(0).getName().contains("Shahrukh"));
-Assertions.assertTrue(org.getEm().get(1).getName().contains("Hrithik"));
+Assertions.assertTrue(org.getEm().get(0).getName().contains("Mhahrukh"));
+Assertions.assertTrue(org.getEm().get(1).getName().contains("Krithik"));
 ```
 The above code will map the prompt and convert into Organization Pojo object 
 
@@ -134,7 +134,7 @@ Call action based on prompt, in case its MyDiary action [MyDiaryAction](src/test
  String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August 
  and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are 
  coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.
- My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
+ My customer name is Sumitabh Bacchan he wants to learn acting form me he joined on labor day";
  MyDiaryAction action = new MyDiaryAction();
  MyDiary dict = (MyDiary) tra.processSingleAction(promptText,action);
  log.info(dict.toString()); 
@@ -218,6 +218,52 @@ Format Date
     private Date dateJoined;
 ```
 The above will fetch the dateJoined from the prompt and convert it into the format.
+
+Muliple Special Prompts
+```
+ public class MyTranslatePojo {
+    @Prompt(describe = "translate to Hindi")
+    String answerInHindi;
+    @Prompt(describe = "translate to Punjabi")
+    String answerInPunJabi;
+
+    @Prompt(describe = "translate to Tamil")
+    String answerInTamil;
+}
+```
+The above Pojo can be used to translate the prompt in multiple language and populate the result in variables
+
+``` 
+OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
+String promptTxt = "paneer is so good";
+MyTranslatePojo myp = (MyTranslatePojo)tra.transformIntoPojo(promptTxt,MyTranslatePojo.class.getName());
+System.out.println(myp);
+```
+
+Another example of simple action is here
+``` 
+@Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what does that person like")
+public class SimpleAction implements JavaMethodAction {
+
+    public String whatFoodDoesThisPersonLike(String name) {
+        if("vishal".equalsIgnoreCase(name))
+        return "Paneer Butter Masala";
+        else if ("vinod".equalsIgnoreCase(name)) {
+            return "aloo kofta";
+        }else
+            return "something yummy";
+    }
+
+}
+```
+
+When you send a prompt to any action processor 
+``` 
+ String cookPromptSingleText = "My friends name is Vishal ," +
+                "I dont know what to cook for him today.";
+```
+
+The above action will be called with ``` name = Vishal```
 
 
 ## 🧱 Prediction Loaders
