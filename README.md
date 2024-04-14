@@ -17,7 +17,7 @@
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)  
-  - [Reference Examples](#-reference-examples)  
+  - [Reference Examples](##%EF%B8%8F-reference-examples)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)   
