@@ -235,6 +235,10 @@ MyTranslatePojo myp = (MyTranslatePojo)tra.transformIntoPojo(promptTxt,MyTransla
 System.out.println(myp);
 ```
 
+Result will look something like this 
+
+``` MyTranslatePojo(answerInHindi=पनीर इतना अच्छा है, answerInPunJabi=ਪਨੀਰ ਬਹੁਤ ਵਧੀਆ ਹੈ, answerInTamil=பனீர் எப்படி நல்லது) ```
+
 Another example of simple action is here
 ``` 
 @Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what does that person like")
