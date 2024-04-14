@@ -17,7 +17,7 @@
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)  
-  - [Reference Examples](#-reference-examples)  
+  - [Reference Examples](#reference-examples-)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)   
@@ -106,12 +106,12 @@ Instructions here https://help.openai.com/en/articles/4936850-where-do-i-find-my
 If you plan to use Anthropic you will need anthropic api key https://docs.anthropic.com/claude/reference/getting-started-with-the-api
 
 
-## ✈️ Reference Examples
+## Reference Examples ✈️
 
-[OpenAI](src/test/java/com/t4a/test/OpenAIActionTest.java)
-[Gemini](src/test/java/com/t4a/test/ActionTest.java)
-[Anthropic](src/test/java/com/t4a/test/AnthropicActionTest.java)
-[Gemini1.5Pro](src/test/java/com/t4a/test/AnthropicActionTest.java)
+[OpenAI](src/test/java/com/t4a/test/OpenAIActionTest.java)  
+[Gemini](src/test/java/com/t4a/test/ActionTest.java)  
+[Anthropic](src/test/java/com/t4a/test/AnthropicActionTest.java)  
+[Gemini1.5Pro](src/test/java/com/t4a/test/AnthropicActionTest.java)  
 
 
 Convert prompt to Pojo
