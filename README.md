@@ -109,6 +109,7 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 [Gemini1.5Pro](src/test/java/com/t4a/test/AnthropicActionTest.java)  
 
 
+## Java Actions
 Convert prompt to Pojo
 ```
 OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
@@ -263,6 +264,12 @@ When you send a prompt to any action processor
 ```
 
 The above action will be called with ``` name = Vishal```
+
+## HTTP Actions (Swagger)
+
+## Shell Actions 
+
+## Custom HTTP Actions
 
 ## 📘 JavaDocs
 
