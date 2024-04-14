@@ -118,6 +118,42 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 
 
 ## Java Actions
+
+Fastest way to create action is by writing a java class which implements ```JavaMethodAction``` and  annotate with ```Predict```
+annotation.
+
+Example of simple action is here
+``` 
+@Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what does that person like")
+public class SimpleAction implements JavaMethodAction {
+
+    public String whatFoodDoesThisPersonLike(String name) {
+        if("vishal".equalsIgnoreCase(name))
+        return "Paneer Butter Masala";
+        else if ("vinod".equalsIgnoreCase(name)) {
+            return "aloo kofta";
+        }else
+            return "something yummy";
+    }
+
+}
+```
+
+When you send a prompt to any action processor
+``` 
+ String cookPromptSingleText = "My friends name is Vishal ," +
+                "I dont know what to cook for him today.";
+ OpenAiActionProcessor tra = new OpenAiActionProcessor();
+ String functionResponse = (String)tra.processSingleAction(cookPromptSingleText);
+ //functionResponse will be Paneer Butter Masala
+ String aiResponse = tra.query(cookPromptSingleText,functionResponse);
+ //aiResponse will be well forumulated response something like "Hey looks like your friend likes Panner Butter Masala
+```
+
+The above action will be called with ``` name = Vishal``` automatically based on the action name and prompt type.
+AI will figure out that this is the correct action to call. You can also add grouping information in Predict annotation to 
+make it even more targeted. You don't have to specify the Action explicitly if its not a High Risk action
+
 Convert prompt to Pojo
 ```
 OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
@@ -248,30 +284,40 @@ Result will look something like this
 
 ``` MyTranslatePojo(answerInHindi=पनीर इतना अच्छा है, answerInPunJabi=ਪਨੀਰ ਬਹੁਤ ਵਧੀਆ ਹੈ, answerInTamil=பனீர் எப்படி நல்லது) ```
 
-Another example of simple action is here
-``` 
-@Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what does that person like")
-public class SimpleAction implements JavaMethodAction {
+High Risk Actions
+There might be some actions which you do not want to be triggered automatically but passed explictly in the processor
+such actions can be annotated with HighRisk
 
-    public String whatFoodDoesThisPersonLike(String name) {
-        if("vishal".equalsIgnoreCase(name))
-        return "Paneer Butter Masala";
-        else if ("vinod".equalsIgnoreCase(name)) {
-            return "aloo kofta";
-        }else
-            return "something yummy";
+```
+@Predict(actionName = "restartTheECOMServer",description = "will be used to restart the server" , 
+riskLevel = ActionRisk.HIGH, groupName = "customer support", 
+groupDescription = "actions related to customer support")
+public class ServerRestartAction implements JavaMethodAction {
+    public String restartTheECOMServer(String reasonForRestart, String requestedBy) {
+        return " Server has been restarted by "+requestedBy+" due to following reason "+reasonForRestart;
     }
-
 }
-```
 
-When you send a prompt to any action processor 
+```
+The above action is marked as High Risk action so if you try to call it with simple prompt
+
 ``` 
- String cookPromptSingleText = "My friends name is Vishal ," +
-                "I dont know what to cook for him today.";
+OpenAiActionProcessor processor = new OpenAiActionProcessor()
+String restartPrompt = "Hey I am Vishal , restart the server as its very slow ";
+String functionResponse = (String)processor.processSingleAction("restartPrompt");
+
+```
+It will not be triggered even though the AI will correct identify which action to trigger still it will get blocked.
+
+You will have to call it explicitly this way
+
+``` 
+OpenAiActionProcessor processor = new OpenAiActionProcessor()
+String restartPrompt = "Hey I am Vishal , restart the server as its very slow ";
+ServerRestartAction restartAction = new ServerRestartAction();
+String functionResponse = (String)processor.processSingleAction("restartPrompt", restartAction);
 ```
 
-The above action will be called with ``` name = Vishal```
 
 ## HTTP Actions (Swagger)
 
