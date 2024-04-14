@@ -12,12 +12,12 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-- [SetUp](#setup)
-  - [JavaDocs](#-JavaDocs)
+- [SetUp](#setup)  
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)  
 - [Reference Examples](#%EF%B8%8F-reference-examples)  
+  - [JavaDocs](#-javadocs)
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)   
@@ -81,11 +81,6 @@ Or use as maven dependency
 
 ```
 check for latest version here  https://repo1.maven.org/maven2/io/github/vishalmysore/tools4ai/
-
-## 📘 JavaDocs
-
-Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools4ai/latest/index.html
-
 
 ## Gemini
 Make sure you have gcloud project set up and have enabled vertex API
@@ -264,6 +259,10 @@ When you send a prompt to any action processor
 ```
 
 The above action will be called with ``` name = Vishal```
+
+## 📘 JavaDocs
+
+Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools4ai/latest/index.html
 
 
 ## 🧱 Prediction Loaders
