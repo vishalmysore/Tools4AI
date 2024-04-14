@@ -12,12 +12,12 @@
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-  - [SetUp](#setup)
+- [SetUp](#setup)
   - [JavaDocs](#-JavaDocs)
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)  
-  - [Reference Examples](#%EF%B8%8F-reference-examples)  
+- [Reference Examples](#%EF%B8%8F-reference-examples)  
 - [Prediction Loaders](#-prediction-loaders)  
 - [Response Validation](#response-validation)
     - [Hallucination](#hallucination)   
@@ -63,7 +63,7 @@ set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinn
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
 
-## SetUp
+# SetUp
 
 Download source and build from scratch
 
@@ -106,7 +106,7 @@ Instructions here https://help.openai.com/en/articles/4936850-where-do-i-find-my
 If you plan to use Anthropic you will need anthropic api key https://docs.anthropic.com/claude/reference/getting-started-with-the-api
 
 
-## ✈️ Reference Examples
+# ✈️ Reference Examples
   
 [OpenAI](src/test/java/com/t4a/test/OpenAIActionTest.java)  
 [Gemini](src/test/java/com/t4a/test/ActionTest.java)  
