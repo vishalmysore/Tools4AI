@@ -314,7 +314,7 @@ Read the complete link on how this has been deployed [here](https://www.linkedin
 
 ## Shell Actions 
 
-Any kind of script can be coverted into Action for function calling by configuring the script in shell_actions.yml
+Any kind of script can be coverted into Action for function calling by configuring the script in [shell_actions.yml](src/test/resources/shell_actions.yaml)
 ```
 groups:
   - name: Employee Actions
@@ -341,7 +341,7 @@ As You can notice we are not passing the action explicitly , it will be predicte
 
 ## Custom HTTP Actions
 
-If you do not have swagger URL and would like to configure HTTP rest end points it can be done via Custom HTTP Actions by configuring them in http_actions.json
+If you do not have swagger URL and would like to configure HTTP rest end points it can be done via Custom HTTP Actions by configuring them in [http_actions.json](src/test/resources/http_actions.json)
 
 
 ``` 
