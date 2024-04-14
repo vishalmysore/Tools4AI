@@ -275,9 +275,137 @@ The above action will be called with ``` name = Vishal```
 
 ## HTTP Actions (Swagger)
 
+Any application expsoing HTTP REST API can be converted into actions for example here is my sample [swagger_actions.json.](https://huggingface.co/spaces/VishalMysore/EnterpriseAIHub/blob/main/swagger_actions.json)
+
+``` 
+{
+  "endpoints" : [
+    {
+      "swaggerurl": "https://fakerestapi.azurewebsites.net/swagger/v1/swagger.json",
+      "group": "Books Author Activity",
+      "description": "This is for all the actions related books , Authors, photos and users trying to read books and view photos",
+      "baseurl": "https://fakerestapi.azurewebsites.net/",
+      "id": "fakerestapi"
+    },
+    {
+      "swaggerurl": "https://petstore3.swagger.io/api/v3/openapi.json",
+      "baseurl": "https://petstore3.swagger.io/",
+      "group": "Petstore API",
+      "description": "This is for all the actions related to pets",
+      "id": "petstore"
+    } ,
+    {
+      "swaggerurl": "https://vishalmysore-instaservice.hf.space/v3/api-docs",
+      "baseurl": "https://vishalmysore-instaservice.hf.space/",
+      "group": "Enterprise Support and Tickeing System",
+      "description": "This action is to create tickets track bugs across the enterprise",
+      "id": "InstaService"
+    }      
+  ]
+}
+```
+
+Books related api are put in a group called Books Author Activity group, similarly Petstore API is group for all the rest calls exposed by Petstore app 
+if you provide a prompt "create a ticket for me with number 1 and issue is compture not working" 
+it will automatically create a ticket on InstaService you can view the logs here https://huggingface.co/spaces/VishalMysore/InstaService?logs=container
+
+Read the complete link on how this has been deployed [here](https://www.linkedin.com/pulse/enterprise-ai-hub-llm-agent-built-openai-java-vishal-mysore-0p7oc/?trackingId=iZoQDW3%2BTH6j0%2FkbEMUxFw%3D%3D)
+
+
 ## Shell Actions 
 
+Any kind of script can be coverted into Action for function calling by configuring the script in shell_actions.yml
+```
+groups:
+  - name: Employee Actions
+    description : This is actions for all the new employees
+    scripts:
+      - scriptName: "test_script.cmd"
+        actionName: saveEmployeeInformation
+        parameters: employeeName,employeeLocation
+        description: This is a command which will save employee information
+		
+```
+
+Here we are creating a group called Employee Actions and adding an action called ``` saveEmployeeInformation``` into the group. The parameters it takes are ```employeeName ``` and ```employeeLocation ```
+Calling and actionprocessor with these kinds of prompt will trigger this Action
+``` 
+ OpenAiActionProcessor tra = new OpenAiActionProcessor();
+ String promptText = "A new employee joined today in Toronto. Her name is Madhuri Khanna"; 
+ tra.processSingleAction(promptText);
+ 
+```
+		
+As You can notice we are not passing the action explicitly , it will be predicted by the AI at runtime and triggered.
+
+
 ## Custom HTTP Actions
+
+If you do not have swagger URL and would like to configure HTTP rest end points it can be done via Custom HTTP Actions by configuring them in http_actions.json
+
+
+``` 
+{
+  "endpoints": [
+    {
+      "actionName": "getUserDetails",
+      "description" : " this will fetch User details from the user inventory corporate application",
+      "url": "https://api.example.com/users/",
+      "type": "GET",
+      "input_object": [
+      {
+        "name": "userId",
+        "type": "path_parameter",
+        "description": "User ID"
+      }
+      ],
+
+      "output_object": {
+        "type": "json",
+        "description": "User object"
+      },
+      "auth_interface": {
+        "type": "Bearer Token",
+        "description": "Authentication token required"
+      }
+    },
+    {
+      "actionName": "somethingNotVeryUseful",
+      "url": "https://api.example.com/temperature",
+      "description" : " this will get real time temperature from the weather api",
+      "type": "GET",
+      "input_object":[
+        {
+          "name": "locationId",
+          "type": "query_parameter",
+          "description": "Location ID"
+      }
+      ],
+      "output_object": {
+        "type": "json",
+        "description": "Real-time temperature data"
+      },
+      "auth_interface": {
+        "type": "API Key",
+        "description": "API key required"
+      }
+    }
+  ]
+}
+
+```
+
+## Spring integration
+
+All the action processors have Spring integration as well 
+
+``` 
+SpringAnthropicProcessor springAnthropic = new SpringAnthropicProcessor(applicaitonContext)
+```
+
+look at the example here https://github.com/vishalmysore/SpringActions
+
+
 
 ## 📘 JavaDocs
 
