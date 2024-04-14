@@ -196,7 +196,7 @@ Special Instructions
 private String reasonForCalling;
 ```
 
-The above instruciton will fetch the resson for calling from the user prompt and convert it into Hindi and put it
+The above instruction will fetch the reason for calling from the user prompt and convert it into Hindi and put it
 inside the reasonForCalling String
 
 Ignore Field
