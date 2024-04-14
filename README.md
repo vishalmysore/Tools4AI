@@ -156,6 +156,10 @@ AI will figure out that this is the correct action to call. You can also add gro
 make it even more targeted. You don't have to specify the Action explicitly if its not a High Risk action
 
 **Convert prompt to Pojo**
+
+You can convert any Prompt into a Java Pojo object. Your pojo can be simple or complex , it can have arrays, list
+maps and other pojos and they all will be mapped based on the prompt
+
 ```
 OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
 String promptText = "Mhahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on 
@@ -325,7 +329,9 @@ String functionResponse = (String)processor.processSingleAction("restartPrompt",
 
 ## HTTP Actions (Swagger)
 
-Any application expsoing HTTP REST API can be converted into actions for example here is my sample [swagger_actions.json.](https://huggingface.co/spaces/VishalMysore/EnterpriseAIHub/blob/main/swagger_actions.json)
+Any application exposing HTTP REST API can be converted into actions for example here is my sample [swagger_actions.json.](https://huggingface.co/spaces/VishalMysore/EnterpriseAIHub/blob/main/swagger_actions.json)
+All the REST calls such as get, post, put, delete will be mapped to actions and based on the prompts they can be triggered
+automatically
 
 ``` 
 {
@@ -358,6 +364,23 @@ Any application expsoing HTTP REST API can be converted into actions for example
 Books related api are put in a group called Books Author Activity group, similarly Petstore API is group for all the rest calls exposed by Petstore app 
 if you provide a prompt "create a ticket for me with number 1 and issue is compture not working" 
 it will automatically create a ticket on InstaService you can view the logs here https://huggingface.co/spaces/VishalMysore/InstaService?logs=container
+
+```
+@Test
+public void testHttpActionOpenAI() throws AIProcessingException, IOException {
+  OpenAiActionProcessor processor = new OpenAiActionProcessor();
+  String postABook = "post a book harry poster with id 189 the publish date is 2024-03-22 and the description 
+  is about harry who likes poster its around 500 pages  ";
+  String result = (String)processor.processSingleAction(postABook);
+  Assertions.assertNotNull(result);
+  String success = TestHelperOpenAI.getInstance().sendMessage("Look at this message - "+result+" -
+   was it a success? - Reply in true or false only");
+  log.debug(success);
+  Assertions.assertTrue("True".equalsIgnoreCase(success));
+
+} 
+```
+This will automatically trigger HTTP post call with correct parameters 
 
 Read the complete link on how this has been deployed [here](https://www.linkedin.com/pulse/enterprise-ai-hub-llm-agent-built-openai-java-vishal-mysore-0p7oc/?trackingId=iZoQDW3%2BTH6j0%2FkbEMUxFw%3D%3D)
 
