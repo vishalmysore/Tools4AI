@@ -17,12 +17,20 @@
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)  
 - [Reference Examples](#%EF%B8%8F-reference-examples)  
+  - [Java Actions](#java-actions)
+  - [HTTP REST Actions](#http-actions-swagger)
+  - [Shell Actions](#shell-actions)
+  - [Custom HTTP Actions](#custom-http-actions)
   - [JavaDocs](#-javadocs)
 - [Prediction Loaders](#-prediction-loaders)  
+  - [Java Prediction Loader](#-java-prediction-loaders)
+  - [Swagger Prediction Loader](#%EF%B8%8F-swagger-prediction-loader)
+  - [Shell Prediction Loader](#%EF%B8%8F-shell-prediction-loader)
+  - [Extended Prediction Loader](#%EF%B8%8F-extended-prediction-loader)  
 - [Response Validation](#response-validation)
-    - [Hallucination](#hallucination)   
+  - [Hallucination](#hallucination)   
 - [Autonomous Agent](#autonomous-agent)
-
+  -[Action Scripts](#action-script)
   
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
