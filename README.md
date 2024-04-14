@@ -124,7 +124,8 @@ annotation.
 
 Example of simple action is here
 ``` 
-@Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what does that person like")
+@Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what 
+does that person like")
 public class SimpleAction implements JavaMethodAction {
 
     public String whatFoodDoesThisPersonLike(String name) {
@@ -154,7 +155,7 @@ The above action will be called with ``` name = Vishal``` automatically based on
 AI will figure out that this is the correct action to call. You can also add grouping information in Predict annotation to 
 make it even more targeted. You don't have to specify the Action explicitly if its not a High Risk action
 
-Convert prompt to Pojo
+**Convert prompt to Pojo**
 ```
 OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
 String promptText = "Mhahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on 
@@ -165,9 +166,11 @@ Organization org = (Organization) tra.transformIntoPojo(promptText, Organization
 Assertions.assertTrue(org.getEm().get(0).getName().contains("Mhahrukh"));
 Assertions.assertTrue(org.getEm().get(1).getName().contains("Krithik"));
 ```
-The above code will map the prompt and convert into Organization Pojo object 
+The above code will map the prompt and convert into [Organization](src/test/java/com/t4a/examples/pojo/Organization.java) Pojo object 
 
-Call action based on prompt, in case its MyDiary action [MyDiaryAction](src/test/java/com/t4a/examples/actions/MyDiaryAction.java)
+**Trigger Action**
+
+Trigger action based on prompt, in case its MyDiary action [MyDiaryAction](src/test/java/com/t4a/examples/actions/MyDiaryAction.java)
 
 ```
  OpenAiActionProcessor tra = new OpenAiActionProcessor();
@@ -180,11 +183,12 @@ Call action based on prompt, in case its MyDiary action [MyDiaryAction](src/test
  log.info(dict.toString()); 
 ```
 
-If you do not specify any action then it will be predicted based on prompt and groups
+If you do not specify any action then it will be predicted based on prompt and groups for example
 
 ```
 MyDiary dict = (MyDiary) tra.processSingleAction(promptText)
 ```
+As you can notice we are not passing any action with the prompt the AI will figure out the action correctly
 
 A simple Java action can be written like this 
 
@@ -199,7 +203,7 @@ public class MyDiaryAction implements JavaMethodAction {
 ```
 Here the actionName is ```buildMyDiary```, MyDiary pojo will be created automatically based on prompt
 
-Action groups
+**Action groups**
 
 ```
 @Predict(actionName = "googleSearch", description = "search the web for information",
@@ -208,7 +212,7 @@ Action groups
 Actions have to be annontated with @Predict to be added to prediction list , they can be grouped together with
 the groupName.
 
-Custom Pojo
+**Custom Pojo**
 
 There are different annontations which be used for special Pojo mapping
 
@@ -241,8 +245,8 @@ Special Instructions
 private String reasonForCalling;
 ```
 
-The above instruction will fetch the reason for calling from the user prompt and convert it into Hindi and put it
-inside the reasonForCalling String
+The above instruction will fetch the reason for calling from the user prompt and convert it into Hindi and put
+it inside the ```reasonForCalling``` String
 
 Ignore Field
 ```
