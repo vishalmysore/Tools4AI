@@ -65,7 +65,8 @@ public class PredictionLoader {
     private String projectId;
     private String location;
     private String modelName;
-
+    @Getter
+    private String geminiVisionModelName;
     @Getter
     private ChatLanguageModel anthropicChatModel;
     private String anthropicModelName;
@@ -168,7 +169,9 @@ public class PredictionLoader {
             modelName = prop.getProperty("gemini.modelName");
             if(modelName != null)
                     modelName = modelName.trim();
-
+            geminiVisionModelName =   prop.getProperty("gemini.vision.modelName");
+            if(geminiVisionModelName != null)
+                geminiVisionModelName = geminiVisionModelName.trim();
             anthropicModelName = prop.getProperty("anthropic.modelName");
             anthropicLogReqFlag = Boolean.parseBoolean(prop.getProperty("anthropic.logRequests", "false"));
             anthropicLogResFlag = Boolean.parseBoolean(prop.getProperty("anthropic.logResponse", "false"));

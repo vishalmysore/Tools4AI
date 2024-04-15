@@ -12,4 +12,7 @@ public interface AIProcessor {
     public default String query(String question, String answer) throws AIProcessingException {
         return query(" this was my question { "+ question+"} context - "+answer);
     }
+    public default String summarize(String prompt) throws AIProcessingException {
+        return query(" Summarize this { "+ prompt+"}" );
+    }
 }

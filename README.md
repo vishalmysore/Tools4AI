@@ -111,7 +111,7 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 
 # ✈️ Reference Examples
   
-[OpenAI](src/test/java/com/t4a/test/OpenAIActionTest.java)  
+[OpenAI](src/test/java/com/t4a/test/OpenAIActionTest.java)
 [Gemini](src/test/java/com/t4a/test/ActionTest.java)  
 [Anthropic](src/test/java/com/t4a/test/AnthropicActionTest.java)  
 [Gemini1.5Pro](src/test/java/com/t4a/test/AnthropicActionTest.java)  
@@ -122,7 +122,18 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 Fastest way to create action is by writing a java class which implements ```JavaMethodAction``` and  annotate with ```Predict```
 annotation.
 
-Example of simple action is here
+**Java Actions:** These are Java classes that implement the JavaMethodAction interface. They are designed to 
+perform specific actions based on prompts processed through Tools4AI.  
+**@Predict Annotation:** This annotation is used to define metadata about the action such as the action name
+and a description. It links specific methods within a Java class to specific prompts, enabling automatic 
+trigger of these methods when matched prompts are processed.  
+
+**Simple Action Example:** The example provided defines an action class SimpleAction that determines food preferences based on a person's name. 
+The @Predict annotation specifies this action should be triggered when a relevant prompt is processed.
+
+**Method Execution:** When a prompt like "My friend's name is Vishal, I don’t know what to cook for him today." 
+is processed, the ```whatFoodDoesThisPersonLike``` method is automatically called with "Vishal" as the argument, 
+and it returns "Paneer Butter Masala" as Vishal's preference. 
 ``` 
 @Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what 
 does that person like")
@@ -139,8 +150,12 @@ public class SimpleAction implements JavaMethodAction {
 
 }
 ```
+This class can contain any number of methods both public or private. But it needs to contain the method mentioned
+in ```actionName``` of ```Predict``` annotation. In this case it is ```whatFoodDoesThisPersonLike```. This method
+can contain any number of parameters (Objects, Pojos, Arrays etc) and can be of have any return value, everythign will 
+be mapped at runtime using prompt. Predict annotation also takes additional values for ActionRisk and GroupName.
 
-When you send a prompt to any action processor
+When you send a prompt to  action processor (OpenAIActionProcessor, GeminiActionProcessor or AnthoripicActionProcessor)
 ``` 
  String cookPromptSingleText = "My friends name is Vishal ," +
                 "I dont know what to cook for him today.";
@@ -220,7 +235,7 @@ the groupName.
 
 There are different annontations which be used for special Pojo mapping
 
-Mapping list
+**Mapping list**
 
 ```
     @ListType(Employee.class)
@@ -229,7 +244,7 @@ Mapping list
     List<String> locations; 
 ```
 
-Mapping Maps in objects
+**Mapping Maps in objects**
 ``` 
 @Predict(actionName = "addSports",description = "add new Sports into the map")
 public class MapAction implements JavaMethodAction {
@@ -242,7 +257,7 @@ public class MapAction implements JavaMethodAction {
 
 ```
 
-Special Instructions
+**Special Instructions**
 
 ``` 
 @Prompt(describe = "convert this to Hindi")
@@ -252,22 +267,23 @@ private String reasonForCalling;
 The above instruction will fetch the reason for calling from the user prompt and convert it into Hindi and put
 it inside the ```reasonForCalling``` String
 
-Ignore Field
+**Ignore Field**
 ```
     @Prompt(ignore = true)
     private String location;
 ```
-If you do not want to populate a filed you can annontate it as ignore
+If you do not want to populate a field you can annotate it as ignore
 
-Format Date
+**Format Date**
 
 ```
     @Prompt(dateFormat = "yyyy-MM-dd" ,describe = "if you dont find date provide todays date in fieldValue")
     private Date dateJoined;
 ```
-The above will fetch the dateJoined from the prompt and convert it into the format.
+The above will fetch the dateJoined from the prompt and convert it into the format. So if your prompt is
+"Book my dinner reservation on Indian Independence day" , the dateJoined will be 2024-08-15
 
-Muliple Special Prompts
+**Muliple Special Prompts**
 ```
  public class MyTranslatePojo {
     @Prompt(describe = "translate to Hindi")
@@ -475,6 +491,17 @@ All the action processors have Spring integration as well
 ``` 
 SpringAnthropicProcessor springAnthropic = new SpringAnthropicProcessor(applicaitonContext)
 ```
+``` 
+SpringGeminiProcessor springGemini = new SpringGeminiProcessor();
+```
+
+```  
+SpringOpenAIProcessor springOpenAI = new SpringOpenAIProcessor();
+```
+
+You can use this for spring injection and it works exactly as all other action processors , only difference is
+that instead of creating new action beans it will reuse the beans already created by spring
+
 
 look at the example here https://github.com/vishalmysore/SpringActions
 
