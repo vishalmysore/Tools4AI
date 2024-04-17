@@ -1,7 +1,6 @@
 package com.t4a.transform;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -34,14 +33,14 @@ import java.util.Map;
  */
 @Slf4j
 
-public class GeminiPromptTransformer implements PromptTransformer {
+public class GeminiV2PromptTransformer implements PromptTransformer {
     Gson gson;
 
-    public GeminiPromptTransformer(Gson gson) {
+    public GeminiV2PromptTransformer(Gson gson) {
         this.gson = gson;
     }
 
-    public GeminiPromptTransformer() {
+    public GeminiV2PromptTransformer() {
         gson = new Gson();
     }
 
@@ -129,46 +128,13 @@ public class GeminiPromptTransformer implements PromptTransformer {
      */
 
     public String transformIntoJson(String jsonString, String promptText, String funName, String description) throws AIProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
+
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
-            Map<String, Object> map = objectMapper.readValue(jsonString, Map.class);
-            JavaClassExecutor generator = new JavaClassExecutor(gson);
-            FunctionDeclaration functionDeclaration = generator.buildFunction(map,funName,description);
-
-            log.debug("Function declaration h1:");
-            log.debug(functionDeclaration.toString());
-
-
-            //add the function to the tool
-            Tool tool = Tool.newBuilder()
-                    .addFunctionDeclarations(functionDeclaration)
-                    .build();
-
-
-            GenerativeModel model =
-                    new GenerativeModel.Builder()
-                            .setModelName(PredictionLoader.getInstance().getModelName())
-                            .setVertexAi(vertexAI)
-                            .setTools(Arrays.asList(tool))
-                            .build();
-            ChatSession chat = model.startChat();
-
-            log.debug(String.format("Ask the question 1: %s", promptText));
-            GenerateContentResponse response = chat.sendMessage(promptText);
-
-            log.debug("\nPrint response 1 : ");
-            log.debug(ResponseHandler.getContent(response).toString());
-            Map<String,Object> mapReturn=  generator.getPropertyValuesMapMap(response);
-
-            jsonString = getGson().toJson(mapReturn);
-            log.debug(jsonString);
-            return jsonString;
+            return ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + promptText + "} - here is the json - " + jsonString + " - populate the fieldValue and return the json"));
 
         } catch (JsonProcessingException e) {
             throw new AIProcessingException(e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 

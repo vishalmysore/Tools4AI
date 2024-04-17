@@ -6,13 +6,14 @@ import com.google.cloud.vertexai.generativeai.ContentMaker;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.PartMaker;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.t4a.JsonUtils;
+import com.t4a.api.MimeType;
 import com.t4a.predict.PredictionLoader;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import javax.activation.MimetypesFileTypeMap;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -24,27 +25,109 @@ import java.net.URL;
 public class GeminiImageActionProcessor {
     public String imageToText(String imageNameAndPath) throws AIProcessingException{
          try {
-            return imageToText(readImageFile(imageNameAndPath));
+             String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
+            return imageToText(readImageFile(imageNameAndPath),mimeType, "Describe this?");
         } catch (IOException e) {
             throw new AIProcessingException(e);
         }
     }
+
+    public String imageToText(URL imageNameAndPath) throws AIProcessingException{
+        try {
+            File file = new File(imageNameAndPath.toURI());
+            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            return imageToText(readImageFile(file.getPath()),mimeType, "Describe this completely with values and each and every detail?");
+        } catch (Exception e) {
+            throw new AIProcessingException(e);
+        }
+    }
+
+    public String imageToJson(URL imageNameAndPath, String... names) throws AIProcessingException{
+        try {
+            JsonUtils utils = new JsonUtils();
+            String jsonStr = utils.createJson(names);
+            File file = new File(imageNameAndPath.toURI());
+            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            jsonStr= imageToText(readImageFile(file.getPath()),mimeType, "look at this image and populate corresponding values for those fields in fieldValue in this json "+jsonStr);
+            return utils.extractJson(jsonStr);
+        } catch (Exception e) {
+            throw new AIProcessingException(e);
+        }
+    }
+
+    public String imageToJson(URL imageNameAndPath, Class clazz) throws AIProcessingException{
+        try {
+            JsonUtils utils = new JsonUtils();
+            String jsonStr = utils.convertClassToJSONString(clazz);
+            File file = new File(imageNameAndPath.toURI());
+            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            jsonStr= imageToText(readImageFile(file.getPath()),mimeType, "look at this image and populate fieldValue in this json "+jsonStr);
+            return utils.extractJson(jsonStr);
+        } catch (Exception e) {
+            throw new AIProcessingException(e);
+        }
+    }
+    public Object imageToPojo(URL imageNameAndPath, Class clazz) throws AIProcessingException{
+        try {
+            JsonUtils utils = new JsonUtils();
+            String jsonStr = utils.convertClassToJSONString(clazz);
+            File file = new File(imageNameAndPath.toURI());
+            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            jsonStr= imageToText(readImageFile(file.getPath()),mimeType, "look at this image and populate fieldValue in this json "+jsonStr);
+            return utils.populateClassFromJson(jsonStr);
+        } catch (Exception e) {
+            throw new AIProcessingException(e);
+        }
+    }
+    public String imageToText(URL imageURL, String prompt) throws AIProcessingException{
+        try {
+            File file = new File(imageURL.toURI());
+            String imageNameAndPath = file.getPath();
+            String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
+            return imageToText(readImageFile(imageNameAndPath),mimeType, prompt);
+        } catch (Exception e) {
+            throw new AIProcessingException(e);
+        }
+    }
+    public String imageToText(String imageNameAndPath, String prompt) throws AIProcessingException{
+        try {
+            String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
+            return imageToText(readImageFile(imageNameAndPath),mimeType, prompt);
+        } catch (IOException e) {
+            throw new AIProcessingException(e);
+        }
+    }
+    public String imageToText(byte[] imageBytes,  String prompt) throws AIProcessingException{
+        return imageToText(imageBytes, MimeType.PNG.getMimeType(),prompt);
+
+    }
+
     public String imageToText(byte[] imageBytes) throws AIProcessingException{
+        return imageToText(imageBytes, MimeType.PNG.getMimeType(),"Describe this ?");
+
+    }
+
+    public String getValueFor(byte[] imageBytes, String element) throws AIProcessingException{
+        return imageToText(imageBytes, MimeType.PNG.getMimeType(),"get value for "+element);
+
+    }
+
+    public String imageToText(byte[] imageBytes, String mimeType, String prompt) throws AIProcessingException{
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
             GenerativeModel model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
             GenerateContentResponse response = null;
             try {
                 response = model.generateContent(
                         ContentMaker.fromMultiModalData(
-                                "Describe this?",
-                                PartMaker.fromMimeTypeAndData("image/jpg", imageBytes)));
+                                prompt,
+                                PartMaker.fromMimeTypeAndData(mimeType, imageBytes)));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
 
             String output = ResponseHandler.getText(response);
-            log.info(output);
+            log.debug(output);
             return output;
         }
     }
@@ -101,6 +184,7 @@ public class GeminiImageActionProcessor {
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
+
         } finally {
             // Close resources
             if (inputStream != null) {

@@ -2,6 +2,7 @@ package com.t4a;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonObject;
 import com.t4a.annotations.ListType;
 import com.t4a.annotations.MapKeyType;
 import com.t4a.annotations.MapValueType;
@@ -52,6 +53,7 @@ public class JsonUtils {
     }
 
     public Object populateClassFromJson(String json) throws Exception {
+        json = extractJson(json);
         JSONObject jsonObject = new JSONObject(json);
         return populateObject(jsonObject);
     }
@@ -80,141 +82,162 @@ public class JsonUtils {
 
     public Object populateObject(Class clazz,JSONObject jsonObject) throws Exception {
         Object instance = null;
-        if (clazz.getName().equalsIgnoreCase("java.util.Map")) {
-            instance = new HashMap<>();
-            JSONArray fieldsArray = jsonObject.getJSONArray("fields");
-            buildMapFromJsonArray(fieldsArray,(Map)instance);
-            return instance;
+        try {
+            if (clazz.getName().equalsIgnoreCase("java.util.Map")) {
+                instance = new HashMap<>();
+                JSONArray fieldsArray = jsonObject.getJSONArray("fields");
+                buildMapFromJsonArray(fieldsArray, (Map) instance);
+                return instance;
 
-        } if (clazz.getName().equalsIgnoreCase("java.util.List")) {
-            instance = new ArrayList<>();
-            JSONArray fieldsArray = jsonObject.getJSONArray("fields");
-            buildListFromJsonArray(fieldsArray,(List)instance);
-            return instance;
+            }
+            if (clazz.getName().equalsIgnoreCase("java.util.List")) {
+                instance = new ArrayList<>();
+                JSONArray fieldsArray = jsonObject.getJSONArray("fields");
+                buildListFromJsonArray(fieldsArray, (List) instance);
+                return instance;
 
-        }else {
-            instance = clazz.getDeclaredConstructor().newInstance();
+            } else {
+                instance = clazz.getDeclaredConstructor().newInstance();
 
 
-            JSONArray fields = jsonObject.getJSONArray("fields");
-            for (int i = 0; i < fields.length(); i++) {
-                JSONObject fieldObj = fields.getJSONObject(i);
-                String fieldName = fieldObj.getString("fieldName");
-                String fieldType = fieldObj.getString("fieldType");
-                Field field = clazz.getDeclaredField(fieldName);
-                field.setAccessible(true);
+                JSONArray fields = jsonObject.getJSONArray("fields");
+                for (int i = 0; i < fields.length(); i++) {
+                    JSONObject fieldObj = fields.getJSONObject(i);
+                    String fieldName = fieldObj.getString("fieldName");
+                    String fieldType = fieldObj.getString("fieldType");
+                    Field field = clazz.getDeclaredField(fieldName);
+                    field.setAccessible(true);
 
-                if ("String".equalsIgnoreCase(fieldType)) {
-                    field.set(instance, fieldObj.optString("fieldValue"));
-                } else if (fieldType.endsWith("[]")) { // Check if the field is an array
-                    JSONArray jsonArray = fieldObj.optJSONArray("fieldValue");
-                    if (jsonArray != null) {
-                        String componentType = fieldType.substring(0, fieldType.indexOf('['));
-                        Object array;
+                    if ("String".equalsIgnoreCase(fieldType)) {
+                        field.set(instance, fieldObj.optString("fieldValue"));
+                    } else if (fieldType.endsWith("[]")) { // Check if the field is an array
+                        JSONArray jsonArray = fieldObj.optJSONArray("fieldValue");
+                        if (jsonArray != null) {
+                            String componentType = fieldType.substring(0, fieldType.indexOf('['));
+                            Object array;
 
-                        if ("int".equalsIgnoreCase(componentType)) {
-                            array = new int[jsonArray.length()];
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                Array.setInt(array, j, jsonArray.optInt(j));
+                            if ("int".equalsIgnoreCase(componentType)) {
+                                array = new int[jsonArray.length()];
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    Array.setInt(array, j, jsonArray.optInt(j));
+                                }
+                            } else if ("double".equalsIgnoreCase(componentType)) {
+                                array = new double[jsonArray.length()];
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    Array.setDouble(array, j, jsonArray.optDouble(j));
+                                }
+                            } else if ("long".equalsIgnoreCase(componentType)) {
+                                array = new long[jsonArray.length()];
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    Array.setLong(array, j, jsonArray.optLong(j));
+                                }
+                            } else if ("boolean".equalsIgnoreCase(componentType)) {
+                                array = new boolean[jsonArray.length()];
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    Array.setBoolean(array, j, jsonArray.optBoolean(j));
+                                }
+                            } else if ("String".equalsIgnoreCase(componentType)) {
+                                array = new String[jsonArray.length()];
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    Array.set(array, j, jsonArray.optString(j));
+                                }
+                            } else if ("Date".equalsIgnoreCase(componentType)) {
+                                array = new Date[jsonArray.length()];
+                                for (int j = 0; j < jsonArray.length(); j++) {
+                                    String dateFormat = fieldObj.optString("dateFormat");
+                                    if (dateFormat.trim().length() < 1)
+                                        dateFormat = "yyyy-MM-dd";
+                                    SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+                                    Array.set(array, j, format.parse(jsonArray.optString(j)));
+                                }
+                            } else {
+                                // Handle other component types or custom objects
+                                array = null; // Placeholder, adjust as necessary
                             }
-                        } else if ("double".equalsIgnoreCase(componentType)) {
-                            array = new double[jsonArray.length()];
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                Array.setDouble(array, j, jsonArray.optDouble(j));
+
+                            field.set(instance, array);
+                        }
+                    } else if ("date".equalsIgnoreCase(fieldType)) {
+                        String dateStr = null;
+                        try {
+                            dateStr = (String) fieldObj.getString("fieldValue");
+                            SimpleDateFormat sdf = new SimpleDateFormat(fieldObj.getString("dateFormat"));
+                            Date d = sdf.parse(dateStr);
+                            field.set(instance, d);
+
+                        } catch (ParseException e) {
+                            log.error("error parsing " + dateStr + " in format " + fieldObj.getString("dateFormat") + " for " + fieldName + " for " + instance.getClass().getName());
+                            e.printStackTrace();
+
+                        }
+                    } else if ( ("Integer".equalsIgnoreCase(fieldType)))
+                                    {
+                        field.set(instance, fieldObj.getInt("fieldValue"));
+                    } else if (("Float".equalsIgnoreCase(fieldType))) {
+                        field.set(instance, fieldObj.getInt("fieldValue"));
+                    }
+                    else if (("Long".equalsIgnoreCase(fieldType))) {
+                        field.set(instance, fieldObj.getLong("fieldValue"));
+                    }
+                    else if ("Double".equalsIgnoreCase(fieldType)) {
+                        field.set(instance, fieldObj.getDouble("fieldValue"));
+                    }
+                    else if ("int".equalsIgnoreCase(fieldType)) {
+                        field.setInt(instance, fieldObj.getInt("fieldValue"));
+                    } else if ("boolean".equalsIgnoreCase(fieldType)) {
+                        field.setBoolean(instance, fieldObj.getBoolean("fieldValue"));
+                    } else if ("double".equalsIgnoreCase(fieldType)) {
+                        // Checking and parsing double value
+                        if (!fieldObj.optString("fieldValue").isEmpty()) {
+                            field.setDouble(instance, fieldObj.getDouble("fieldValue"));
+                        }
+                    } else if ("long".equalsIgnoreCase(fieldType)) {
+                        // Checking and parsing long value
+                        if (!fieldObj.optString("fieldValue").isEmpty()) {
+                            field.setLong(instance, fieldObj.getLong("fieldValue"));
+                        }
+                    } else if ("map".equalsIgnoreCase(fieldType)) {
+                        Map map = new HashMap();
+                        buildMapFromJsonArray(fieldObj.getJSONArray("fields"), map);
+                        field.set(instance, map);
+
+                    } else if ("list".equalsIgnoreCase(fieldType)) {
+                        JSONArray listArray = fieldObj.getJSONArray("fieldValue");
+                        String classNameList = fieldObj.getString("className");
+                        Class listClazz = Class.forName(classNameList);
+
+                        List objList = new ArrayList();
+                        for (Object obj : listArray
+                        ) {
+                            if (!listClazz.isPrimitive()
+                                    && !listClazz.equals(String.class)
+                                    && !listClazz.equals(Date.class)
+                                    && !listClazz.isArray()
+                                    && !List.class.isAssignableFrom(listClazz)) {
+                                objList.add(listClazz.cast(populateObject((JSONObject) obj)));
+                            } else {
+                                objList.add(listClazz.cast(obj));
                             }
-                        } else if ("long".equalsIgnoreCase(componentType)) {
-                            array = new long[jsonArray.length()];
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                Array.setLong(array, j, jsonArray.optLong(j));
-                            }
-                        } else if ("boolean".equalsIgnoreCase(componentType)) {
-                            array = new boolean[jsonArray.length()];
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                Array.setBoolean(array, j, jsonArray.optBoolean(j));
-                            }
-                        } else if ("String".equalsIgnoreCase(componentType)) {
-                            array = new String[jsonArray.length()];
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                Array.set(array, j, jsonArray.optString(j));
-                            }
-                        }else if ("Date".equalsIgnoreCase(componentType)) {
-                            array = new Date[jsonArray.length()];
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                String dateFormat = fieldObj.optString("dateFormat");
-                                if(dateFormat.trim().length()<1)
-                                    dateFormat = "yyyy-MM-dd";
-                                SimpleDateFormat format = new SimpleDateFormat(dateFormat);
-                                Array.set(array, j, format.parse(jsonArray.optString(j)));
-                            }
-                        } else {
-                            // Handle other component types or custom objects
-                            array = null; // Placeholder, adjust as necessary
                         }
 
-                        field.set(instance, array);
+                        field.set(instance, objList);
+                    } else if (fieldObj.has("fields")) {
+                        // Recursively populate nested objects
+                        Object nestedInstance = populateObject(fieldObj);
+                        field.set(instance, nestedInstance);
                     }
-                } else if ("date".equalsIgnoreCase(fieldType)) {
-                    String dateStr = null;
-                    try {
-                         dateStr = (String) fieldObj.getString("fieldValue");
-                        SimpleDateFormat sdf = new SimpleDateFormat(fieldObj.getString("dateFormat"));
-                        Date d = sdf.parse(dateStr);
-                        field.set(instance, d);
-
-                    } catch (ParseException e) {
-                        log.error("error parsing "+dateStr+" in format "+fieldObj.getString("dateFormat")+" for "+fieldName+" for "+instance.getClass().getName());
-                        e.printStackTrace();
-
-                    }
-                } else if ("int".equalsIgnoreCase(fieldType)) {
-                    field.setInt(instance, fieldObj.getInt("fieldValue"));
-                } else if ("boolean".equalsIgnoreCase(fieldType)) {
-                    field.setBoolean(instance, fieldObj.getBoolean("fieldValue"));
-                } else if ("double".equalsIgnoreCase(fieldType)) {
-                    // Checking and parsing double value
-                    if (!fieldObj.optString("fieldValue").isEmpty()) {
-                        field.setDouble(instance, fieldObj.getDouble("fieldValue"));
-                    }
-                } else if ("long".equalsIgnoreCase(fieldType)) {
-                    // Checking and parsing long value
-                    if (!fieldObj.optString("fieldValue").isEmpty()) {
-                        field.setLong(instance, fieldObj.getLong("fieldValue"));
-                    }
-                }else if ("map".equalsIgnoreCase(fieldType)) {
-                    Map map = new HashMap();
-                    buildMapFromJsonArray(fieldObj.getJSONArray("fields"),map);
-                    field.set(instance, map);
-
-                } else if ("list".equalsIgnoreCase(fieldType)) {
-                    JSONArray listArray = fieldObj.getJSONArray("fieldValue");
-                    String classNameList = fieldObj.getString("className");
-                    Class listClazz = Class.forName(classNameList);
-
-                    List objList = new ArrayList();
-                    for (Object obj : listArray
-                    ) {
-                        if (!listClazz.isPrimitive()
-                                && !listClazz.equals(String.class)
-                                && !listClazz.equals(Date.class)
-                                && !listClazz.isArray()
-                                && !List.class.isAssignableFrom(listClazz)) {
-                            objList.add(listClazz.cast(populateObject((JSONObject) obj)));
-                        } else {
-                            objList.add(listClazz.cast(obj));
-                        }
-                    }
-
-                    field.set(instance, objList);
-                } else if (fieldObj.has("fields")) {
-                    // Recursively populate nested objects
-                    Object nestedInstance = populateObject(fieldObj);
-                    field.set(instance, nestedInstance);
+                    // Handle other types like Date here as in previous examples
                 }
-                // Handle other types like Date here as in previous examples
+
+
+                return instance;
             }
 
-            return instance;
+        } catch (Exception e) {
+            e.printStackTrace();
+           log.warn(" could not populate "+jsonObject);
         }
+        return instance;
     }
 
     public String convertClassToJSONString(Class<?> clazz) {
@@ -323,8 +346,19 @@ public class JsonUtils {
         JSONObject fieldJson = new JSONObject();
         fieldJson.put("fieldName", field.getName());
 
-        // Similar logic to what was previously applied to method parameters
-        if (!field.getType().isPrimitive()
+        if (field.getType().equals(Integer.class)) {
+            fieldJson.put("fieldType", "Integer");
+            fieldJson.put("fieldValue", "");
+        } else if (field.getType().equals(Double.class)) {
+            fieldJson.put("fieldType", "Double");
+            fieldJson.put("fieldValue", "");
+        } else if (field.getType().equals(Long.class)) {
+            fieldJson.put("fieldType", "Long");
+            fieldJson.put("fieldValue", "");
+        } else if (field.getType().equals(Float.class)) {
+            fieldJson.put("fieldType", "Float");
+            fieldJson.put("fieldValue", "");
+        } else if (!field.getType().isPrimitive()
                 && !field.getType().equals(String.class)
                 && !field.getType().equals(Date.class)
                 && !field.getType().isArray()
@@ -403,7 +437,7 @@ public class JsonUtils {
             fieldJson.put("fieldValue", innerFieldsDetails);
 
         } else {
-            log.warn("Not able to derive the list type for " + field);
+            log.warn("Not able to derive the list type for " + field+" use the ListType annotation ");
         }
     }
 
@@ -652,5 +686,21 @@ public class JsonUtils {
                 processProperties(objectNode, ((ObjectSchema) propertySchema).getProperties());
             }
         }
+    }
+
+    public  String createJson(String... keys) {
+        if (keys == null || keys.length == 0) {
+            throw new IllegalArgumentException("At least one key is required");
+        }
+
+        JsonObject jsonObj = new JsonObject();
+        for (String key : keys) {
+            jsonObj.addProperty("fieldName", key);
+            jsonObj.addProperty("fieldType", "String");
+            jsonObj.addProperty("fieldValue", "");
+
+        }
+
+        return jsonObj.toString();
     }
 }
