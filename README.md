@@ -537,7 +537,7 @@ public class EmergencyAction implements JavaMethodAction {
 Images can also be converted into Json and Pojos for UI based validations. You can use selenium with Tools4AI 
 to validated your UI instead of using elements from the web page , more details [here](https://medium.com/@visrow/selenium-and-ai-ui-validations-with-ai-1799ab2f305e)  
 
- <img src="auto.PNG  width="300" height="300">
+ <img src="auto.PNG"  width="300" height="300">
 
 The above image can be converted into a Pojo object with help of Tools4AI
 
