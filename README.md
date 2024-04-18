@@ -32,7 +32,7 @@
 - [Response Validation](#response-validation)
   - [Hallucination](#hallucination)   
 - [Autonomous Agent](#autonomous-agent)  
-  -[Action Scripts](#action-script)
+  - [Action Scripts](#action-script)
   
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
