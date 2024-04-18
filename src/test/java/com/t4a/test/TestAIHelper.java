@@ -36,13 +36,13 @@ public class TestAIHelper {
             Properties prop = new Properties();
             prop.load(inputStream);
             // Read properties
-            projectId = prop.getProperty("projectId");
+            projectId = prop.getProperty("gemini.projectId");
             if(projectId != null)
                 projectId = projectId.trim();
-            location = prop.getProperty("location");
+            location = prop.getProperty("gemini.location");
             if(location != null)
                 location = location.trim();
-            modelName = prop.getProperty("modelName");
+            modelName = prop.getProperty("gemini.modelName");
             if(modelName != null)
                 modelName = modelName.trim();
             openAiKey = prop.getProperty("openAiKey");

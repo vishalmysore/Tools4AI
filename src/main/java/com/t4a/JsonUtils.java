@@ -28,6 +28,22 @@ import java.util.*;
 public class JsonUtils {
 
 
+    public String fetchGroupName(String groupJson) {
+        groupJson = extractJson(groupJson);
+        JSONObject obj = new JSONObject(groupJson);
+        String groupName = obj.getString("groupName");
+        return groupName;
+    }
+
+    public String fetchActionName(String groupJson) {
+        groupJson = extractJson(groupJson);
+        JSONObject obj = new JSONObject(groupJson);
+        String groupName = obj.getString("actionName");
+        if(groupName == null) {
+            groupName = groupJson;
+        }
+        return groupName;
+    }
     public  String extractJson(String jsonString) {
         // Find the index of the first opening bracket
         int startIndex = jsonString.indexOf('{');
@@ -38,7 +54,7 @@ public class JsonUtils {
             // Extract the substring between the first '{' and the last '}'
             return jsonString.substring(startIndex, endIndex + 1);
         }
-        return null; // Return null if the structure is not as expected
+        return jsonString; // Return null if the structure is not as expected
     }
     public  String convertClassObjectToJsonString(Schema classSchema) {
 

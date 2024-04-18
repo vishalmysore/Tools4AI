@@ -11,6 +11,7 @@ import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
+import com.t4a.JsonUtils;
 import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
@@ -306,12 +307,16 @@ public class PredictionLoader {
         AIAction action = null;
         try {
             if(AIPlatform.GEMINI == aiProvider) {
-                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else"));
+                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - which group does this prompt belong to? response back in this format {'groupName':'','explanation':''}"));
+                JsonUtils utils = new JsonUtils();
+                groupName= utils.fetchGroupName(groupName);
                 log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
                 String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName.trim())).getGroupInfo()).trim();
                 log.info(" list of actions "+actionNameList);
-                response = chat.sendMessage(buildPrompt(prompt, 1,actionNameList));
+                response = chat.sendMessage(buildPromptWithJsonResponse(prompt, 1,actionNameList));
+
                 actionName = ResponseHandler.getText(response).trim();
+                actionName = utils.fetchActionName(actionName);
                 actionNameList = ","+actionNameList+",";
                 if(!actionNameList.toString().contains(","+actionName+",")) {
                     response = chat.sendMessage("give me just the action name from this query { "+actionName+"}");
@@ -600,6 +605,14 @@ public class PredictionLoader {
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
         String query = PREACTIONCMD+ "{ "+prompt+" }"+ACTIONCMD+actionNameList.toString() +POSTACTIONCMD+number +append;
+        log.debug(query);
+        return query;
+    }
+    private String buildPromptWithJsonResponse(String prompt, int number, String actionNameList) {
+        String append = NUMACTION;
+        if(number > 1)
+            append = NUMACTION_MULTIPROMPT;
+        String query = " this is your prompt {"+prompt+"} and these are your actionNames {"+actionNameList+"}"+" reply back with just one action name in json format {'actionName':'','reasoning':''}";
         log.debug(query);
         return query;
     }

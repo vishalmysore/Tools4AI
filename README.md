@@ -21,6 +21,8 @@
   - [HTTP REST Actions](#http-actions-swagger)
   - [Shell Actions](#shell-actions)
   - [Custom HTTP Actions](#custom-http-actions)
+  - [Image Actions](#image-actions)
+  - [Spring Integration](#spring-integration)
   - [JavaDocs](#-javadocs)
 - [Prediction Loaders](#-prediction-loaders)  
   - [Java Prediction Loader](#-java-prediction-loaders)
@@ -483,13 +485,89 @@ If you do not have swagger URL and would like to configure HTTP rest end points 
 }
 
 ```
+## Image Actions
+Tools4AI uses Gemini (gemini-1.0-pro-vision) to enhance AI capabilities by enabling the system to analyze images
+and automatically execute relevant actions based on the visual data it processes. This development is 
+particularly crucial in emergency management, where speed and accuracy of response can save lives and property.
+
+Reference code is [here](https://github.com/vishalmysore/sam/blob/main/src/main/java/org/example/image/ImageActionExample.java)
+
+```  
+package org.example.image;
+
+import com.t4a.processor.AIProcessingException;
+import com.t4a.processor.GeminiImageActionProcessor;
+import com.t4a.processor.GeminiV2ActionProcessor;
+
+public class ImageActionExample {
+    public static void main(String[] args) throws AIProcessingException {
+        GeminiImageActionProcessor processor = new GeminiImageActionProcessor();
+        String imageDisription = processor.imageToText(args[0]);
+        GeminiV2ActionProcessor actionProcessor = new GeminiV2ActionProcessor();
+        Object obj = actionProcessor.processSingleAction(imageDisription);
+        String str  = actionProcessor.summarize(imageDisription+obj.toString());
+        System.out.println(str);
+    }
+}
+```
+ <img src="accident.png"  width="300" height="300">
+
+If you execute the [ImageActionExample](https://github.com/vishalmysore/sam/blob/main/src/main/java/org/example/image/ImageActionExample.java) 
+with above image as source it correctly identifies that we need to call Ambulance 
+
+``` 
+The image depicts a car accident involving a blue car and a red car on a city street. The blue car has front-end damage while the red car has rear-end damage. Debris from the accident is scattered on the street and a 
+police officer is present at the scene. An ambulance has been called and is seen in the background.
+```
+
+Direct Action from Visual Cues: Whether it's a surveillance image of a car accident or a live feed of a residential fire, Tools4AI can immediately recognize critical situations and initiate appropriate emergency protocols without human input.
+A sample action is written and the code is available [here](https://github.com/vishalmysore/sam/blob/main/src/main/java/org/example/image/action/EmergencyAction.java)
+``` 
+@Predict(actionName = "callEmergencyServices", description = "This action will be called in case of emergency", groupName = "emergency")
+public class EmergencyAction implements JavaMethodAction {
+    public String callEmergencyServices(@Prompt(describe = "Ambulance, Fire or Police") String typeOfEmergency) {
+        return typeOfEmergency+" has been called";
+    }
+} 
+```
+
+Images can also be converted into Json and Pojos for UI based validations. You can use selenium with Tools4AI 
+to validated your UI instead of using elements from the web page , more details [here](https://medium.com/@visrow/image-recognition-and-function-calling-with-gemini-and-java-e28b0356d3de)  
+
+```  
+WebDriverManager.chromedriver().setup();
+
+ChromeOptions options = new ChromeOptions();
+options.addArguments("--headless");  // Setting headless mode
+ptions.addArguments("--disable-gpu");  // GPU hardware acceleration isn't useful in headless mode
+options.addArguments("--window-size=1920,1080");  // Set the window size
+WebDriver driver = new ChromeDriver(options);
+
+driver.get("https://google.com");
+// Your code to interact with the page and take screenshots
+// Take screenshot and save it as file or use as bytes
+TakesScreenshot ts = (TakesScreenshot) driver;
+byte[] screenshotBytes = ts.getScreenshotAs(OutputType.BYTES);
+GeminiImageActionProcessor imageActionProcessor = new GeminiImageActionProcessor();
+imageActionProcessor.imageToText(screenshotBytes)
+//File srcFile = ts.getScreenshotAs(OutputType.FILE);
+//File destFile = new File("screenshot.png");
+//FileHandler.copy(srcFile, destFile);
+driver.quit();
+```
+
+
+Integrating Tools4AI with Selenium offers a revolutionary approach to UI validation, streamlining the testing 
+process by validating UI elements in their entirety. Rather than the traditional method of scrutinizing each 
+element individually, this integration enables comprehensive, automated verification of tags and elements.
+It simplifies the UI Validation workflow, ensuring accuracy and efficiency in confirming the UI's adherence to design specifications  
 
 ## Spring integration
 
 All the action processors have Spring integration as well 
 
 ``` 
-SpringAnthropicProcessor springAnthropic = new SpringAnthropicProcessor(applicaitonContext)
+SpringAnthropicProcessor springAnthropic = new SpringAnthropicProcessor(applicationContext)
 ```
 ``` 
 SpringGeminiProcessor springGemini = new SpringGeminiProcessor();

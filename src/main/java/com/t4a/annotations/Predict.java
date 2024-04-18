@@ -14,6 +14,6 @@ public @interface Predict {
     String description();
 
     ActionRisk riskLevel() default ActionRisk.LOW;
-    String groupName() default "default";
-    String groupDescription() default "group for all the tasks";
+    String groupName() default "No Group";
+    String groupDescription() default "tasks which are not categorized";
 }
