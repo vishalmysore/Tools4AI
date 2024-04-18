@@ -31,7 +31,7 @@
   - [Extended Prediction Loader](#%EF%B8%8F-extended-prediction-loader)  
 - [Response Validation](#response-validation)
   - [Hallucination](#hallucination)   
-- [Autonomous Agent](#autonomous-agent)
+- [Autonomous Agent](#autonomous-agent)  
   -[Action Scripts](#action-script)
   
 # 📌 Rapid Start
