@@ -22,6 +22,7 @@
   - [Shell Actions](#shell-actions)
   - [Custom HTTP Actions](#custom-http-actions)
   - [Image Actions](#image-actions)
+  - [Automated UI validation](#automated-ui-validations)
   - [Spring Integration](#spring-integration)
   - [JavaDocs](#-javadocs)
 - [Prediction Loaders](#-prediction-loaders)  
