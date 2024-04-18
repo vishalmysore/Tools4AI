@@ -492,6 +492,7 @@ particularly crucial in emergency management, where speed and accuracy of respon
 
 Reference code is [here](https://github.com/vishalmysore/sam/blob/main/src/main/java/org/example/image/ImageActionExample.java)
 
+Detailed article on the same is avaiable [here](https://medium.com/@visrow/image-recognition-and-function-calling-with-gemini-and-java-e28b0356d3de)
 ```  
 package org.example.image;
 
@@ -530,9 +531,14 @@ public class EmergencyAction implements JavaMethodAction {
     }
 } 
 ```
+## Automated UI Validations
 
 Images can also be converted into Json and Pojos for UI based validations. You can use selenium with Tools4AI 
-to validated your UI instead of using elements from the web page , more details [here](https://medium.com/@visrow/image-recognition-and-function-calling-with-gemini-and-java-e28b0356d3de)  
+to validated your UI instead of using elements from the web page , more details [here](https://medium.com/@visrow/selenium-and-ai-ui-validations-with-ai-1799ab2f305e)  
+
+ <img src="auto.PNG  width="300" height="300">
+
+The above image can be converted into a Pojo object with help of Tools4AI
 
 ```  
 WebDriverManager.chromedriver().setup();
@@ -556,6 +562,24 @@ imageActionProcessor.imageToText(screenshotBytes)
 driver.quit();
 ```
 
+The pojo it will convert to is 
+
+``` 
+import lombok.*;
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class AutoRepairScreen {
+    double fullInspectionValue;
+    double tireRotationValue;
+    double oilChangeValue;
+    Integer phoneNumber;
+    String email;
+    String[] customerReviews;
+}
+```
 
 Integrating Tools4AI with Selenium offers a revolutionary approach to UI validation, streamlining the testing 
 process by validating UI elements in their entirety. Rather than the traditional method of scrutinizing each 
