@@ -20,7 +20,7 @@ public class SeleniumProcessor extends GeminiV2ActionProcessor {
     }
     public void processWebAction(String prompt) throws AIProcessingException {
 
-        DriverActions actions = (DriverActions)processSingleAction(prompt,"webPageAction");
+        DriverActions actions = (DriverActions)transformer.transformIntoPojo(prompt,DriverActions.class);
         String act = actions.getTypeOfActionToTakeOnWebDriver();
         WebDriverAction action = WebDriverAction.valueOf(act.toUpperCase());
         if (WebDriverAction.GET.equals(action)) {

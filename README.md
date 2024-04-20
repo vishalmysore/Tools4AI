@@ -21,6 +21,7 @@
   - [HTTP REST Actions](#http-actions-swagger)
   - [Shell Actions](#shell-actions)
   - [Custom HTTP Actions](#custom-http-actions)
+  - [Selenium Integration](#selenium-integration)
   - [Image Actions](#image-actions)
   - [Automated UI validation](#automated-ui-validations)
   - [Spring Integration](#spring-integration)
@@ -586,6 +587,40 @@ Integrating Tools4AI with Selenium offers a revolutionary approach to UI validat
 process by validating UI elements in their entirety. Rather than the traditional method of scrutinizing each 
 element individually, this integration enables comprehensive, automated verification of tags and elements.
 It simplifies the UI Validation workflow, ensuring accuracy and efficiency in confirming the UI's adherence to design specifications  
+
+## Selenium integration
+Tools4AI's integration with Selenium introduces a flexible way to automate UI testing. Instead of traditional
+Java code for Selenium scripts, Tools4AI allows you to define test scenarios in plain English, offering a more 
+accessible approach to testing web applications. These English-based commands can be converted into Selenium 
+code to automate web-based interactions and streamline testing.  
+
+**Example of Selenium Test with Tools4AI**
+``` 
+ WebDriver driver = new ChromeDriver(options);
+ SeleniumProcessor processor = new SeleniumProcessor(driver);
+ processor.processWebAction("go to website https://the-internet.herokuapp.com");
+ boolean buttonPresent =  processor.trueFalseQuery("do you see Add/Remove Elements?");
+ if(buttonPresent) {
+    processor.processWebAction("click on Add/Remove Elements");
+    // perform other function in simple english
+ } //else {
+   // processor.processSingleAction("Create Jira by taking screenshot");
+  // }
+ processor.processWebAction("go to website https://the-internet.herokuapp.com");
+ boolean isCheckboxPresent =  processor.trueFalseQuery("do you see Checkboxes?");
+ if(isCheckboxPresent) {
+   processor.processWebAction("click on Checkboxes");
+   processor.processWebAction("select checkbox 1");
+ }
+```
+In this example, the ```SeleniumProcessor``` processes commands in plain English and converts them into Selenium 
+actions. This approach allows for complex interactions without manually writing Java code for each test. 
+Tools4AI serves as a bridge between natural language and Selenium, making it easier to automate UI testing in
+a way that is both efficient and intuitive.  
+
+This integration offers substantial benefits for teams looking to streamline their UI validation process.
+By enabling a more straightforward way to define and execute Selenium scripts, Tools4AI provides a flexible
+framework for automating Selenium-based tests.  
 
 ## Spring integration
 

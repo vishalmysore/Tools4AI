@@ -58,8 +58,8 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
      * @return
      * @throws AIProcessingException
      */
-    @Override
-    public  Object transformIntoPojo(String promptText, String className, String funName, String description) throws AIProcessingException {
+
+    public  Object transformIntoPojoDeperecated(String promptText, String className, String funName, String description) throws AIProcessingException {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             JavaClassExecutor generator = new JavaClassExecutor(gson);
             FunctionDeclaration functionDeclaration = generator.buildFunctionFromClass(className,funName,description);
@@ -98,6 +98,43 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
             throw new AIProcessingException(e);
         } catch (ClassNotFoundException e) {
             throw new AIProcessingException(e);
+        }
+
+    }
+
+
+    /**
+     * Build a Java Pojo out of the Prompt
+     *
+     * @param prompt
+     * @param className
+     * @param funName
+     * @param description
+     * @return
+     * @throws AIProcessingException
+     */
+    public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
+        try {
+            JsonUtils util = new JsonUtils();
+            Class clazz = Class.forName(className);
+            String jsonStr = null;
+            if(clazz.getName().equalsIgnoreCase("java.util.Map")) {
+                jsonStr = util.buildBlankMapJsonObject(null).toString(4); ;
+
+            } else if(clazz.getName().equalsIgnoreCase("java.util.List")) {
+                jsonStr = util.buildBlankListJsonObject(null).toString(4); ;
+
+            }else {
+                jsonStr = util.convertClassToJSONString(clazz);
+            }
+            log.info(jsonStr);
+            jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json"));
+            log.info(jsonStr);
+            return util.populateClassFromJson(jsonStr);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
     }
