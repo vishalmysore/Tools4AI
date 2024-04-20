@@ -2,6 +2,7 @@ package com.t4a;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.t4a.annotations.ListType;
 import com.t4a.annotations.MapKeyType;
@@ -704,19 +705,72 @@ public class JsonUtils {
         }
     }
 
+    /**
+     * This will extract the values for the names from the prompt
+     * for example if your prompt is like this
+     *
+     * "My name is vishal and I live in Canada"
+     * You can pass the keys like
+     * name,location
+     * {
+     * fields : [
+     * { 'fieldName':'name',
+     *   'fieldValue':''
+     * }
+     * ,
+     * { 'fieldName':'name',
+     *   'fieldValue':''
+     * }
+     * ]
+     * }
+     * @param keys
+     * @return
+     */
     public  String createJson(String... keys) {
         if (keys == null || keys.length == 0) {
             throw new IllegalArgumentException("At least one key is required");
         }
-
-        JsonObject jsonObj = new JsonObject();
-        for (String key : keys) {
-            jsonObj.addProperty("fieldName", key);
-            jsonObj.addProperty("fieldType", "String");
-            jsonObj.addProperty("fieldValue", "");
-
+        JsonObject rootObject = new JsonObject();
+        JsonArray array = new JsonArray();
+        rootObject.add("fields",array);
+        for (String key:keys
+             ) {
+            array.add(createJson(key));
         }
 
-        return jsonObj.toString();
+
+        return rootObject.toString();
+    }
+
+    /**
+     * { 'fieldName':'name',
+     *   'fieldValue':''
+     * }
+     * @param key
+     * @return
+     */
+    @NotNull
+    public  JsonObject createJson(String key) {
+        JsonObject jsonObj = new JsonObject();
+        jsonObj.addProperty("fieldName", key);
+        jsonObj.addProperty("fieldType", "String");
+        jsonObj.addProperty("fieldValue", "");
+        return jsonObj;
+    }
+
+    /**
+     * Returns back field value
+     * @param jsonStr
+     * @param fieldName
+     * @return
+     */
+    public String getFieldValue(String jsonStr, String fieldName) {
+        jsonStr = extractJson(jsonStr);
+        JSONObject obj = new JSONObject(jsonStr);
+        String fieldValue = obj.getString("fieldValue");
+        if(fieldValue == null) {
+            fieldValue = jsonStr;
+        }
+        return fieldValue;
     }
 }

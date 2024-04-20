@@ -43,6 +43,7 @@
     <dependencyManagement>
 
         <dependencies>
+
             <dependency>
                 <groupId>com.konghq</groupId>
                 <artifactId>unirest-java-bom</artifactId>
@@ -69,7 +70,17 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>5.8.0</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.19.1</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jsonSchema</artifactId>
