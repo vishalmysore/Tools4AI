@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.t4a.JsonUtils;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
-import com.t4a.transform.PromptTransformer;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,5 +58,7 @@ public class OpenAIPromptTransformer implements PromptTransformer {
 
     }
 
-
+    public String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
+        return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");
+    }
 }

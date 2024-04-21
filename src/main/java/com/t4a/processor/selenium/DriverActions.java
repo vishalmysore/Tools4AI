@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class DriverActions {
-    @Prompt(describe = "This is the action on selenium webdriver one out of these {get,findElement,findElements,click}")
+    @Prompt(describe = "What method should i invoke on org.openqa.selenium.WebDriver {navigate, get,findElement,findElements,click}")
     String typeOfActionToTakeOnWebDriver;
 
 }

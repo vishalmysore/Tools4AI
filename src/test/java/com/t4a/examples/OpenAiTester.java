@@ -1,12 +1,13 @@
 package com.t4a.examples;
 
+import com.t4a.predict.PredictionLoader;
 import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
 
 public class OpenAiTester {
     public static void main(String[] args) {
 
-        ChatLanguageModel model = OpenAiChatModel.withApiKey(args[0]);
+        ChatLanguageModel model = PredictionLoader.getInstance().getOpenAiChatModel();
+        String j = model.generate("What method should i invoke on org.openqa.selenium.WebDriver {navigate, get,findElement,findElements,click} for this - \"go to website https://the-internet.herokuapp.com");
 
         String joke = model.generate("here is your prompt - Can I go out without jacket in toronto today - what action should you take from the list of action - getTemperature,getName,postActivity - reply back with one action only");
 

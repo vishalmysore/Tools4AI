@@ -32,14 +32,18 @@ public class JsonUtils {
     public String fetchGroupName(String groupJson) {
         groupJson = extractJson(groupJson);
         JSONObject obj = new JSONObject(groupJson);
-        String groupName = obj.getString("groupName");
+        String groupName = obj.optString("groupName",null);
         return groupName;
     }
 
-    public String fetchActionName(String groupJson) {
+
+    public String fetchActionName(@NotNull String groupJson) {
+        if(groupJson.trim().length() < 1) {
+            throw new IllegalArgumentException("JSON string cannot be empty");
+        }
         groupJson = extractJson(groupJson);
         JSONObject obj = new JSONObject(groupJson);
-        String groupName = obj.getString("actionName");
+        String groupName = obj.optString("actionName",null);
         if(groupName == null) {
             groupName = groupJson;
         }
@@ -767,7 +771,7 @@ public class JsonUtils {
     public String getFieldValue(String jsonStr, String fieldName) {
         jsonStr = extractJson(jsonStr);
         JSONObject obj = new JSONObject(jsonStr);
-        String fieldValue = obj.getString("fieldValue");
+        String fieldValue = obj.optString("fieldValue",null);
         if(fieldValue == null) {
             fieldValue = jsonStr;
         }

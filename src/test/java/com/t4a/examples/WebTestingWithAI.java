@@ -1,7 +1,7 @@
 package com.t4a.examples;
 
 import com.t4a.processor.AIProcessingException;
-import com.t4a.processor.selenium.SeleniumProcessor;
+import com.t4a.processor.selenium.SeleniumOpenAIProcessor;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -20,7 +20,7 @@ public class WebTestingWithAI {
         WebDriver driver = new ChromeDriver(options);
 
 
-        SeleniumProcessor processor = new SeleniumProcessor(driver);
+        SeleniumOpenAIProcessor processor = new SeleniumOpenAIProcessor(driver);
         processor.processWebAction("go to website https://the-internet.herokuapp.com");
         boolean buttonPresent =  processor.trueFalseQuery("do you see Add/Remove Elements?");
         if(buttonPresent) {
