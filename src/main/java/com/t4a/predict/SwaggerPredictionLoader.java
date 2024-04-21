@@ -30,7 +30,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * The SwaggerPredictionLoader class is responsible for loading and parsing the Swagger configuration.
+ * It reads the configuration from a JSON file and creates a map of AIAction predictions.
+ * It also constructs a list of action names and a list of actions.
+ * The class uses Gson for JSON processing and OpenAPI for parsing the Swagger configuration.
+ * It handles exceptions by throwing a LoaderException.
+ */
 @Slf4j
 public class SwaggerPredictionLoader {
 

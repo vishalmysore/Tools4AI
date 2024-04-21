@@ -8,7 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
+/**
+ * The SeleniumOpenAIProcessor class extends the OpenAiActionProcessor and implements the SeleniumProcessor interface.
+ * It provides methods for processing web actions using Selenium WebDriver and OpenAI's chat model.
+ * It uses the JsonUtils for JSON processing and the OpenAIPromptTransformer for transforming prompts.
+ */
 @Slf4j
 public class SeleniumOpenAIProcessor extends OpenAiActionProcessor implements SeleniumProcessor {
     private WebDriver driver;

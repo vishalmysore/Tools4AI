@@ -6,7 +6,10 @@ import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * The OpenAIPromptTransformer class implements the PromptTransformer interface and provides methods for transforming prompts into Java POJOs and JSON using OpenAI's GPT-3 model.
+ * It uses the Gson library for JSON processing and the PredictionLoader singleton to access the OpenAI chat model.
+ */
 @Slf4j
 public class OpenAIPromptTransformer implements PromptTransformer {
     private Gson gson ;

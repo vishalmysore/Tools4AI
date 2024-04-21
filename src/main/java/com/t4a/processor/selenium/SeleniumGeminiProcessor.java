@@ -7,7 +7,11 @@ import com.t4a.processor.GeminiV2ActionProcessor;
 import com.t4a.transform.GeminiV2PromptTransformer;
 import lombok.extern.java.Log;
 import org.openqa.selenium.*;
-
+/**
+ * The SeleniumGeminiProcessor class extends the GeminiV2ActionProcessor and implements the SeleniumProcessor interface.
+ * It provides methods for processing web actions using Selenium WebDriver and Gemini's chat model.
+ * It uses the Gson library for JSON processing and the PredictionLoader singleton to access the Gemini chat model.
+ */
 @Log
 public class SeleniumGeminiProcessor extends GeminiV2ActionProcessor implements SeleniumProcessor{
     private WebDriver driver;

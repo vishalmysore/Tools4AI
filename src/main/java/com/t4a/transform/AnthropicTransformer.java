@@ -6,7 +6,10 @@ import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import lombok.extern.slf4j.Slf4j;
-
+/**
+ * The AnthropicTransformer class implements the PromptTransformer interface and provides methods for transforming prompts into Java POJOs and JSON using Anthropic's chat model.
+ * It uses the Gson library for JSON processing and the PredictionLoader singleton to access the Anthropic chat model.
+ */
 @Slf4j
 public class AnthropicTransformer implements PromptTransformer {
     private Gson gson;

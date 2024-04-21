@@ -17,7 +17,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * The HttpRestPredictionLoader class is responsible for loading and parsing HTTP REST predictions.
+ * It reads the configuration from a JSON file and creates a map of AIAction predictions.
+ * The class uses Gson for JSON processing and handles exceptions by throwing a LoaderException.
+ * It also constructs a list of action names.
+ */
 @Log
 public class HttpRestPredictionLoader {
     private  String yamlFile = "http_actions.json";
