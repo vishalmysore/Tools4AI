@@ -75,7 +75,8 @@ public final class HttpPredictedAction implements PredictedAIAction {
     private JsonObject outputObject;
     private JsonObject authInterface;
     private String description;
-    private  final HttpClient client = HttpClientBuilder.create().build();
+    @Setter
+    private  HttpClient client = HttpClientBuilder.create().build();
     private String requestBodyJson;
     private boolean hasJson;
     private String group;
@@ -90,6 +91,9 @@ public final class HttpPredictedAction implements PredictedAIAction {
         this.authInterface = authInterface;
         this.description = description;
     }
+
+
+
 
     public  String replacePlaceholders(String url, Map<String, Object> placeholderValues) throws UnsupportedEncodingException {
         for (Map.Entry<String, Object> entry : placeholderValues.entrySet()) {
@@ -106,7 +110,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
         return group;
     }
 
-    private  String executeHttpGet(Map<String, Object> parameters) throws UnsupportedEncodingException {
+    public  String executeHttpGet(Map<String, Object> parameters) throws UnsupportedEncodingException {
 
         if(url.indexOf("{") != -1) {
            url = replacePlaceholders(url,parameters);
@@ -130,8 +134,10 @@ public final class HttpPredictedAction implements PredictedAIAction {
         try {
             log.debug("sending request to "+url);
             HttpGet request = new HttpGet(url);
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                request.addHeader(header.getKey(), header.getValue());
+            if(headers!=null) {
+                for (Map.Entry<String, String> header : headers.entrySet()) {
+                    request.addHeader(header.getKey(), header.getValue());
+                }
             }
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
@@ -149,7 +155,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
         return null;
     }
 
-    private String executeHttpPost(Map<String, Object> postData) throws IOException {
+    public String executeHttpPost(Map<String, Object> postData) throws IOException {
         // Convert postData to JSON
         JsonObject json = new JsonObject();
         for (Map.Entry<String, Object> entry : postData.entrySet()) {
@@ -159,8 +165,10 @@ public final class HttpPredictedAction implements PredictedAIAction {
 
         // Execute HTTP POST request using the provided URL and JSON payload
         HttpPost request = new HttpPost(url);
-        for (Map.Entry<String, String> header : headers.entrySet()) {
-            request.addHeader(header.getKey(), header.getValue());
+        if(headers!=null) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                request.addHeader(header.getKey(), header.getValue());
+            }
         }
         request.setEntity(new StringEntity(jsonPayload, ContentType.APPLICATION_JSON));
 
@@ -250,6 +258,8 @@ public final class HttpPredictedAction implements PredictedAIAction {
     public int hashCode() {
         return Objects.hash(actionName);
     }
+
+
 }
 
 

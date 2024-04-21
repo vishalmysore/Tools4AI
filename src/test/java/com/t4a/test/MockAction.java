@@ -16,4 +16,9 @@ public class MockAction implements JavaMethodAction {
         name = mockName;
        return mockName;
     }
+
+    @Override
+    public String getDescription() {
+        return "mockActionDescription";
+    }
 }
