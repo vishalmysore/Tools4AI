@@ -130,7 +130,7 @@ annotation.
 perform specific actions based on prompts processed through Tools4AI.  
 
 **@Predict Annotation:** This is a <u>class level</U> annotation. This annotation is used to add the action to the prediciton list, doing this will make sure
-the action is called automatically when the prompt is processed and if the prompt matches the action name. All the methods
+the action is called automatically when the prompt is processed and if the prompt matches with the action (action name or method name). All the methods 
 in this class annotated with @Action will be added to the prediction list.
 
 **@Action Annotation:** This is a <u>method level</u> annotation. The action method within the Java class is annotated with @Action to specify the action's behaviour

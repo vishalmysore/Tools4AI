@@ -53,6 +53,6 @@ class BlankActionTest {
         String result = blankAction.getDescription();
 
         // Assert statements to verify the return value of the method call
-        assertEquals("ask remaining question", result);
+        assertEquals("askAdditionalQuestion", result);
     }
 }
