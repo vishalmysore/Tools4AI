@@ -1,6 +1,6 @@
 package com.t4a.examples.actions;
 
-import com.t4a.api.JavaMethodAction;
+import com.t4a.annotations.Action;
 import com.t4a.annotations.Predict;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -17,9 +17,10 @@ import java.net.URL;
  * if you are planning to ue it for commercial purpose please visit https://open-meteo.com/en/pricing/
  */
 
+@Predict
 @Slf4j
-@Predict(actionName = "getTemperature", description ="get weather for city" )
-public class CustomHttpGetAction implements JavaMethodAction {
+public class CustomHttpGetAction  {
+    @Action(description = "Get the temperature of a city")
     public double getTemperature(String cityName) {
         double temperature = 0;
         String urlStr = "https://geocoding-api.open-meteo.com/v1/search?name="+cityName+"&count=1&language=en&format=json";

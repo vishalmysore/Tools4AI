@@ -1,6 +1,6 @@
 package com.t4a.action;
 
-import com.t4a.api.ActionType;
+import com.t4a.annotations.Action;
 import com.t4a.api.JavaMethodAction;
 
 /**
@@ -14,22 +14,10 @@ import com.t4a.api.JavaMethodAction;
  */
 
 public final class BlankAction implements JavaMethodAction {
+    @Action
     public String askAdditionalQuestion(String additionalQuestion){
         return "provide answer for this query : "+additionalQuestion;
     }
 
-    @Override
-    public String getActionName() {
-        return "askAdditionalQuestion";
-    }
 
-    @Override
-    public ActionType getActionType() {
-        return ActionType.JAVAMETHOD;
-    }
-
-    @Override
-    public String getDescription() {
-        return "ask remaining question";
-    }
 }

@@ -2,12 +2,10 @@ package com.t4a.processor;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
-import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.*;
 import com.google.gson.Gson;
-import com.t4a.action.BlankAction;
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionRisk;
 import com.t4a.api.JavaMethodExecutor;
@@ -37,8 +35,15 @@ import java.util.List;
  *
  * </pre>
  */
+@Deprecated // This class is deprecated and will be removed in future versions please use GeminiV2ActionProcessor instead
 @Slf4j
 public class GeminiActionProcessor implements AIProcessor{
+    private Gson gson;
+    public GeminiActionProcessor() {
+    }
+    public GeminiActionProcessor(Gson gson) {
+        this.gson = gson;
+    }
 
     @Override
     public String query(String promptText) throws AIProcessingException {
@@ -76,9 +81,9 @@ public class GeminiActionProcessor implements AIProcessor{
 
             log.debug((predictedAction).getActionName());
             if(explain != null) {
-                explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText, predictedAction.getActionName()));
+               // explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText, predictedAction.getActionName()));
             }
-            JavaMethodExecutor methodAction = new JavaMethodExecutor();
+            JavaMethodExecutor methodAction = new JavaMethodExecutor(gson);
 
              methodAction.buildFunction(predictedAction);
 
@@ -86,14 +91,14 @@ public class GeminiActionProcessor implements AIProcessor{
             log.debug("" + methodAction.getGeneratedFunction());
 
             JavaMethodExecutor additionalQuestion = new JavaMethodExecutor();
-            BlankAction blankAction = new BlankAction();
-            FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
-            log.debug("Function declaration h1:");
-            log.debug("" + additionalQuestionFun);
+         //   BlankAction blankAction = new BlankAction();
+         //   FunctionDeclaration additionalQuestionFun = additionalQuestion.buildFunction(blankAction);
+         //   log.debug("Function declaration h1:");
+        //    log.debug("" + additionalQuestionFun);
             //add the function to the tool
             Tool.Builder toolBuilder = Tool.newBuilder();
             toolBuilder.addFunctionDeclarations(methodAction.getGeneratedFunction());
-            toolBuilder.addFunctionDeclarations(additionalQuestionFun);
+       //     toolBuilder.addFunctionDeclarations(additionalQuestionFun);
             Tool tool = toolBuilder.build();
 
 
@@ -123,7 +128,7 @@ public class GeminiActionProcessor implements AIProcessor{
                 actionResponse = methodAction.action(response, predictedAction);
             }
             log.debug("" + actionResponse);
-            Content content =
+           /* Content content =
                     ContentMaker.fromMultiModalData(
                             PartMaker.fromFunctionResponse(
                                     predictedAction.getActionName(), Collections.singletonMap(predictedAction.getActionName(), actionResponse)));
@@ -134,7 +139,9 @@ public class GeminiActionProcessor implements AIProcessor{
             log.debug("Print response content: ");
             log.debug("" + ResponseHandler.getContent(response));
             String result = ResponseHandler.getText(response);
-            return result;
+
+            */
+            return actionResponse;
 
 
         } catch (IOException e) {

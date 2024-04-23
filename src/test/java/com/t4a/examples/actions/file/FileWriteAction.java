@@ -1,6 +1,6 @@
 package com.t4a.examples.actions.file;
 
-import com.t4a.api.JavaMethodAction;
+import com.t4a.annotations.Action;
 import com.t4a.annotations.Predict;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,10 +8,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+@Predict(groupName = "File", groupDescription = "File related actions")
 @Slf4j
-@Predict(actionName = "saveInformationToLocalFile",description = "saves the information in local file",groupName = "personal", groupDescription = "all personal stuff")
-public class FileWriteAction implements JavaMethodAction {
+public class FileWriteAction  {
 
+    @Action(description = "Save information to a local file")
     public Object saveInformationToLocalFile(String args[]) {
         StringBuilder content = new StringBuilder();
         for (String arg : args) {

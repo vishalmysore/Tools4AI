@@ -1,4 +1,4 @@
-package com.t4a.test;
+package com.t4a.regression;
 
 import com.t4a.predict.PredictionLoader;
 import dev.langchain4j.model.chat.ChatLanguageModel;

@@ -7,8 +7,8 @@ import com.google.cloud.vertexai.api.Tool;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import com.t4a.api.AIAction;
 import com.t4a.api.ActionType;
+import com.t4a.api.JavaMethodAction;
 import com.t4a.api.JavaMethodExecutor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 @Slf4j
-public class JustKhao implements AIAction {
+public class JustKhao implements JavaMethodAction {
     public JustKhao(){
 
     }
@@ -63,7 +63,7 @@ public class JustKhao implements AIAction {
             log.debug(""+ResponseHandler.getContent(response));
             log.debug(generator.getPropertyValuesJsonString(response));
 
-            generator.action(response,justKhao);
+           return (String) generator.action(response,justKhao);
 
 
         } catch (IOException e) {
@@ -74,7 +74,7 @@ public class JustKhao implements AIAction {
             throw new RuntimeException(e);
         }
 
-        return null;
+
     }
 
     public String bookMyReservation(String name , int numberOfPeople, String restaurantName, boolean cancel, String reserveDate) {

@@ -1,5 +1,6 @@
 package com.t4a.api;
 
+import com.t4a.annotations.Action;
 import com.t4a.annotations.Predict;
 
 import java.lang.reflect.Method;
@@ -12,28 +13,68 @@ public interface JavaMethodAction extends AIAction{
     }
 
     @Override
-    public default  String getActionName() {
-      String actionName =  this.getClass().getAnnotation(Predict.class).actionName();
-      return actionName;
+    public default String getActionName() {
+        Method firstAnnotatedMethod = null;
+
+        // Get all methods in the class
+        for (Method method : this.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Action.class)) {  // Check for Action annotation
+                firstAnnotatedMethod = method;  // Store the first annotated method
+                break;
+            }
+        }
+        if(firstAnnotatedMethod == null){
+            throw new RuntimeException("No action name available in class "+this.getClass().getName()+" please add @Action annotation to the method");
+        }
+        return firstAnnotatedMethod.getName();
+    }
+
+    public default String getActionClassName() {
+       return this.getClass().getName();
+    }
+
+    public default Class getActionClass() {
+        return this.getClass();
     }
 
     @Override
-    public default String getDescription(){
-       return this.getClass().getAnnotation(Predict.class).description();
+    public default String getDescription() {
+        Method firstAnnotatedMethod = null;
+
+        // Get all methods in the class
+        for (Method method : this.getClass().getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Action.class)) {  // Check for Action annotation
+                firstAnnotatedMethod = method;  // Store the first annotated method
+                break;
+            }
+        }
+        Action action = firstAnnotatedMethod.getAnnotation(Action.class);
+        String description = action.description();
+        if(description == null || description.isEmpty()) {
+            description = firstAnnotatedMethod.getName();
+        }
+        return description;
     }
 
-    public default ActionRisk getActionRisk(){
-        return this.getClass().getAnnotation(Predict.class).riskLevel();
+    public default  ActionRisk getActionRisk() {
+        return ActionRisk.LOW;
     }
+
 
     @Override
     public default String getActionGroup() {
-         return this.getClass().getAnnotation(Predict.class).groupName();
+        Predict predict = (Predict)getActionClass().getAnnotation(Predict.class);
+        return predict != null ? predict.groupName(): "No group name available";
     }
 
     @Override
     default String getGroupDescription() {
-        return this.getClass().getAnnotation(Predict.class).groupDescription();
+        Predict predict = (Predict)getActionClass().getAnnotation(Predict.class);
+        return predict != null ? predict.groupDescription(): "No group description available";
+    }
+
+    public default Object getActionInstance(){
+        return this;
     }
 
     public default boolean isComplexMethod(){

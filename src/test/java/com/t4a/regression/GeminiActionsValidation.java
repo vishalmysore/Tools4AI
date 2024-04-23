@@ -1,4 +1,4 @@
-package com.t4a.test;
+package com.t4a.regression;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.Date;
 
 @Slf4j
-public class ActionTest {
+public class GeminiActionsValidation {
 
     @Test
     public void testRestaurantPojo() throws AIProcessingException {
@@ -32,6 +32,14 @@ public class ActionTest {
 
     }
 
+    public void testPredictionCustomer() throws AIProcessingException {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer("dd MMMM yyyy"));
+        Gson gson = gsonBuilder.create();
+        GeminiActionProcessor processor = new GeminiActionProcessor(gson);
+        String result = (String)processor.processSingleAction(" Customer name is Vishal Mysore, his computer needs repair and he is in Toronto");
+        log.debug(result);
+    }
 
 
     @Test
@@ -55,7 +63,7 @@ public class ActionTest {
         String prm = "Sachin Tendulkar is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
                 "Maharaja restaurant in toronto with 4 of his friends on Indian Independence Day, can you notify him and the restarurant";
         PlayerWithRestaurant playerAc = new PlayerWithRestaurant();
-        String result = (String)processor.processSingleAction(prm,playerAc);
+        String result = (String)processor.processSingleAction(prm,playerAc,"notifyPlayerAndRestaurant");
         Assertions.assertNotNull(result);
         Assertions.assertNotNull(playerAc.getRestaurantPojo());
         Assertions.assertNotNull(playerAc.getPlayer());

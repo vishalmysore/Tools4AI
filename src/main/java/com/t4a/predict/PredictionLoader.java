@@ -15,6 +15,7 @@ import com.t4a.JsonUtils;
 import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.shell.ShellPredictedAction;
+import com.t4a.annotations.Action;
 import com.t4a.annotations.ActivateLoader;
 import com.t4a.annotations.Predict;
 import com.t4a.api.*;
@@ -31,6 +32,7 @@ import org.springframework.context.ApplicationContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 /**
  * The {@code PredictionLoader} class is responsible for managing the prediction process
@@ -548,7 +550,14 @@ public class PredictionLoader {
                     else
                         addAction(actionCLAZZ);
                 } else {
-                    log.error(" You have predict annotation but the class does not implement AIAction interface "+actionCLAZZ.getName());
+                    List<Method> annoatatedMethods =   getAnnotatedMethods(actionCLAZZ);
+                    for (Method method : annoatatedMethods) {
+                          {
+                              GenericJavaMethodAction action = new GenericJavaMethodAction(actionCLAZZ,method);
+                              addGenericJavaMethodAction(action);
+                          }
+                    }
+
                 }
 
             } catch (Exception e) {
@@ -574,7 +583,34 @@ public class PredictionLoader {
         }
     }
 
+    public  List<Method> getAnnotatedMethods(Class<?> clazz) {
+        List<Method> annotatedMethods = new ArrayList<>();
 
+        // Get all methods in the class
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(Action.class)) {  // Check for Action annotation
+                annotatedMethods.add(method);  // Add to list if annotated with Action
+            }
+        }
+
+        return annotatedMethods;  // Return the list of annotated methods
+    }
+
+    private void addGenericJavaMethodAction(GenericJavaMethodAction action) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        Object instance = null;
+        if(springContext != null) {
+            instance = springContext.getBean(action.getActionClass());
+            log.debug(" instance from Spring " + instance);
+        } if(instance == null) {
+            instance =  action.getActionClass().getDeclaredConstructor().newInstance();
+        }
+        action.setActionInstance(instance);
+        String actionName = action.getActionName();
+
+        actionNameList.append(actionName+",");
+        actionGroupList.addAction(action);
+        predictions.put(actionName,action);
+    }
 
     private  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         AIAction instance = null;

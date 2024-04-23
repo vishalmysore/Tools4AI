@@ -166,6 +166,9 @@ public class TestJsonUtils {
         Assertions.assertTrue(jsonString.contains("hobbies"), "The resulting JSON string should contain the 'hobbies' field");
         Assertions.assertTrue(jsonString.contains("scores"), "The resulting JSON string should contain the 'scores' field");
     }
+
+
+
     @Test
     public void testPopulateClassFromJson() throws Exception {
         JsonUtils utils = new JsonUtils();

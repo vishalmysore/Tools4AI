@@ -37,6 +37,8 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
             return Type.BOOLEAN;
         } else if(type.isArray()){
             return Type.ARRAY;
+        } if (type == Date.class) {
+            return Type.STRING;
         } else {
             return Type.OBJECT;
         }

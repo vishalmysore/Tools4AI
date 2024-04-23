@@ -10,6 +10,7 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.predict.LoaderException;
+import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -40,7 +41,9 @@ public class JavaMethodExecutor extends JavaActionExecutor {
     }
 
     public JavaMethodExecutor(Gson gson) {
-        this.gson = gson;
+        if(gson != null) {
+            this.gson = gson;
+        }
 
     }
 
@@ -96,6 +99,10 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         return generatedFunction;
     }
 
+    public FunctionDeclaration buildFunction(Object actionInstance, String actionName) throws AIProcessingException {
+        GenericJavaMethodAction gjvm = new GenericJavaMethodAction(actionInstance, actionName);
+        return buildFunction(gjvm);
+    }
     /**
      * Take the AIAction class and based on the type it returns a FunctionDeclaration for Gemini
      * @param action
@@ -116,10 +123,10 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         else if(action.getActionType().equals(ActionType.JAVAMETHOD)) {
             JavaMethodAction methodAction = (JavaMethodAction)action;
             if(!methodAction.isComplexMethod()) {
-                return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
+                return buildFunction(methodAction.getActionClassName(), action.getActionName(), action.getActionName(), action.getDescription());
             } else {
                 log.warn("method has pojos or complex data type , Will try to convert them, if it fails  please use GeminiPromptTransformer");
-                return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
+                return buildFunction(methodAction.getActionClassName(), action.getActionName(), action.getActionName(), action.getDescription());
             }
         } else
             return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
@@ -215,6 +222,11 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         }
     }
 
+    public Object action(GenerateContentResponse response, Object actionInstance, String actionName) throws AIProcessingException, InvocationTargetException, IllegalAccessException {
+       GenericJavaMethodAction gjvm = new GenericJavaMethodAction(actionInstance, actionName);
+        return action(response,gjvm);
+    }
+
     public AIAction getAction() {
         return action;
     }
@@ -292,7 +304,8 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             // Invoke the method with arguments
             Object obj = null;
             try {
-                obj = method.invoke(instance, parameterValues);
+                obj = method.invoke(((JavaMethodAction)instance).getActionInstance(), parameterValues);
+
             }catch (Exception e) {
                 log.warn("could not invoke method returning values "+e.getMessage());
             }

@@ -1,4 +1,4 @@
-package com.t4a.test;
+package com.t4a.regression;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.generativeai.ChatSession;

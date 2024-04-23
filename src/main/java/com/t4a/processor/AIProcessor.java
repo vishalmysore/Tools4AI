@@ -1,6 +1,7 @@
 package com.t4a.processor;
 
 import com.t4a.api.AIAction;
+import com.t4a.api.GenericJavaMethodAction;
 import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.HumanInLoop;
 
@@ -14,5 +15,14 @@ public interface AIProcessor {
     }
     public default String summarize(String prompt) throws AIProcessingException {
         return query(" Summarize this { "+ prompt+"}" );
+    }
+    public default Object processSingleAction(String promptText, Object actionInstance, String actionName) throws AIProcessingException {
+        GenericJavaMethodAction action = new GenericJavaMethodAction(actionInstance, actionName);
+       return processSingleAction(promptText, action, new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
+
+    public default Object processSingleAction(String promptText, Object actionInstance) throws AIProcessingException {
+        GenericJavaMethodAction action = new GenericJavaMethodAction(actionInstance);
+        return processSingleAction(promptText, action, new LoggingHumanDecision(), new LogginggExplainDecision());
     }
 }

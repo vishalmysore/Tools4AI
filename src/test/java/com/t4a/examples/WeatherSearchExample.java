@@ -9,6 +9,7 @@ import com.google.cloud.vertexai.generativeai.*;
 import com.t4a.action.BlankAction;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.examples.actions.CustomHttpGetAction;
+import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class WeatherSearchExample {
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
             CustomHttpGetAction httpAction = new CustomHttpGetAction();
 
-            FunctionDeclaration weatherFunciton = methodAction.buildFunction(httpAction);
+            FunctionDeclaration weatherFunciton = methodAction.buildFunction(httpAction,"getTemperature");
 
             log.debug("Function declaration h1:");
             log.debug("" + weatherFunciton);
@@ -105,7 +106,7 @@ public class WeatherSearchExample {
             log.debug("" + ResponseHandler.getContent(response));
             log.debug(methodAction.getPropertyValuesJsonString(response));
 
-            Object obj = methodAction.action(response, httpAction);
+            Object obj = methodAction.action(response, httpAction,"getTemperature");
             log.debug(""+obj);
 
             Content content =
@@ -121,6 +122,8 @@ public class WeatherSearchExample {
             log.debug(ResponseHandler.getText(response));
 
 
+        } catch (AIProcessingException e) {
+            throw new RuntimeException(e);
         }
 
     }

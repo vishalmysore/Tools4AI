@@ -76,7 +76,7 @@ public class JsonUtils {
     public Object populateClassFromJson(String json) throws Exception {
         json = extractJson(json);
         JSONObject jsonObject = new JSONObject(json);
-        return populateObject(jsonObject);
+        return populateObject(jsonObject,null);
     }
 
     public void buildMapFromJsonArray(JSONArray fieldsArray, Map map){
@@ -95,8 +95,14 @@ public class JsonUtils {
 
     }
 
-    public Object populateObject(JSONObject jsonObject) throws Exception {
-        String className = jsonObject.getString("className");
+    public Object populateObject(JSONObject jsonObject, JSONObject parentObject) throws Exception {
+        String className = jsonObject.optString("className",null);
+        if((className == null)&&(parentObject!=null)){
+            className = parentObject.optString("className",null);
+        }
+        if(className == null) {
+            throw new IllegalArgumentException("Class name is missing in the JSON object");
+        }
         Class<?> clazz = Class.forName(className);
         return populateObject(clazz,jsonObject);
     }
@@ -235,7 +241,7 @@ public class JsonUtils {
                                     && !listClazz.equals(Date.class)
                                     && !listClazz.isArray()
                                     && !List.class.isAssignableFrom(listClazz)) {
-                                objList.add(listClazz.cast(populateObject((JSONObject) obj)));
+                                objList.add(listClazz.cast(populateObject((JSONObject) obj,fieldObj)));
                             } else {
                                 objList.add(listClazz.cast(obj));
                             }
@@ -244,7 +250,7 @@ public class JsonUtils {
                         field.set(instance, objList);
                     } else if (fieldObj.has("fields")) {
                         // Recursively populate nested objects
-                        Object nestedInstance = populateObject(fieldObj);
+                        Object nestedInstance = populateObject(fieldObj,null);
                         field.set(instance, nestedInstance);
                     }
                     // Handle other types like Date here as in previous examples
@@ -444,7 +450,7 @@ public class JsonUtils {
                 fieldJson.put("fieldType", "list");
                 fieldJson.put("className", listType.getName());
                 fieldJson.put("fieldName", field.getName());
-                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fieldValue ");
+                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fields array ");
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
                 // innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
@@ -526,7 +532,7 @@ public class JsonUtils {
                 fieldJson.put("fieldType", "list");
                 fieldJson.put("className", listType.getName());
                 fieldJson.put("fieldName", field.getName());
-                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fieldValue ");
+                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fields array ");
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
             } else {
@@ -590,7 +596,7 @@ public class JsonUtils {
                     array.put(componentType);
                 }
                 paramJson.put("fieldValue", array);
-                paramJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fieldValue ");
+                paramJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fields array  ");
             } else if (List.class.isAssignableFrom(parameter.getType())) {
                 addList(parameter, paramJson);
             } else if (Map.class.isAssignableFrom(parameter.getType())) {
@@ -679,7 +685,7 @@ public class JsonUtils {
                 array.put(componentType);
             }
             fieldJson.put("fieldValue", array);
-            fieldJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fieldValue ");
+            fieldJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fields array ");
         }
         fieldJson.put("fieldType", fieldType.getSimpleName());
         if (!fieldJson.has("fieldValue")) {

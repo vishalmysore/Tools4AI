@@ -55,9 +55,10 @@ public class GeminiV2ActionProcessor implements AIProcessor{
         }
         if(action.getActionType() == ActionType.JAVAMETHOD) {
             log.debug(action + "");
+            JavaMethodAction javaMethodAction = (JavaMethodAction) action;
             JsonUtils utils = new JsonUtils();
             Method m = null;
-            Class clazz = action.getClass();
+            Class clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods
             ) {
@@ -93,7 +94,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
 
             Object result = null;
             try {
-                result = method.invoke(action, parameterValues.toArray());
+                result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {

@@ -1,6 +1,6 @@
 package com.t4a.examples.actions;
 
-import com.t4a.api.JavaMethodAction;
+import com.t4a.annotations.Action;
 import com.t4a.annotations.Predict;
 import com.t4a.predict.PredictionLoader;
 import kong.unirest.core.HttpResponse;
@@ -12,14 +12,22 @@ import lombok.extern.slf4j.Slf4j;
  * You need to set serperKey in tools4ai.properties or as System property
  */
 @Slf4j
-@Predict(actionName = "googleSearch", description = "search the web for information", groupName = "personal", groupDescription = "all personal actions are here")
-public class SearchAction implements JavaMethodAction {
+@Predict(groupName = "Search",groupDescription = "Search the web for the given string")
+public class SearchAction  {
+    public String searchString;
+    public boolean isNews;
 
+    @Action(description = "Search the web for the given string")
     public String googleSearch(String searchString, boolean isNews)  {
+        this.isNews = isNews;
+        this.searchString = searchString;
         return "bhelpuri, panipuri";
     }
 
     public String googleRealSearch(String searchString, boolean isNews)  {
+        this.isNews = isNews;
+        this.searchString = searchString;
+
         log.debug(searchString+" : "+isNews);
         HttpResponse<String> response = Unirest.post("https://google.serper.dev/search")
                 .header("X-API-KEY", PredictionLoader.getInstance().getSerperKey())

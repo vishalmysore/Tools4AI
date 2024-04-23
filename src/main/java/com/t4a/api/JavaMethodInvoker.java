@@ -19,7 +19,8 @@ public class JavaMethodInvoker {
 
     }
     public  Object[] parse(String jsonStr) {
-
+        JsonUtils utils = new JsonUtils();
+        jsonStr = utils.extractJson(jsonStr);
         JSONObject jsonObject = new JSONObject(jsonStr);
         String methodName = jsonObject.getString("methodName");
         String returnType = jsonObject.getString("returnType");
@@ -101,7 +102,7 @@ public class JavaMethodInvoker {
 
                     Object insideObject = jsonArray.get(i);
                     if(insideObject instanceof JSONObject){
-                        elementValue = utils.populateObject((JSONObject) insideObject);
+                        elementValue = utils.populateObject((JSONObject) insideObject,paramObj);
                     } else {
                         elementValue = getValue(insideObject,componentType,paramObj);
                     }
@@ -205,7 +206,7 @@ public class JavaMethodInvoker {
                                     && !listClazz.isArray()
                                     && !List.class.isAssignableFrom(listClazz)) {
                                 JsonUtils util = new JsonUtils();
-                                objList.add(listClazz.cast(util.populateObject((JSONObject) obj)));
+                                objList.add(listClazz.cast(util.populateObject((JSONObject) obj, fieldObj)));
                             } else {
                                 objList.add(listClazz.cast(obj));
                             }

@@ -1,14 +1,15 @@
 package com.t4a.examples.actions;
 
+import com.t4a.annotations.Action;
 import com.t4a.annotations.Predict;
-import com.t4a.api.JavaMethodAction;
 import lombok.Getter;
 import lombok.Setter;
 
+@Predict
 @Getter
 @Setter
-@Predict(actionName = "allTheDates",description = "all the customers")
-public class ArrayOfObjectAction implements JavaMethodAction {
+public class ArrayOfObjectAction  {
+    @Action(description = "All the customers")
     public String[] allTheDates(String[] allTheDates) {
 
 

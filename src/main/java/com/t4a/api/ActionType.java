@@ -6,6 +6,7 @@ package com.t4a.api;
 public enum ActionType {
     JAVACLASS,
     JAVAMETHOD,
+    GENERICJAVAMETHOD,
     HTTP,
 
     HALLUCINATION,

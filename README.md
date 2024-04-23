@@ -123,29 +123,31 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 
 ## Java Actions
 
-Fastest way to create action is by writing a java class which implements ```JavaMethodAction``` and  annotate with ```Predict```
+Fastest way to create action is by writing a java class  and  annotate its method with ```@Action```
 annotation.
 
-**Java Actions:** These are Java classes that implement the JavaMethodAction interface. They are designed to 
+**Java Actions:** These are Java classes that have methods with ```@Action``` annotation . They are designed to 
 perform specific actions based on prompts processed through Tools4AI.  
-**@Predict Annotation:** This annotation is used to define metadata about the action such as the action name
-and a description. It links specific methods within a Java class to specific prompts, enabling automatic 
-trigger of these methods when matched prompts are processed.  
 
-**Simple Action Example:** The example provided defines an action class SimpleAction that determines food preferences based on a person's name. 
-The @Predict annotation specifies this action should be triggered when a relevant prompt is processed.
+**@Predict Annotation:** This is a <u>class level</U> annotation. This annotation is used to add the action to the prediciton list, doing this will make sure
+the action is called automatically when the prompt is processed and if the prompt matches the action name. All the methods
+in this class annotated with @Action will be added to the prediction list.
+
+**@Action Annotation:** This is a <u>method level</u> annotation. The action method within the Java class is annotated with @Action to specify the action's behaviour
+this is the actual method which will be triggered if the prompt matches by AI. You can have as many methods as you want with @Action
+annotation in the class.
 
 **Method Execution:** When a prompt like "My friend's name is Vishal, I don’t know what to cook for him today." 
 is processed, the ```whatFoodDoesThisPersonLike``` method is automatically called with "Vishal" as the argument, 
 and it returns "Paneer Butter Masala" as Vishal's preference. 
 ``` 
-@Predict(actionName ="whatFoodDoesThisPersonLike", description = "Provide persons name and then find out what 
-does that person like")
-public class SimpleAction implements JavaMethodAction {
+@Predict
+public class SimpleAction  {
 
+    @Action( description = "what is the food preference of this person")
     public String whatFoodDoesThisPersonLike(String name) {
         if("vishal".equalsIgnoreCase(name))
-        return "Paneer Butter Masala";
+            return "Paneer Butter Masala";
         else if ("vinod".equalsIgnoreCase(name)) {
             return "aloo kofta";
         }else
@@ -154,10 +156,11 @@ public class SimpleAction implements JavaMethodAction {
 
 }
 ```
-This class can contain any number of methods both public or private. But it needs to contain the method mentioned
-in ```actionName``` of ```Predict``` annotation. In this case it is ```whatFoodDoesThisPersonLike```. This method
-can contain any number of parameters (Objects, Pojos, Arrays etc) and can be of have any return value, everythign will 
-be mapped at runtime using prompt. Predict annotation also takes additional values for ActionRisk and GroupName.
+This class can contain any number of methods both public or private. All the methods with ```@Action``` annotation  
+in this class are going be added to the prediction list. In this case it is just ```whatFoodDoesThisPersonLike```.
+
+This method can contain any number of parameters (Objects, Pojos, Arrays etc) and can be of have any return value, everythign will 
+be mapped at runtime using prompt. ```@Action``` annotation also takes additional values for ActionRisk and Description.
 
 When you send a prompt to  action processor (OpenAIActionProcessor, GeminiActionProcessor or AnthoripicActionProcessor)
 ``` 
@@ -216,8 +219,9 @@ As you can notice we are not passing any action with the prompt the AI will figu
 A simple Java action can be written like this 
 
 ```
-@Predict(actionName = "buildMyDiary" , description = "This is my diary details")
+@Predict(groupName = "buildMyDiary" , groupDescription = "This is my diary details")
 public class MyDiaryAction implements JavaMethodAction {
+    @Action  
     public MyDiary buildMyDiary(MyDiary diary) {
         //take whatever action you want to take
         return diary;
@@ -229,8 +233,7 @@ Here the actionName is ```buildMyDiary```, MyDiary pojo will be created automati
 **Action groups**
 
 ```
-@Predict(actionName = "googleSearch", description = "search the web for information",
- groupName = "personal", groupDescription = "all personal actions are here") 
+@Predict(groupName = "personal", groupDescription = "all personal actions are here") 
 ```
 Actions have to be annontated with @Predict to be added to prediction list , they can be grouped together with
 the groupName.

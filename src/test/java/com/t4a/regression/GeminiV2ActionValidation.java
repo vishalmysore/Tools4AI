@@ -1,4 +1,4 @@
-package com.t4a.test;
+package com.t4a.regression;
 
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.GeminiV2ActionProcessor;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 
 @Slf4j
-public class GeminiV2ActionTest {
+public class GeminiV2ActionValidation {
     @Test
     public void testHttpAction() throws AIProcessingException, IOException {
         GeminiV2ActionProcessor processor = new GeminiV2ActionProcessor();
@@ -20,6 +20,12 @@ public class GeminiV2ActionTest {
         log.debug(success);
         Assertions.assertTrue("True".equalsIgnoreCase(success));
 
+    }
+    @Test
+    public void testPredictionCustomer() throws AIProcessingException {
+        GeminiV2ActionProcessor processor = new GeminiV2ActionProcessor();
+        String result = (String)processor.processSingleAction(" Customer name is Vishal Mysore, his computer needs repair and he is in Toronto");
+        Assertions.assertNotNull(result);
     }
 
     @Test

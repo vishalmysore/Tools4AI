@@ -50,7 +50,7 @@ public class OpenAiActionProcessorTest {
         when(mockAction.getActionRisk()).thenReturn(ActionRisk.LOW);
         when(mockAction.getActionType()).thenReturn(ActionType.JAVAMETHOD);
         when(mockAction.getActionName()).thenReturn("Test Action");
-
+        when(mockOpenAiChatModel.generate(anyString())).thenReturn("Test Json");
         when(mockJavaMethodInvoker.parse(anyString())).thenReturn(new Object[]{new Class<?>[0], new Object[0]});
         when(mockJavaMethodExecutor.action(anyString(), any(AIAction.class))).thenReturn("Test Result");
     }
@@ -58,7 +58,8 @@ public class OpenAiActionProcessorTest {
     void testQuery() {
         String promptText = "Test Prompt";
 
-        try {
+        try (MockedStatic<PredictionLoader> mocked = Mockito.mockStatic(PredictionLoader.class)) {
+            mocked.when(PredictionLoader::getInstance).thenReturn(mockPredictionLoader);
             String result = processor.query(promptText);
             assertNotNull(result, "Result should not be null");
             // Add more assertions based on your expected output

@@ -61,11 +61,12 @@ public class OpenAiActionProcessor implements AIProcessor{
             log.debug(action + "");
             JsonUtils utils = new JsonUtils();
             Method m = null;
-            Class clazz = action.getClass();
+            JavaMethodAction javaMethodAction = (JavaMethodAction) action;
+            Class clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods
             ) {
-                if (m1.getName().equals(action.getActionName())) {
+                if (m1.getName().equals(javaMethodAction.getActionName())) {
                     m = m1;
                     break;
                 }
@@ -94,7 +95,7 @@ public class OpenAiActionProcessor implements AIProcessor{
 
             Object result = null;
             try {
-                result = method.invoke(action, parameterValues.toArray());
+                result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {

@@ -11,15 +11,14 @@ public class ActionProcessorExample {
        GeminiActionProcessor processor = new GeminiActionProcessor();
        String result = (String)processor.processSingleAction(" Customer name is Vishal Mysore, his computer needs repair and he is in Toronto");
        log.debug(result);
-
-      result = (String)processor.processSingleAction("My employee name is Vishal he is toronto save this");
+        result = (String)processor.processSingleAction("My employee name is Vishal he is toronto save this");
         log.debug(result);
         result = (String)processor.processSingleAction("Post a book with title Harry Poster and Problem rat, id of the book is 887 and discription is about harry ");
         log.debug(result);
 
         String prm = "sachin tendular is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
                 "Maharaja restaurant in toronto with 4 of his friends on Indian Independence Day, can you notify him and the restarurant";
-        result = (String)processor.processSingleAction(prm,new PlayerWithRestaurant());
+        result = (String)processor.processSingleAction(prm,new PlayerWithRestaurant(),"notifyPlayerAndRestaurant");
         log.debug(result);
      /*   log.debug("==== Multi Command =====");
         List<Object> results = processor.processMultipleAction("hey I am in Toronto do you think i can go out without jacket, also save the weather information , City location and your suggestion in file, also include places to see",2);

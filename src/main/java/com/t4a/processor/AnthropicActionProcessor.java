@@ -61,7 +61,8 @@ public class AnthropicActionProcessor implements AIProcessor {
             log.debug(action + "");
             JsonUtils utils = new JsonUtils();
             Method m = null;
-            Class clazz = action.getClass();
+            JavaMethodAction javaMethodAction = (JavaMethodAction) action;
+            Class clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods
             ) {
@@ -96,7 +97,7 @@ public class AnthropicActionProcessor implements AIProcessor {
 
             Object result = null;
             try {
-                result = method.invoke(action, parameterValues.toArray());
+                result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {

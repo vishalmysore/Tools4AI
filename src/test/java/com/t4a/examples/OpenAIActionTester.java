@@ -3,14 +3,11 @@ package com.t4a.examples;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.t4a.api.AIAction;
 import com.t4a.examples.actions.SearchAction;
 import com.t4a.examples.actions.SimpleAction;
 import com.t4a.examples.actions.file.FileWriteAction;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.processor.AIProcessingException;
-import com.t4a.processor.LoggingHumanDecision;
-import com.t4a.processor.LogginggExplainDecision;
 import com.t4a.processor.OpenAiActionProcessor;
 
 import java.util.Date;
@@ -21,11 +18,11 @@ public class OpenAIActionTester  {
 
 
         String prompt = "My friends name is Vishal ,I dont know what to cook for him today.";
-        process(prompt, new SimpleAction()) ;
+        process(prompt, new SimpleAction(),"whatFoodDoesThisPersonLike") ;
         prompt = "Post a book with title Harry Poster and Problem rat, id of the book is 887 and discription is about harry ";
         process(prompt) ;
         prompt = "save these indian recipe names to a file eggcurry, paneer butter";
-        process(prompt, new FileWriteAction()) ;
+        process(prompt, new FileWriteAction(),"saveInformationToLocalFile") ;
         prompt = "Customer name is Vishal Mysore, his computer needs repair and he is in Toronto he complained on labor day";
         process(prompt) ;
         prompt = "sachin tendular is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
@@ -36,21 +33,21 @@ public class OpenAIActionTester  {
         prompt = "can you provide me list of core V1 component status for the kubernetes cluster";
         process(prompt) ;
         prompt = "search google for Indian Recipes";
-        process(prompt,new SearchAction()) ;
+        process(prompt,new SearchAction(),"googleSearch") ;
     }
     public static void process(String prompt) throws AIProcessingException {
-    process(prompt,null);
+    process(prompt,null,null);
     }
-    public static void process(String prompt, AIAction action) throws AIProcessingException {
+    public static void process(String prompt, Object action,String actionName) throws AIProcessingException {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer("dd MMMM yyyy"));
         Gson gson = gsonBuilder.create();
         OpenAiActionProcessor processor = new OpenAiActionProcessor(gson);
         if(action != null) {
-        String result = (String)processor.processSingleAction(prompt,action,new LoggingHumanDecision(),new LogginggExplainDecision());
+        String result = (String)processor.processSingleAction(prompt,action,actionName);
         System.out.println(result);}
         else {
-            String result = (String)processor.processSingleAction(prompt,new LoggingHumanDecision(),new LogginggExplainDecision());
+            String result = (String)processor.processSingleAction(prompt);
             System.out.println(result);
         }
     }
