@@ -100,6 +100,10 @@ public class GeminiPromptTransformer implements PromptTransformer {
 
     }
 
+    public String getJSONResponseFromAI(String prompt, String jsonStr) throws AIProcessingException {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
     public String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
         return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");
     }

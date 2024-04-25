@@ -61,7 +61,7 @@ public class JavaMethodInvoker {
 
             return returnObject;
         } catch (Exception e) {
-            e.printStackTrace();
+           log.warn(e.getMessage());
         }
         return new Object[0];
     }
@@ -128,7 +128,7 @@ public class JavaMethodInvoker {
                 constructor.setAccessible(true); // Make it accessible if it's private
                 value = constructor.newInstance(); // Provide arguments
             } catch (Exception e) {
-                e.printStackTrace(); // Handle exceptions appropriately
+                log.warn(e.getMessage()); // Handle exceptions appropriately
             }
 
             return value;

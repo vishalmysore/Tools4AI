@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
 public class ActionList {
     private List<ActionGroup> groups = new ArrayList<>();
     private List<GroupInfo> groupInfo = new ArrayList<>();
@@ -28,7 +30,10 @@ public class ActionList {
       }
       group.addAction(action);
         String oldValue = groupActions.get(group.getGroupInfo());
-        String value = action.getActionName();
+        String value = null;
+
+            value = action.getActionName();
+
         if(oldValue == null) {
             groupActions.put(group.getGroupInfo(),value);
         } else {

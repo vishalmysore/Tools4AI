@@ -1,49 +1,66 @@
 
-F
-java:S3740Ê"/Provide the parametrized type for this generic.(‰Ô‚
-F
-java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó
-F
-java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó
-`
-java:S1192E"JDefine a constant instead of duplicating this literal "fieldName" 3 times.(Ò¼á
-f
-java:S1192*"KDefine a constant instead of duplicating this literal "fieldValue" 6 times.(³İÀ“ûÿÿÿÿ
-]
-java:S1192,"GDefine a constant instead of duplicating this literal "fields" 4 times.(ËÅïÛ
-E
-java:S1066H"/Merge this if statement with the enclosing one.(‰àÔ®
-—
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ĞØØ§
-T
-java:S1854">Remove this useless assignment to local variable "returnType".(¦™—
-Y
-java:S1854">Remove this useless assignment to local variable "methodName".(úÓïıÿÿÿÿ
-J
-java:S1481"/Remove this unused "methodName" local variable.(úÓïıÿÿÿÿ
-E
-java:S1481"/Remove this unused "returnType" local variable.(¦™—
-h
-java:S3776D"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(«¬åß
-S
-java:S1854}"=Remove this useless assignment to local variable "jsonUtils".(ïâŒ‘
-V	java:S125s"<This block of commented-out lines of code should be removed.(şĞåäúÿÿÿÿ
-D
-java:S1481}".Remove this unused "jsonUtils" local variable.(ïâŒ‘
-H
-java:S3011€",This accessibility update should be removed.(À–‰§úÿÿÿÿ
-a
-java:S1854"ERemove this useless assignment to local variable "componentTypeName".(ÌºÿÖşÿÿÿÿ
-R
-java:S1481"6Remove this unused "componentTypeName" local variable.(ÌºÿÖşÿÿÿÿ
+‰
+AY8SEb8BwWCABySxhhD4
+java:S3740Ê"/Provide the parametrized type for this generic.(‰Ô‚8˜ğ¨€ì1J$8f4b9ee5-b100-41b9-8f23-9db699b4645f
+‰
+AY8SEb8BwWCABySxhhD5
+java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$75763d67-6782-4eb0-a8be-9847495a8bf3
+‰
+AY8SEb8BwWCABySxhhD6
+java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$8e297131-f42f-4e10-8943-9aa1e2c8ca43
+£
+AY8XP84fEG-L7x89lGjB
+java:S1192E"JDefine a constant instead of duplicating this literal "fieldName" 3 times.(Ò¼á8Àšş¹ñ1J$e27fc9aa-e210-4601-9db1-9ba7ab6ebfbd
+©
+AY8SEb8BwWCABySxhhD7
+java:S1192*"KDefine a constant instead of duplicating this literal "fieldValue" 6 times.(³İÀ“ûÿÿÿÿ8˜ğ¨€ì1J$05a6c682-0680-47c2-b1a3-4b9873295439
+ 
+AY8SEb8BwWCABySxhhD8
+java:S1192,"GDefine a constant instead of duplicating this literal "fields" 4 times.(ËÅïÛ8À°¿¦ë1J$2f4cbb9a-ffa4-4367-8964-436229368cd0
+ˆ
+AY8XP84fEG-L7x89lGjC
+java:S1066H"/Merge this if statement with the enclosing one.(‰àÔ®8Àšş¹ñ1J$7db3d661-d3c9-4996-af43-b578237a300a
+Ú
+AY8SEb8BwWCABySxhhD9
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ĞØØ§8À°¿¦ë1J$769d5fd5-beab-4a6e-b199-abaeae039a96
+z
+java:S1854">Remove this useless assignment to local variable "returnType".(¦™—J$d79684ce-be31-4728-a1ba-90a1cc9f3ac7
+
+java:S1854">Remove this useless assignment to local variable "methodName".(úÓïıÿÿÿÿJ$ec2deec4-4b45-42f4-9559-821fbebe2d9e
+
+AY8SEb8BwWCABySxhhD-
+java:S1481"/Remove this unused "methodName" local variable.(úÓïıÿÿÿÿ8À°¿¦ë1J$472b6ee4-123b-4e0f-93af-0115d48e18d5
+ˆ
+AY8SEb8BwWCABySxhhD_
+java:S1481"/Remove this unused "returnType" local variable.(¦™—8À°¿¦ë1J$2daecab3-be4d-45bf-832e-6383cecd97a8
+«
+AY8SEb8BwWCABySxhhEB
+java:S3776D"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(«¬åß8ÈğƒĞì1J$9eecfe7e-22e0-432b-8ccc-f5287ca81a5e
+y
+java:S1854}"=Remove this useless assignment to local variable "jsonUtils".(ïâŒ‘J$aa738f39-2058-4551-8b67-c34004388bf2
+™
+AY8SEb8BwWCABySxhhEE	java:S125s"<This block of commented-out lines of code should be removed.(şĞåäúÿÿÿÿ8àØÊí1J$c9406f60-cc56-4650-b806-124fdef8d376
+‡
+AY8SEb8BwWCABySxhhEF
+java:S1481}".Remove this unused "jsonUtils" local variable.(ïâŒ‘8˜ğ¨€ì1J$5ab13a30-0ca9-4d2b-a272-eecc1cb4ffb9
 n
-java:S3776©"RRefactor this method to reduce its Cognitive Complexity from 45 to the 15 allowed.(÷ÿËóıÿÿÿÿ
-W	java:S125¹"<This block of commented-out lines of code should be removed.(—¢Ñÿÿÿÿÿ
-C
-java:S3011Â",This accessibility update should be removed.(˜ÂÓ˜
-C
-java:S3011ä",This accessibility bypass should be removed.(•‚Ùß
-C
-java:S3011è",This accessibility bypass should be removed.(•‚Ùß
-I
-java:S1905ö"-Remove this unnecessary cast to "JSONObject".(‹Ùæğÿÿÿÿÿ
+java:S3011€",This accessibility update should be removed.(À–‰§úÿÿÿÿJ$c639788a-2ac7-4d13-8084-dee9091169a9
+‡
+java:S1854"ERemove this useless assignment to local variable "componentTypeName".(ÌºÿÖşÿÿÿÿJ$01bd6099-70e3-4c29-8cd5-49e2ee4abf14
+•
+AY8SEb8BwWCABySxhhEH
+java:S1481"6Remove this unused "componentTypeName" local variable.(ÌºÿÖşÿÿÿÿ8ˆÒ©§ë1J$72827524-3f9c-4b37-a079-b7fcdf51ed0c
+±
+AY8SEb8BwWCABySxhhEI
+java:S3776©"RRefactor this method to reduce its Cognitive Complexity from 45 to the 15 allowed.(÷ÿËóıÿÿÿÿ8ĞÏªì1J$ca026922-a2af-44fd-aa29-745851c66af2
+š
+AY8SEb8BwWCABySxhhEJ	java:S125¹"<This block of commented-out lines of code should be removed.(—¢Ñÿÿÿÿÿ8À°¿¦ë1J$554ff6d1-597c-404f-ab51-4078dfe6e6eb
+i
+java:S3011Â",This accessibility update should be removed.(˜ÂÓ˜J$abf5b942-aa34-4f41-9bc4-33dff471d751
+i
+java:S3011ä",This accessibility bypass should be removed.(•‚ÙßJ$d1d36750-ef26-4d1e-824a-acc3ebb1f06d
+i
+java:S3011è",This accessibility bypass should be removed.(•‚ÙßJ$99137d5a-4ba2-4bc1-9bf3-8f0326124283
+Œ
+AY8SEb8BwWCABySxhhEL
+java:S1905ö"-Remove this unnecessary cast to "JSONObject".(‹Ùæğÿÿÿÿÿ8À°¿¦ë1J$00eab604-a1d9-438f-8df5-a3065d5dee43

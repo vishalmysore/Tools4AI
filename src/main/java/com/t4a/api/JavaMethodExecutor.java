@@ -108,7 +108,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
      * @param action
      * @return
      */
-    public FunctionDeclaration buildFunction(AIAction action) {
+    public FunctionDeclaration buildFunction(AIAction action) throws AIProcessingException {
         this.action = action;
         if(action.getActionType().equals(ActionType.SHELL)) {
             ShellPredictedAction shellAction = (ShellPredictedAction)action;
@@ -164,7 +164,9 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
             mapMethod(extendedPredictedAction);
         } else if(action.getActionType().equals(ActionType.JAVAMETHOD)){
-            mapMethod(action.getClass().getName(),action.getActionName());
+
+                mapMethod(action.getClass().getName(),action.getActionName());
+
         }
     }
     private void mapMethod(ExtendedPredictedAction action) {
@@ -272,6 +274,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         } if(instance.getActionType().equals(ActionType.EXTEND)) {
@@ -357,6 +360,7 @@ public class JavaMethodExecutor extends JavaActionExecutor {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         } if(instance.getActionType().equals(ActionType.EXTEND)) {

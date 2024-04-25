@@ -10,6 +10,7 @@ import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.t4a.api.ActionType;
 import com.t4a.api.JavaMethodAction;
 import com.t4a.api.JavaMethodExecutor;
+import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class JustKhao implements JavaMethodAction {
     public JustKhao(){
 
     }
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, AIProcessingException {
 
         String projectId = "cookgptserver";
         String location = "us-central1";
@@ -32,7 +33,7 @@ public class JustKhao implements JavaMethodAction {
         log.debug(promptText+ " : "+status);
     }
 
-    public static String khao(String projectId, String location, String modelName,String promptText) {
+    public static String khao(String projectId, String location, String modelName,String promptText) throws AIProcessingException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             JavaMethodExecutor generator = new JavaMethodExecutor();
             JustKhao justKhao = new JustKhao();

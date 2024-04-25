@@ -1,0 +1,68 @@
+
+¤
+AY8SEb8LwWCABySxhhEO	java:S112‚"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Â¢ˆá1J$fb4f3d73-d40b-46d9-977b-b9d3a29e2193
+¤
+AY8SEb8LwWCABySxhhEP	java:S112“"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Â¢ˆá1J$f5ddb305-fc60-4c5b-9e9d-7eb4c6237d26
+¤
+AY8SEb8LwWCABySxhhEQ	java:S112–"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8¨¶ÔÙá1J$1b61e6f1-18ab-43fb-89c6-306479c33b5a
+¤
+AY8SEb8LwWCABySxhhER	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8 Ùø ä1J$75f8d8be-26c1-406c-a5c9-4dbbedfdabeb
+¤
+AY8SEb8LwWCABySxhhES	java:S112Ø"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8 Ùø ä1J$9da63a5a-1b4f-4837-b460-821cb19ac6bb
+¤
+AY8SEb8LwWCABySxhhET	java:S112é"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8 Ùø ä1J$6fc8def4-ebd8-4795-9652-ccd0844613b0
+¤
+AY8SEb8LwWCABySxhhEU	java:S112ì"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8 Ùø ä1J$de2e20fe-1ea8-4e24-a5aa-3f614a4f3723
+¤
+AY8SEb8LwWCABySxhhEN	java:S112ô"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Øò‹Şà1J$5c4a05d5-7d0e-4aec-aff5-42b857abe860
+¢
+AY8SEb8LwWCABySxhhEV
+java:S1192¼"IDefine a constant instead of duplicating this literal "{failed}" 3 times.(›ƒê"8ˆ«¦Ùê1J$c895ea4f-b3f0-477b-bee5-0e43c3344a1e
+•
+java:S1450$"TRemove the "clazz" field and declare it as a local variable in the relevant methods.(¿ÖãŒıÿÿÿÿJ$35d15f1d-f94a-4e7c-8ef9-dc90a4905b2b
+”
+AY8SEb8LwWCABySxhhEW
+java:S1117Ê":Rename "method" which hides the field declared at line 37.(ã ³8€Š¾Ş1J$73710c08-83eb-4ba6-a6dc-0bce635b4add
+¬
+AY8SEb8LwWCABySxhhEX
+java:S3776ö"RRefactor this method to reduce its Cognitive Complexity from 26 to the 15 allowed.(¤ÏÂ¡8ğî†æç1J$da3af812-c962-41fa-b9a2-2854f9fc6791
+Œ
+java:S1854‰"JRemove this useless assignment to local variable "paraNamesToPassToShell".(ÍÕ¹ŒüÿÿÿÿJ$b903d0ec-7ac4-43e9-b107-47761c9d7407
+”
+AY8SEb8LwWCABySxhhEY
+java:S1117ú":Rename "action" which hides the field declared at line 38.(’Ñ±â8¨¶ÔÙá1J$48d3bed5-c151-44ef-b938-f2167c72c1b4
+
+AY8SEb8LwWCABySxhhEZ
+java:S1155û">Use isEmpty() to check whether the collection is empty or not.(é›¾ıÿÿÿÿ8è–¨úã1J$98a49525-8226-46c1-8355-13d83961d59d
+™
+AY8SEb8LwWCABySxhhEa
+java:S1117…":Rename "action" which hides the field declared at line 38.(œ‹”Óûÿÿÿÿ8¨¶ÔÙá1J$d72b7cfb-4c04-4931-b34f-374626035dbc
+š
+AY8SEb8LwWCABySxhhEc
+java:S1481‰";Remove this unused "paraNamesToPassToShell" local variable.(ÍÕ¹Œüÿÿÿÿ8Â¢ˆá1J$0e9a4ca4-0710-453d-a972-5cbbc181198f
+‘
+AY8SEb8LwWCABySxhhEd
+java:S3972˜"7Move this "if" to a new line or add the missing "else".(Ûÿ…ğ8¨¶ÔÙá1J$5607dc62-d6e0-4630-814c-2d218e3d78f1
+™
+AY8SEb8LwWCABySxhhEe
+java:S1117™":Rename "action" which hides the field declared at line 38.(Óé³ûÿÿÿÿ8¨¶ÔÙá1J$9a26ff8d-e66f-440d-a78a-bce944172d19
+±
+AY8SEb8LwWCABySxhhEf
+java:S3776Î"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(¬ÖÏØûÿÿÿÿ8 Ùø ä1J$969bb1c8-95f2-4108-8fcc-2fa51b42dbc9
+Œ
+java:S1854ß"JRemove this useless assignment to local variable "paraNamesToPassToShell".(ÍÕ¹ŒüÿÿÿÿJ$635cee67-a7af-49ee-80de-1c9435df0ae5
+”
+AY8SEb8LwWCABySxhhEg
+java:S1117Ò":Rename "action" which hides the field declared at line 38.(’Ñ±â8 Ùø ä1J$a23a4e78-e61d-4182-8458-a4030910b8d2
+™
+AY8SEb8LwWCABySxhhEh
+java:S1117Û":Rename "action" which hides the field declared at line 38.(œ‹”Óûÿÿÿÿ8 Ùø ä1J$22e720ab-b14b-4b07-96e7-268af38e59ca
+š
+AY8SEb8LwWCABySxhhEj
+java:S1481ß";Remove this unused "paraNamesToPassToShell" local variable.(ÍÕ¹Œüÿÿÿÿ8 Ùø ä1J$84654c5c-2506-4652-9821-f2eef6705ebe
+‘
+AY8SEb8LwWCABySxhhEk
+java:S3972î"7Move this "if" to a new line or add the missing "else".(Ûÿ…ğ8 Ùø ä1J$ca1de47c-e1d8-43e6-b7d5-9341c729d103
+™
+AY8SEb8LwWCABySxhhEl
+java:S1117ï":Rename "action" which hides the field declared at line 38.(Óé³ûÿÿÿÿ8 Ùø ä1J$add4abd9-e857-4d93-8b0a-2ec1c732e87e

@@ -1,20 +1,20 @@
 
 {
 AY8SEb_SwWCABySxhhGv
-java:S1643è"Use a StringBuilder instead.(‡®Û¤ÿÿÿÿÿ8ØšùËâ1J$c9442e73-6bf4-4e02-9ddd-9c793f243a34
+java:S1643è"Use a StringBuilder instead.(‡®Û¤ÿÿÿÿÿ8ØšùËâ1J$e766cc42-a9b4-4e5e-8ac6-8e6300102bb8
 ™
-AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$b6903115-3846-40b2-84c5-036cd33c93a7
+AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$e97c1d7d-4e53-4f0c-96d5-239de8825e4f
 
 AY8SEb_SwWCABySxhhG1
-java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$031a2acb-5f02-4a68-bac9-d721269adc14
+java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$ce6ef6aa-3703-4540-8eb8-01b75d7a0dfc
 °
 AY8SEb_SwWCABySxhhG2
-java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 90 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$5c5cfb68-3494-4475-a425-dd3aae6aac13
+java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 90 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$936a86ec-04ef-4ee3-9d5e-87129fa9363f
 š
-AY8SEb_SwWCABySxhhG3	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ðî†æç1J$eaa3ce13-14bf-48c8-adeb-d4c8d9defa90
+AY8SEb_SwWCABySxhhG3	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ðî†æç1J$872714a0-5ba3-4124-b53b-e5302e3dbe14
 •
 AY8SEb_SwWCABySxhhG5
-java:S1144ô"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$7360e89f-3d94-4be9-a9c8-6d7bf703b802
+java:S1144ô"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$70997052-12c3-4fc3-a685-3b2321195946
 ¥
 AY8SEb_SwWCABySxhhG6
-java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 102 to 64, Complexity from 27 to 14, Nesting Level from 9 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$2ba9cd75-e5cf-4267-954b-251fa5769c66
+java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 102 to 64, Complexity from 27 to 14, Nesting Level from 9 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$f38df3c5-b52f-4f6a-b63d-4853ea1889e0

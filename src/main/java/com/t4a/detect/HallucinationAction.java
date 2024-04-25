@@ -61,7 +61,7 @@ public class HallucinationAction implements AIAction {
             }
         } catch (Exception e) {
             log.error(e.getMessage());
-            e.printStackTrace();
+
 
         }
         return haList;

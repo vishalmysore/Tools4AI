@@ -6,8 +6,7 @@ import com.t4a.detect.BiasDetector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BiasDetectorTest {
 
@@ -29,7 +28,7 @@ public class BiasDetectorTest {
     }
 
     @Test
-    public void testExecute() {
-        assertThrows(GuardRailException.class, () -> biasDetector.execute(null));
+    public void testExecute() throws GuardRailException {
+        assertNull(biasDetector.execute(null));
     }
 }

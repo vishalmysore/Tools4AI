@@ -1,22 +1,14 @@
 package com.t4a.transform;
 
 import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.FunctionDeclaration;
-import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.api.Tool;
-import com.google.cloud.vertexai.generativeai.ChatSession;
-import com.google.cloud.vertexai.generativeai.GenerativeModel;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.t4a.JsonUtils;
-import com.t4a.api.JavaClassExecutor;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * This class takes a prompt and can build Java Pojo out of it, it could also transform the prompt into json with
@@ -47,94 +39,21 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
         return gson;
     }
 
-    /**
-     * Build a Java Pojo out of the Prompt
-     *
-     * @param promptText
-     * @param className
-     * @param funName
-     * @param description
-     * @return
-     * @throws AIProcessingException
-     */
-
-    public  Object transformIntoPojoDeperecated(String promptText, String className, String funName, String description) throws AIProcessingException {
-        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
-            JavaClassExecutor generator = new JavaClassExecutor(gson);
-            FunctionDeclaration functionDeclaration = generator.buildFunctionFromClass(className,funName,description);
-
-            log.debug("Function declaration h1:");
-            log.debug(functionDeclaration.toString());
-
-
-            //add the function to the tool
-            Tool tool = Tool.newBuilder()
-                    .addFunctionDeclarations(functionDeclaration)
-                    .build();
-
-
-            GenerativeModel model =
-                    new GenerativeModel.Builder()
-                            .setModelName(PredictionLoader.getInstance().getModelName())
-                            .setVertexAi(vertexAI)
-                            .setTools(Arrays.asList(tool))
-                            .build();
-            ChatSession chat = model.startChat();
-
-            log.debug(String.format("Ask the question 1: %s", promptText));
-            GenerateContentResponse response = chat.sendMessage(promptText);
-
-            log.debug("\nPrint response 1 : ");
-            log.debug(ResponseHandler.getContent(response).toString());
-            Map<String,Object> map=  generator.getPropertyValuesMapMap(response);
-
-            String jsonString = getGson().toJson(map);
-            log.debug(jsonString);
-            return generator.action(response,jsonString);
-
-
-        }  catch (IOException | ClassNotFoundException e) {
-            throw new AIProcessingException(e);
-        }
-
-    }
-
-
-    /**
-     * Build a Java Pojo out of the Prompt
-     *
-     * @param prompt
-     * @param className
-     * @param funName
-     * @param description
-     * @return
-     * @throws AIProcessingException
-     */
-    public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
+    @Override
+    public String getJSONResponseFromAI(String prompt, String jsonStr) throws AIProcessingException {
         try {
-            JsonUtils util = new JsonUtils();
-            Class<?> clazz = Class.forName(className);
-            String jsonStr = null;
-            if(clazz.getName().equalsIgnoreCase("java.util.Map")) {
-                jsonStr = util.buildBlankMapJsonObject(null).toString(4);
-
-            } else if(clazz.getName().equalsIgnoreCase("java.util.List")) {
-                jsonStr = util.buildBlankListJsonObject(null).toString(4);
-
-            }else {
-                jsonStr = util.convertClassToJSONString(clazz);
-            }
-            log.info(jsonStr);
-            jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json"));
-            log.info(jsonStr);
-            return util.populateClassFromJson(jsonStr);
-
-        } catch (Exception e) {
-
+            return ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json"));
+        } catch (IOException e) {
             throw new AIProcessingException(e);
         }
-
     }
+
+
+
+
+
+
+
 
     public String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
         return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");

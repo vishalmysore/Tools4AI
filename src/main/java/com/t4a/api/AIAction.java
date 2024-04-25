@@ -82,7 +82,7 @@ package com.t4a.api;
  * </pre>
  */
 public interface AIAction {
-    String getActionName();
+    String getActionName() ;
 
     /**
      *

@@ -2,6 +2,7 @@ package com.t4a.test;
 
 import com.t4a.action.BlankAction;
 import com.t4a.api.ActionType;
+import com.t4a.processor.AIProcessingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +22,7 @@ class BlankActionTest {
     }
 
     @Test
-    void testGetActionName() {
+    void testGetActionName() throws AIProcessingException {
         // Create an instance of BlankAction
         BlankAction blankAction = new BlankAction();
 

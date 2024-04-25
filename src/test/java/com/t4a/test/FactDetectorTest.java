@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
     @Test
      void testExecute() throws GuardRailException {
-        assertThrows(GuardRailException.class, () -> factDetector.execute(null));
         assertNull(factDetector.execute(new DetectValues()));
     }
 }

@@ -10,6 +10,7 @@ import com.t4a.action.BlankAction;
 import com.t4a.api.AIAction;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
+import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -74,7 +75,7 @@ public class PromptPredictionExample {
         sample.actionOnPrompt();
 
     }
-    public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException {
+    public void actionOnPrompt() throws IOException, InvocationTargetException, IllegalAccessException, AIProcessingException {
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             AIAction predictedAction = PredictionLoader.getInstance().getPredictedAction(promptText);
             log.debug(predictedAction.getActionName());

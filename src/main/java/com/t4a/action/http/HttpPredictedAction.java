@@ -149,7 +149,7 @@ public final class HttpPredictedAction implements PredictedAIAction {
                 return jsonResponse;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
             // Handle exception...
         }
         return null;

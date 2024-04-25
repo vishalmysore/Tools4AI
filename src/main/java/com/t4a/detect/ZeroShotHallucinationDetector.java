@@ -11,6 +11,7 @@ import com.t4a.api.ActionType;
 import com.t4a.api.DetectorAction;
 import com.t4a.api.GuardRailException;
 import com.t4a.api.JavaMethodExecutor;
+import com.t4a.processor.AIProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,7 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
      * @throws GuardRailException
      */
     @Override
-    public DetectValueRes execute(DetectValues dd) throws GuardRailException {
+    public DetectValueRes execute(DetectValues dd) throws GuardRailException, AIProcessingException {
         DetectValueRes res = new DetectValueRes();
         try (VertexAI vertexAI = new VertexAI(projectId, location)) {
             GenerateContentResponse response;
@@ -105,7 +106,7 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
         return res;
     }
 
-    public static void main(String[] args) throws GuardRailException {
+    public static void main(String[] args) throws GuardRailException, AIProcessingException {
         DetectValues dv = new DetectValues();
         dv.setResponse(sampleResponse);
         ZeroShotHallucinationDetector detec = new ZeroShotHallucinationDetector();

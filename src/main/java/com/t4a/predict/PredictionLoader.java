@@ -611,14 +611,24 @@ public class PredictionLoader {
         predictions.put(actionName,action);
     }
 
-    private  void addAction(Class<?> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private  void addAction(Class<?> clazz) throws  AIProcessingException {
         AIAction instance = null;
         if(springContext != null) {
             instance = (AIAction) springContext.getBean(clazz);
             log.debug(" instance from Spring " + instance);
         }
         if(instance == null) {
-            instance = (AIAction) clazz.getDeclaredConstructor().newInstance();
+            try {
+                instance = (AIAction) clazz.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException e) {
+                throw new AIProcessingException(e);
+            } catch (IllegalAccessException e) {
+                throw new AIProcessingException(e);
+            } catch (InvocationTargetException e) {
+                throw new AIProcessingException(e);
+            } catch (NoSuchMethodException e) {
+                throw new AIProcessingException(e);
+            }
         }
 
         String actionName = instance.getActionName();

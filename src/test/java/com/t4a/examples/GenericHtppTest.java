@@ -12,6 +12,7 @@ import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.action.http.InputParameter;
 import com.t4a.api.JavaMethodExecutor;
 import com.t4a.predict.PredictionLoader;
+import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class GenericHtppTest {
 
     }
 
-    public void actionOnPrompt(String[] args) throws IOException {
+    public void actionOnPrompt(String[] args) throws IOException, AIProcessingException {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             JavaMethodExecutor methodAction = new JavaMethodExecutor();
             HttpPredictedAction httpAction = new HttpPredictedAction();

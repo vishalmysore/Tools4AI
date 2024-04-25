@@ -2,6 +2,7 @@ package com.t4a.api;
 
 import com.t4a.annotations.Action;
 import com.t4a.annotations.Predict;
+import com.t4a.processor.AIProcessingException;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -13,7 +14,7 @@ public interface JavaMethodAction extends AIAction{
     }
 
     @Override
-    public default String getActionName() {
+    public default String getActionName()  {
         Method firstAnnotatedMethod = null;
 
         // Get all methods in the class
@@ -24,16 +25,18 @@ public interface JavaMethodAction extends AIAction{
             }
         }
         if(firstAnnotatedMethod == null){
-            throw new RuntimeException("No action name available in class "+this.getClass().getName()+" please add @Action annotation to the method");
+            return "No action name available";
         }
         return firstAnnotatedMethod.getName();
+
+
     }
 
     public default String getActionClassName() {
        return this.getClass().getName();
     }
 
-    public default Class getActionClass() {
+    public default Class<?> getActionClass() {
         return this.getClass();
     }
 
@@ -48,6 +51,9 @@ public interface JavaMethodAction extends AIAction{
                 break;
             }
         }
+        if(firstAnnotatedMethod == null){
+            return "No description available";
+        }
         Action action = firstAnnotatedMethod.getAnnotation(Action.class);
         String description = action.description();
         if(description == null || description.isEmpty()) {
@@ -56,6 +62,7 @@ public interface JavaMethodAction extends AIAction{
         return description;
     }
 
+    @Override
     public default  ActionRisk getActionRisk() {
         return ActionRisk.LOW;
     }
@@ -63,13 +70,13 @@ public interface JavaMethodAction extends AIAction{
 
     @Override
     public default String getActionGroup() {
-        Predict predict = (Predict)getActionClass().getAnnotation(Predict.class);
+        Predict predict = getActionClass().getAnnotation(Predict.class);
         return predict != null ? predict.groupName(): "No group name available";
     }
 
     @Override
     default String getGroupDescription() {
-        Predict predict = (Predict)getActionClass().getAnnotation(Predict.class);
+        Predict predict = getActionClass().getAnnotation(Predict.class);
         return predict != null ? predict.groupDescription(): "No group description available";
     }
 
@@ -77,7 +84,7 @@ public interface JavaMethodAction extends AIAction{
         return this;
     }
 
-    public default boolean isComplexMethod(){
+    public default boolean isComplexMethod() throws AIProcessingException{
         boolean iscomplex = false;
         Method[] met = this.getClass().getMethods();
         for (Method methood:met
@@ -86,7 +93,7 @@ public interface JavaMethodAction extends AIAction{
                 Parameter[] params = methood.getParameters();
                 for (Parameter param:params
                      ) {
-                    Class type = param.getType();
+                    Class<?> type = param.getType();
                     if ((type == String.class) || (type == int.class || type == Integer.class) || (type == double.class || type == Double.class) || (type == boolean.class || type == Boolean.class) || (type.isArray())) {
                      iscomplex = false;
                     } else {

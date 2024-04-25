@@ -199,3 +199,15 @@ l
 -src/main/java/com/t4a/detect/HumanInLoop.java,a\9\a959a8a1681738852c010652a8a67dfd581a42cb
 k
 ;src/main/java/com/t4a/predict/ExtendedPredictionLoader.java,2\f\2fcf56c807f1ade90e0bd0bb9afa807f1a41a0c1
+a
+1src/main/java/com/t4a/api/JavaMethodExecutor.java,e\5\e515902ee3c4be770d5ab9801088f792be783b14
+_
+/src/main/java/com/t4a/api/JavaMethodAction.java,c\f\cf3363b88a0a06c65f94ef5981e2703c8380b90d
+k
+;src/test/java/com/t4a/examples/enterprise/fly/JustKhao.java,a\d\adcaa1f4ce19a77cd85964f36dfdbf5254341713
+c
+3src/test/java/com/t4a/examples/GenericHtppTest.java,e\6\e6b09ee0041b8a582561ff48bad1d2d57f6023a6
+k
+;src/test/java/com/t4a/examples/PromptPredictionExample.java,7\4\74dbb89a67f5273bcb2e14aaafd1662e97dc77bf
+j
+:src/test/java/com/t4a/examples/ActionProcessorExample.java,2\b\2b28b6e913e8a25ba494a0a1cfee40bb144469b0
