@@ -6,10 +6,15 @@
 <p align="center">
     <img  src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fvishalmysore%2Ftools4ai&countColor=black&style=flat%22">
     <a target="_blank" href="https://github.com/vishalmyore/tools4ai"><img src="https://img.shields.io/github/stars/vishalmysore/tools4ai?color=black" /></a>
-    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/quality_gate?project=vishalmysore_Tools4AI"/></a>
+    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=alert_status"/></a>
+    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=bugs"/></a>
+    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=vulnerabilities"/></a>
+    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=sqale_rating"/></a>
+    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=security_rating"/></a>
+    <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=reliability_rating"/></a>
 </p>
 
- [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=bugs)](https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI)  
+
 
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
