@@ -1,6 +1,5 @@
 package com.t4a.transform;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
@@ -95,9 +94,7 @@ public class GeminiPromptTransformer implements PromptTransformer {
             return generator.action(response,jsonString);
 
 
-        } catch (IOException e) {
-            throw new AIProcessingException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new AIProcessingException(e);
         }
 
@@ -164,13 +161,8 @@ public class GeminiPromptTransformer implements PromptTransformer {
             log.debug(jsonString);
             return jsonString;
 
-        } catch (JsonProcessingException e) {
+        } catch ( IOException | ClassNotFoundException e) {
             throw new AIProcessingException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
-
     }
 }

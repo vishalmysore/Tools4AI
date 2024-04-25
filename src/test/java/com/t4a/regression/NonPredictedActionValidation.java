@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @Log
-public class NonPredictedActionValidation {
+ class NonPredictedActionValidation {
     @Test
-    public void testGemini() throws AIProcessingException {
+     void testGemini() throws AIProcessingException {
         AIProcessor processor = new GeminiActionProcessor();
         String str = (String)processor.processSingleAction(" I want to eat Halva for breakfast", new NonPredictionAction() );
         Assertions.assertEquals("Halva has too much sugar", str);

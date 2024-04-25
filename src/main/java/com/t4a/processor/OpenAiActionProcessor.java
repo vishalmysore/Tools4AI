@@ -62,7 +62,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             JsonUtils utils = new JsonUtils();
             Method m = null;
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
-            Class clazz = javaMethodAction.getActionClass();
+            Class<?> clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods
             ) {
@@ -83,23 +83,21 @@ public class OpenAiActionProcessor implements AIProcessor{
             }
             log.info(jsonStr);
             JavaMethodInvoker invoke = new JavaMethodInvoker();
-            Object obj[] = invoke.parse(jsonStr);
+            Object[] obj = invoke.parse(jsonStr);
             List<Object> parameterValues = (List<Object>) obj[1];
             List<Class<?>> parameterTypes = (List<Class<?>>) obj[0];
             Method method = null;
             try {
                 method = clazz.getMethod(m.getName(), parameterTypes.toArray(new Class<?>[0]));
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new AIProcessingException(e);
             }
 
             Object result = null;
             try {
                 result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new AIProcessingException(e);
             }
             return result;
         } else {
@@ -112,11 +110,9 @@ public class OpenAiActionProcessor implements AIProcessor{
             try {
                 if(humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
                     obj = methodExecutor.action(params, action);
-                    log.debug(" the action returned "+obj);
+                    log.debug(" the action is returning "+obj);
                 }
-            } catch (InvocationTargetException e) {
-                throw new AIProcessingException(e);
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new AIProcessingException(e);
             }
             return obj;
@@ -136,7 +132,7 @@ public class OpenAiActionProcessor implements AIProcessor{
         Object objReturnFromAI = null;
         if(action.getActionType() == ActionType.JAVAMETHOD)  {
             if(((JavaMethodAction)action).isComplexMethod()) {
-                         Object[] params =   PredictionLoader.getInstance().getComplexActionParams(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties(),gson );
+                         Object[] params =   PredictionLoader.getInstance().getComplexActionParams(prompt, methodExecutor.getProperties(),gson );
                 objReturnFromAI = methodExecutor.action(params, action);
                 log.debug(" the action returned "+objReturnFromAI);
             } else {
@@ -148,15 +144,13 @@ public class OpenAiActionProcessor implements AIProcessor{
                         objReturnFromAI = methodExecutor.action(params, action);
                         log.debug(" the action returned "+objReturnFromAI);
                     }
-                } catch (InvocationTargetException e) {
-                    throw new AIProcessingException(e);
-                } catch (IllegalAccessException e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new AIProcessingException(e);
                 }
             }
         }
 
-        return PredictionLoader.getInstance().postActionProcessing(action,prompt,AIPlatform.OPENAI,(String)objReturnFromAI);
+        return PredictionLoader.getInstance().postActionProcessing(prompt, (String)objReturnFromAI);
     }
     public Object processSingleAction(String prompt) throws AIProcessingException{
         return processSingleAction(prompt, new LoggingHumanDecision(),new LogginggExplainDecision());

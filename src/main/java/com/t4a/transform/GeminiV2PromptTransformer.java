@@ -1,6 +1,5 @@
 package com.t4a.transform;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.FunctionDeclaration;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
@@ -94,9 +93,7 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
             return generator.action(response,jsonString);
 
 
-        } catch (IOException e) {
-            throw new AIProcessingException(e);
-        } catch (ClassNotFoundException e) {
+        }  catch (IOException | ClassNotFoundException e) {
             throw new AIProcessingException(e);
         }
 
@@ -116,13 +113,13 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
     public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
         try {
             JsonUtils util = new JsonUtils();
-            Class clazz = Class.forName(className);
+            Class<?> clazz = Class.forName(className);
             String jsonStr = null;
             if(clazz.getName().equalsIgnoreCase("java.util.Map")) {
-                jsonStr = util.buildBlankMapJsonObject(null).toString(4); ;
+                jsonStr = util.buildBlankMapJsonObject(null).toString(4);
 
             } else if(clazz.getName().equalsIgnoreCase("java.util.List")) {
-                jsonStr = util.buildBlankListJsonObject(null).toString(4); ;
+                jsonStr = util.buildBlankListJsonObject(null).toString(4);
 
             }else {
                 jsonStr = util.convertClassToJSONString(clazz);
@@ -133,8 +130,8 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
             return util.populateClassFromJson(jsonStr);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+
+            throw new AIProcessingException(e);
         }
 
     }
@@ -169,10 +166,8 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(), PredictionLoader.getInstance().getLocation())) {
             return ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + promptText + "} - here is the json - " + jsonString + " - populate the fieldValue and return the json"));
 
-        } catch (JsonProcessingException e) {
+        }  catch (IOException e) {
             throw new AIProcessingException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
     }

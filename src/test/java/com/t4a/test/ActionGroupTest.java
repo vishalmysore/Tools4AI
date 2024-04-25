@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ActionGroupTest {
+ class ActionGroupTest {
 
     private ActionGroup actionGroup;
 
@@ -18,7 +18,7 @@ public class ActionGroupTest {
     }
 
     @Test
-    public void testAddAction() {
+     void testAddAction() {
         AIAction action = new MockAction(); // Assuming AIAction is a valid class
         actionGroup.addAction(action);
 
@@ -27,7 +27,7 @@ public class ActionGroupTest {
     }
 
     @Test
-    public void testEquals() {
+     void testEquals() {
         ActionGroup anotherActionGroup = new ActionGroup("TestGroup", "Test Description");
 
         assertTrue(actionGroup.equals(anotherActionGroup));

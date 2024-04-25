@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-@Predict(groupName = "File", groupDescription = "File related actions")
+@Predict(groupName = "File", groupDescription = "File related actions, like saving information to a file, reading information from a file, etc.")
 @Slf4j
 public class FileWriteAction  {
 

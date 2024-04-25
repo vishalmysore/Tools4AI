@@ -27,7 +27,7 @@ import java.util.Map;
 public class HttpRestPredictionLoader {
     private  String yamlFile = "http_actions.json";
     private URL resourceUrl = null;
-    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuilder actionNameList) throws LoaderException {
 
         try {
             parseConfig(predictions,actionNameList);
@@ -37,7 +37,7 @@ public class HttpRestPredictionLoader {
 
 
     }
-    public  void parseConfig(Map<String,AIAction> predictions, StringBuffer actionNameList) throws IOException {
+    public  void parseConfig(Map<String,AIAction> predictions, StringBuilder actionNameList) throws IOException {
         if(resourceUrl == null)
             resourceUrl = HttpRestPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -46,7 +46,7 @@ public class HttpRestPredictionLoader {
             return;
         }
         Gson gson = new Gson();
-        //List<HttpPredictedAction> actions = new ArrayList<>();
+
 
         try (InputStream inputStream = resourceUrl.openStream();
              InputStreamReader reader = new InputStreamReader(inputStream)){
@@ -78,7 +78,7 @@ public class HttpRestPredictionLoader {
 
 
                 HttpPredictedAction httpPredictedAction = new HttpPredictedAction();
-
+                httpPredictedAction.setDescription(description);
                 httpPredictedAction.setUrl(url);
                 httpPredictedAction.setType(HttpMethod.valueOf(type));
                 httpPredictedAction.setAuthInterface(authInterface);
@@ -86,7 +86,7 @@ public class HttpRestPredictionLoader {
                 httpPredictedAction.setOutputObject(outputObject);
                 actionNameList.append(actionName+", ");
                 predictions.put(actionName,httpPredictedAction);
-;
+
             }
 
 

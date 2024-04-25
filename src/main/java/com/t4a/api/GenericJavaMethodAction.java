@@ -30,8 +30,8 @@ public class GenericJavaMethodAction implements JavaMethodAction{
         this.actionInstance= actionInstance;
         init(actionInstance.getClass(),getAnnotatedMethods(actionInstance.getClass())) ;
     }
-    public GenericJavaMethodAction(Class clazz, String actionName) throws AIProcessingException{
-        Predict predict = (Predict)clazz.getAnnotation(Predict.class);
+    public GenericJavaMethodAction(Class<?> clazz, String actionName) throws AIProcessingException{
+        Predict predict = clazz.getAnnotation(Predict.class);
         Method[] methods = clazz.getMethods();
         for (Method m1 : methods
         ) {

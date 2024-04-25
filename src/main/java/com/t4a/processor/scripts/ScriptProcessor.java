@@ -3,7 +3,7 @@ package com.t4a.processor.scripts;
 import com.google.gson.Gson;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.AIProcessor;
-import com.t4a.processor.GeminiActionProcessor;
+import com.t4a.processor.GeminiV2ActionProcessor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ public  class ScriptProcessor {
 
     public ScriptProcessor() {
         gson = new Gson();
-        actionProcessor = new GeminiActionProcessor();
+        actionProcessor = new GeminiV2ActionProcessor();
     }
     public ScriptProcessor(Gson gson) {
         this.gson = gson;
@@ -58,7 +58,7 @@ public  class ScriptProcessor {
                 String decision = "yes";
                 String previousResult = getGson().toJson(result);
                 log.info(previousResult);
-                if(result.getResults().size() > 0 ) {
+                if(result.getResults().isEmpty() ) {
                     String prompt = "these are the results of previous actions - "+previousResult+" - should we proceed with this step - " +line+" - provide an answer as yes or no only";
                     decision = getActionProcessor().query(prompt);
                 }
@@ -80,7 +80,7 @@ public  class ScriptProcessor {
         } catch (NullPointerException e) {
             log.info("Resource file not found. Make sure the file path is correct.");
         } catch (AIProcessingException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
         }
         return result;
     }
@@ -89,8 +89,9 @@ public  class ScriptProcessor {
         try {
             return getActionProcessor().query(" Summarize this - "+getGson().toJson(result));
         } catch (AIProcessingException e) {
-            throw new RuntimeException(e);
+            log.error(e.getMessage());
         }
+        return "Cannot summarize results";
     }
 
 

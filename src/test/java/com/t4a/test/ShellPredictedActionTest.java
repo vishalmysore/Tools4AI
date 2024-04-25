@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ShellPredictedActionTest {
+ class ShellPredictedActionTest {
 
     private ShellPredictedAction shellPredictedAction;
 
@@ -24,7 +24,7 @@ public class ShellPredictedActionTest {
     }
 
     @Test
-    public void testExecuteShell() throws IOException, InterruptedException {
+     void testExecuteShell() throws IOException, InterruptedException {
         String[] arguments = {"arg1", "arg2"};
         shellPredictedAction.executeShell(arguments);
 
@@ -32,14 +32,14 @@ public class ShellPredictedActionTest {
     }
 
     @Test
-    public void testGetActionName() {
+     void testGetActionName() {
         String actionName = shellPredictedAction.getActionName();
 
         assertEquals("TestAction", actionName);
     }
 
     @Test
-    public void testGetDescription() {
+     void testGetDescription() {
         String description = shellPredictedAction.getDescription();
 
         assertEquals("Test Description", description);

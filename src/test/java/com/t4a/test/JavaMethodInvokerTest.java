@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class JavaMethodInvokerTest {
+ class JavaMethodInvokerTest {
     private AIAction mockAction;
     private HumanInLoop mockHumanInLoop;
     private ExplainDecision mockExplainDecision;
@@ -62,7 +62,7 @@ public class JavaMethodInvokerTest {
     }
 
     @Test
-    public void testPojoWithMapInsideClass() throws Exception {
+     void testPojoWithMapInsideClass() throws Exception {
         String jsonString = "{\n" +
                 "    \"className\": \"com.t4a.examples.pojo.Dictionary\",\n" +
                 "    \"fields\": [\n" +
@@ -104,7 +104,7 @@ public class JavaMethodInvokerTest {
     }
 
     @Test
-    public void testPojoWithArray() throws Exception {
+     void testPojoWithArray() throws Exception {
 
         String jsonString = "{\n" +
                 "    \"className\": \"java.util.List\",\n" +
@@ -120,7 +120,7 @@ public class JavaMethodInvokerTest {
         Assertions.assertTrue(list.get(0).equals("Toronto"));
     }
     @Test
-    public void testActionWithArray() throws Exception {
+     void testActionWithArray() throws Exception {
         String jsonString = "{\n" +
                 "    \"methodName\": \"addCustomers\",\n" +
                 "    \"parameters\": [{\n" +
@@ -206,7 +206,7 @@ public class JavaMethodInvokerTest {
     }
 
     @Test
-    public void testActionWithListAndArray() throws AIProcessingException, IOException, InvocationTargetException, IllegalAccessException {
+     void testActionWithListAndArray() throws AIProcessingException, IOException, InvocationTargetException, IllegalAccessException {
 
         String jsonString = "{\n" +
                 "    \"methodName\": \"addOrganization\",\n" +
@@ -401,7 +401,7 @@ public class JavaMethodInvokerTest {
     }
 
     @Test
-    public void testInvokeForComplexObject() throws Exception {
+     void testInvokeForComplexObject() throws Exception {
         JsonUtils utils = new JsonUtils();
         String jsonString = "{\n" +
                 "    \"methodName\": \"addOrganization\",\n" +
@@ -556,7 +556,7 @@ public class JavaMethodInvokerTest {
         }
     }
     @Test
-    public void testInvokeForArray() throws Exception {
+     void testInvokeForArray() throws Exception {
         String jsonString = "{\n" +
                 "    \"methodName\": \"allTheDates\",\n" +
                 "    \"parameters\": [{\n" +
@@ -575,7 +575,7 @@ public class JavaMethodInvokerTest {
     }
 
     @Test
-    public void testComplexActionOpenAI() throws AIProcessingException, IOException, InvocationTargetException, IllegalAccessException {
+     void testComplexActionOpenAI() throws AIProcessingException, IOException, InvocationTargetException, IllegalAccessException {
 
         String jsonString = "{\n" +
                 "    \"methodName\": \"notifyPlayerAndRestaurant\",\n" +

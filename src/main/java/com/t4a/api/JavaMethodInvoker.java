@@ -66,7 +66,11 @@ public class JavaMethodInvoker {
         return new Object[0];
     }
     private  Object getValue(Object value, Class<?> type,JSONObject paramObj) {
-        log.info("parsing value "+type.getName()+" value "+value);
+        log.info("parsing value "+type.getName()+" value "+value+" for field Name "+paramObj.optString("fieldName"));
+        if(value==null) return null;
+        if(value instanceof  String) {
+            if(((String)value).trim().length() == 0) return null;
+        }
         if (type == String.class) {
             return value.toString();
         } else if (type == int.class || type == Integer.class) {
@@ -85,7 +89,7 @@ public class JavaMethodInvoker {
                 else
                     return null;
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.warn("not able to parse date "+value+" for field "+paramObj.optString("fieldName") );
                 return null;
             }
         }else if (type.isArray()) {
@@ -215,12 +219,18 @@ public class JavaMethodInvoker {
                         fieldValue = objList;
 
                     } else {
-                        fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
+                        if(fieldValue!= null) {
+                            fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
+                        }
 
                     }
-                    field.set(instance, fieldValue);
+                    if(fieldValue!= null) {
+                        field.set(instance, fieldValue);
+                    }
                 } else {
-                    field.set(instance, fieldValue);
+                    if(fieldValue!= null) {
+                        field.set(instance, fieldValue);
+                    }
                 }
 
 

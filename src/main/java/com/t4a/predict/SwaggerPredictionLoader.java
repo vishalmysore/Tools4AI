@@ -42,7 +42,7 @@ public class SwaggerPredictionLoader {
 
     private  String yamlFile = "swagger_actions.json";
     private URL resourceUrl = null;
-    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList, ActionList listOfActions) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuilder actionNameList, ActionList listOfActions) throws LoaderException {
 
         try {
             parseConfig(predictions,actionNameList,listOfActions);
@@ -52,7 +52,7 @@ public class SwaggerPredictionLoader {
 
 
     }
-    public  void parseConfig(Map<String,AIAction> predictions, StringBuffer actionNameList,ActionList listOfActions) throws IOException {
+    public  void parseConfig(Map<String,AIAction> predictions, StringBuilder actionNameList,ActionList listOfActions) throws IOException {
         if (resourceUrl == null)
             resourceUrl = SwaggerPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
@@ -61,7 +61,7 @@ public class SwaggerPredictionLoader {
             return;
         }
         Gson gson = new Gson();
-        //List<HttpPredictedAction> actions = new ArrayList<>();
+
 
         try (InputStream inputStream = resourceUrl.openStream();
              InputStreamReader reader = new InputStreamReader(inputStream)) {
@@ -96,7 +96,7 @@ public class SwaggerPredictionLoader {
     }
 
 
-    public  void loadURL(String jsonURL,Map<String,AIAction> predictions, StringBuffer actionNameList, String baseURL,Map<String, String> headers , String group,String groupDiscription,ActionList listOfActions) {
+    public  void loadURL(String jsonURL,Map<String,AIAction> predictions, StringBuilder actionNameList, String baseURL,Map<String, String> headers , String group,String groupDiscription,ActionList listOfActions) {
 
 
         try {
@@ -219,7 +219,7 @@ public class SwaggerPredictionLoader {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
         }
     }
 

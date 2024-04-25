@@ -1,0 +1,8 @@
+
+k	java:S117+"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Æý’åýÿÿÿÿ
+3
+java:S1700
+"Rename field "subprompt"(¡Î³ôøÿÿÿÿ
+n	java:S116"TRename this field "depend_on" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(–€Ñ¿øÿÿÿÿ
+c	java:S100'"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Àõ “
+h	java:S100+"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Æý’åýÿÿÿÿ

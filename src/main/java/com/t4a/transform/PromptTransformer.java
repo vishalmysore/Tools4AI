@@ -11,7 +11,7 @@ public interface PromptTransformer {
     public default  Object transformIntoPojo(String prompt, String className) throws AIProcessingException {
         return transformIntoPojo(prompt,  className,  "funName",  "description");
     }
-    public default  Object transformIntoPojo(String prompt, Class clazz) throws AIProcessingException {
+    public default  Object transformIntoPojo(String prompt, Class<?> clazz) throws AIProcessingException {
         return transformIntoPojo(prompt,  clazz.getName(),  "funName",  "description");
     }
 }

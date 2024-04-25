@@ -32,13 +32,13 @@ public class OpenAIPromptTransformer implements PromptTransformer {
     public Object transformIntoPojo(String prompt, String className, String funName, String description) throws AIProcessingException {
         try {
             JsonUtils util = new JsonUtils();
-            Class clazz = Class.forName(className);
+            Class<?> clazz = Class.forName(className);
             String jsonStr = null;
             if(clazz.getName().equalsIgnoreCase("java.util.Map")) {
-                jsonStr = util.buildBlankMapJsonObject(null).toString(4); ;
+                jsonStr = util.buildBlankMapJsonObject(null).toString(4);
 
             } else if(clazz.getName().equalsIgnoreCase("java.util.List")) {
-                jsonStr = util.buildBlankListJsonObject(null).toString(4); ;
+                jsonStr = util.buildBlankListJsonObject(null).toString(4);
 
             }else {
                 jsonStr = util.convertClassToJSONString(clazz);
@@ -49,8 +49,8 @@ public class OpenAIPromptTransformer implements PromptTransformer {
             return util.populateClassFromJson(jsonStr);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+
+            throw new AIProcessingException(e);
         }
 
     }

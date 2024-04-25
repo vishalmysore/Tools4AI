@@ -24,10 +24,22 @@ import java.lang.reflect.Parameter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+/**
+ * Utility class for handling JSON related operations.
+ * This class provides methods for fetching group and action names from a JSON string,
+ * extracting JSON from a string, converting class objects to JSON strings, populating class objects from JSON,
+ * building maps and lists from JSON arrays, and more.
+ * It also provides methods for handling Prompt annotations and converting methods to JSON strings.
+ * This class uses the Jackson and Gson libraries for JSON processing and the Lombok library for logging.
+ */
 @Slf4j
 public class JsonUtils {
 
+    /**
+     * Fetches the group name from a JSON string.
+     * @param groupJson The JSON string to fetch the group name from.
+     * @return The group name.
+     */
 
     public String fetchGroupName(String groupJson) {
         groupJson = extractJson(groupJson);
@@ -36,7 +48,11 @@ public class JsonUtils {
         return groupName;
     }
 
-
+    /**
+     * Fetches the action name from a JSON string.
+     * @param groupJson The JSON string to fetch the action name from.
+     * @return The action name.
+     */
     public String fetchActionName(@NotNull String groupJson) {
         if(groupJson.trim().length() < 1) {
             throw new IllegalArgumentException("JSON string cannot be empty");
@@ -49,6 +65,12 @@ public class JsonUtils {
         }
         return groupName;
     }
+
+    /**
+     * Extracts JSON from a string.
+     * @param jsonString The string to extract JSON from.
+     * @return The extracted JSON string.
+     */
     public  String extractJson(String jsonString) {
         // Find the index of the first opening bracket
         int startIndex = jsonString.indexOf('{');
@@ -61,6 +83,12 @@ public class JsonUtils {
         }
         return jsonString; // Return null if the structure is not as expected
     }
+
+    /**
+     * Converts a class object to a JSON string.
+     * @param classSchema The class schema to convert to a JSON string.
+     * @return The JSON string representation of the class object.
+     */
     public  String convertClassObjectToJsonString(Schema classSchema) {
 
         ObjectMapper mapper = new ObjectMapper();
@@ -73,12 +101,24 @@ public class JsonUtils {
         return rootNode.toString();
     }
 
+    /**
+     * Populates a class object from a JSON string.
+     * @param json The JSON string to populate the class object from.
+     * @return The populated class object.
+     * @throws Exception If an error occurs during population.
+     */
+
     public Object populateClassFromJson(String json) throws Exception {
         json = extractJson(json);
         JSONObject jsonObject = new JSONObject(json);
         return populateObject(jsonObject,null);
     }
 
+    /**
+     * Builds a map from a JSON array.
+     * @param fieldsArray The JSON array to build the map from.
+     * @param map The map to populate.
+     */
     public void buildMapFromJsonArray(JSONArray fieldsArray, Map map){
         for (int i = 0; i < fieldsArray.length(); i++) {
             JSONObject jsonObject = fieldsArray.getJSONObject(i);
@@ -88,6 +128,12 @@ public class JsonUtils {
         }
 
     }
+
+    /**
+     * Builds a list from a JSON array.
+     * @param fieldsArray The JSON array to build the list from.
+     * @param list The list to populate.
+     */
     public void buildListFromJsonArray(JSONArray fieldsArray, List list){
         for (int i = 0; i < fieldsArray.length(); i++) {
             list.add(fieldsArray.getJSONObject(i).get("fieldValue"));
@@ -95,6 +141,13 @@ public class JsonUtils {
 
     }
 
+    /**
+     * Populates an object from a JSON object.
+     * @param jsonObject The JSON object to populate the object from.
+     * @param parentObject The parent JSON object.
+     * @return The populated object.
+     * @throws Exception If an error occurs during population.
+     */
     public Object populateObject(JSONObject jsonObject, JSONObject parentObject) throws Exception {
         String className = jsonObject.optString("className",null);
         if((className == null)&&(parentObject!=null)){
@@ -107,6 +160,13 @@ public class JsonUtils {
         return populateObject(clazz,jsonObject);
     }
 
+    /**
+     *
+     * @param clazz
+     * @param jsonObject
+     * @return
+     * @throws Exception
+     */
     public Object populateObject(Class clazz,JSONObject jsonObject) throws Exception {
         Object instance = null;
         try {
@@ -194,7 +254,7 @@ public class JsonUtils {
 
                         } catch (ParseException e) {
                             log.error("error parsing " + dateStr + " in format " + fieldObj.getString("dateFormat") + " for " + fieldName + " for " + instance.getClass().getName());
-                            e.printStackTrace();
+
 
                         }
                     } else if ( ("Integer".equalsIgnoreCase(fieldType)))
@@ -261,7 +321,7 @@ public class JsonUtils {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+
            log.warn(" could not populate "+jsonObject);
         }
         return instance;
@@ -450,7 +510,7 @@ public class JsonUtils {
                 fieldJson.put("fieldType", "list");
                 fieldJson.put("className", listType.getName());
                 fieldJson.put("fieldName", field.getName());
-                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fields array ");
+                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fieldValue");
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
                 // innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
@@ -532,7 +592,7 @@ public class JsonUtils {
                 fieldJson.put("fieldType", "list");
                 fieldJson.put("className", listType.getName());
                 fieldJson.put("fieldName", field.getName());
-                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fields array ");
+                fieldJson.put("prompt", "If you find more than 1 " + listType.getSimpleName() + " add it as another object inside fieldValue ");
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
             } else {
@@ -596,7 +656,7 @@ public class JsonUtils {
                     array.put(componentType);
                 }
                 paramJson.put("fieldValue", array);
-                paramJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fields array  ");
+                paramJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fieldValue  ");
             } else if (List.class.isAssignableFrom(parameter.getType())) {
                 addList(parameter, paramJson);
             } else if (Map.class.isAssignableFrom(parameter.getType())) {
@@ -685,7 +745,7 @@ public class JsonUtils {
                 array.put(componentType);
             }
             fieldJson.put("fieldValue", array);
-            fieldJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fields array ");
+            fieldJson.put("prompt", "If you find more than 1 " + componentType.getSimpleName() + " add it as another object inside fieldValue ");
         }
         fieldJson.put("fieldType", fieldType.getSimpleName());
         if (!fieldJson.has("fieldValue")) {

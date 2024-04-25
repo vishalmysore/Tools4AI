@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 
-public class TestJsonUtils {
+ class TestJsonUtils {
     @Test
-    public void testExtractJson() {
+     void testExtractJson() {
         JsonUtils utils = new JsonUtils();
         String input = "Some text before {\"key\":\"value\"} some text after";
         String extracted = utils.extractJson(input);
@@ -20,7 +20,7 @@ public class TestJsonUtils {
         Assertions.assertEquals(invalidInput, utils.extractJson(invalidInput), "Extracted JSON should be same as input");
     }
     @Test
-    public void testFetchGroupName() {
+     void testFetchGroupName() {
         JsonUtils utils = new JsonUtils();
         String groupJson = "{\"groupName\":\"Test Group\"}";
         String groupName = utils.fetchGroupName(groupJson);
@@ -30,7 +30,7 @@ public class TestJsonUtils {
     }
 
     @Test
-    public void testFetchActionNameWithEmptyJson() {
+     void testFetchActionNameWithEmptyJson() {
         JsonUtils utils = new JsonUtils();
         String emptyJson = "";
         Assertions.assertThrows(IllegalArgumentException.class, () -> utils.fetchActionName(emptyJson), "An exception should be thrown when the JSON string is empty");
@@ -38,21 +38,21 @@ public class TestJsonUtils {
     }
 
     @Test
-    public void testFetchActionNameWithNullJson() {
+     void testFetchActionNameWithNullJson() {
         JsonUtils utils = new JsonUtils();
         String nullJson = null;
-        Assertions.assertThrows(IllegalArgumentException.class, () -> utils.fetchActionName(nullJson), "An exception should be thrown when the JSON string is null");
+        Assertions.assertThrows(NullPointerException.class, () -> utils.fetchActionName(nullJson), "An exception should be thrown when the JSON string is null");
     }
 
     @Test
-    public void testFetchActionNameWithInvalidJson() {
+     void testFetchActionNameWithInvalidJson() {
         JsonUtils utils = new JsonUtils();
         String invalidJson = "This is not a valid JSON string";
         Assertions.assertThrows(JSONException.class, () -> utils.fetchActionName(invalidJson), "An exception should be thrown when the JSON string is not valid");
     }
 
     @Test
-    public void testFetchActionNameWithMultipleKeys() {
+     void testFetchActionNameWithMultipleKeys() {
         JsonUtils utils = new JsonUtils();
         String jsonWithMultipleKeys = "{\"actionName\":\"TestAction\", \"anotherKey\":\"AnotherValue\"}";
         String actionName = utils.fetchActionName(jsonWithMultipleKeys);
@@ -60,7 +60,7 @@ public class TestJsonUtils {
     }
 
     @Test
-    public void testFetchActionNameWithNestedJson() {
+     void testFetchActionNameWithNestedJson() {
         JsonUtils utils = new JsonUtils();
         String jsonWithNestedJson = "{\"actionName\":\"TestAction\", \"nestedJson\":{\"anotherKey\":\"AnotherValue\"}}";
         String actionName = utils.fetchActionName(jsonWithNestedJson);
@@ -69,7 +69,7 @@ public class TestJsonUtils {
 
 
     @Test
-    public void testFetchActionNameNoAction() {
+     void testFetchActionNameNoAction() {
         JsonUtils utils = new JsonUtils();
 
         // Scenario 1: JSON string contains an actionName key
@@ -92,7 +92,7 @@ public class TestJsonUtils {
 
 
     @Test
-    public void testFetchActionName() {
+     void testFetchActionName() {
         JsonUtils utils = new JsonUtils();
 
         // Valid JSON with actionName
@@ -114,7 +114,7 @@ public class TestJsonUtils {
     }
 
     @Test
-    public void testBuildBlankMapJsonObject() throws NoSuchFieldException {
+     void testBuildBlankMapJsonObject() throws NoSuchFieldException {
         JsonUtils utils = new JsonUtils();
 
         // Get the 'testMap' field from the TestClass
@@ -133,7 +133,7 @@ public class TestJsonUtils {
     }
 
     @Test
-    public void testBuildBlankListJsonObject() throws NoSuchFieldException {
+     void testBuildBlankListJsonObject() throws NoSuchFieldException {
         JsonUtils utils = new JsonUtils();
 
         // Get the 'hobbies' field from the TestClass
@@ -151,7 +151,7 @@ public class TestJsonUtils {
         Assertions.assertTrue(jsonObject.getJSONArray("fields").getJSONObject(0).has("fieldValue"), "The fields array should contain an object with a 'fieldValue' key");
     }
     @Test
-    public void testConvertClassToJSONString() {
+     void testConvertClassToJSONString() {
         JsonUtils utils = new JsonUtils();
 
         // Test with a class that has primitive types
@@ -170,7 +170,7 @@ public class TestJsonUtils {
 
 
     @Test
-    public void testPopulateClassFromJson() throws Exception {
+     void testPopulateClassFromJson() throws Exception {
         JsonUtils utils = new JsonUtils();
 
         // Create a JSON string that represents a Person object

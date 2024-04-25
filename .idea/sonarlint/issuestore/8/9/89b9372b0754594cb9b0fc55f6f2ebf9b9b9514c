@@ -1,0 +1,20 @@
+
+{
+AY8SEb_SwWCABySxhhGv
+java:S1643è"Use a StringBuilder instead.(‡®Û¤ÿÿÿÿÿ8ØšùËâ1J$c9442e73-6bf4-4e02-9ddd-9c793f243a34
+™
+AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$b6903115-3846-40b2-84c5-036cd33c93a7
+
+AY8SEb_SwWCABySxhhG1
+java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$031a2acb-5f02-4a68-bac9-d721269adc14
+°
+AY8SEb_SwWCABySxhhG2
+java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 90 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$5c5cfb68-3494-4475-a425-dd3aae6aac13
+š
+AY8SEb_SwWCABySxhhG3	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ðî†æç1J$eaa3ce13-14bf-48c8-adeb-d4c8d9defa90
+•
+AY8SEb_SwWCABySxhhG5
+java:S1144ô"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$7360e89f-3d94-4be9-a9c8-6d7bf703b802
+¥
+AY8SEb_SwWCABySxhhG6
+java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 102 to 64, Complexity from 27 to 14, Nesting Level from 9 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$2ba9cd75-e5cf-4267-954b-251fa5769c66

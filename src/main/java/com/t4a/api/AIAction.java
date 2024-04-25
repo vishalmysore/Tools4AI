@@ -82,33 +82,31 @@ package com.t4a.api;
  * </pre>
  */
 public interface AIAction {
-    public String getActionName();
+    String getActionName();
 
     /**
      *
      * @see ActionType
      * @return ActionType
      */
-    public ActionType getActionType();
+    ActionType getActionType();
 
     /**
      * Provide a detailed description of this action name
-     * @return
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * By default return low action risk so that it can pass without human verification
-     * @return
      */
-    public default ActionRisk getActionRisk() {
+    default ActionRisk getActionRisk() {
         return ActionRisk.LOW;
     }
 
-    public default String getActionGroup() {
+    default String getActionGroup() {
         return "default";
     }
-    public default String getGroupDescription() {
+    default String getGroupDescription() {
         return "default";
     }
 }

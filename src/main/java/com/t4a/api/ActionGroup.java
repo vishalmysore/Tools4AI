@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActionGroup {
-    private List<ActionKey> actions = new ArrayList<ActionKey>();
+    private List<ActionKey> actions = new ArrayList<>();
     private GroupInfo groupInfo = new GroupInfo();
 
     public ActionGroup(String groupName) {

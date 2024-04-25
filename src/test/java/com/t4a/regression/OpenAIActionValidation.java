@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class OpenAIActionValidation {
+ class OpenAIActionValidation {
     @Test
-    public void testRestaurantPojoOpenAI() throws AIProcessingException {
+     void testRestaurantPojoOpenAI() throws AIProcessingException {
         String promptText = "can you book a dinner reseration in name of Vishal and his family of 4 at Maharaj restaurant in Toronto, on Indian Independence day and make sure its cancellable";
         OpenAIPromptTransformer tools = new OpenAIPromptTransformer();
         RestaurantPojo pojo = (RestaurantPojo) tools.transformIntoPojo(promptText, "com.t4a.examples.basic.RestaurantPojo", "RestaurantClass", "Create Pojo from the prompt");
@@ -38,7 +38,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testCustomerPojoOpenAI() throws AIProcessingException, IOException {
+     void testCustomerPojoOpenAI() throws AIProcessingException, IOException {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(Date.class, new DateDeserializer("dd MMMM yyyy"));
         Gson gson = gsonBuilder.create();
@@ -53,7 +53,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testComplexActionOpenAI() throws AIProcessingException, IOException {
+     void testComplexActionOpenAI() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String prm = "Sachin Tendulkar is a cricket player and he has played 400 matches, his max score is 1000, he wants to go to " +
                 "Maharaja restaurant in toronto with 4 of his friends on Indian Independence Day, can you notify him and the restarurant";
@@ -67,7 +67,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testHttpActionOpenAI() throws AIProcessingException, IOException {
+     void testHttpActionOpenAI() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String postABook = "post a book harry poster with id 189 the publish date is 2024-03-22 and the description is about harry who likes poster its around 500 pages  ";
         String result = (String)processor.processSingleAction(postABook);
@@ -79,7 +79,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testShellActionOpenAI() throws AIProcessingException, IOException {
+     void testShellActionOpenAI() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String shellAction = "An Employee joined the organization, his name is Vishal and his location is Toronto, save this information ";
         String result = (String)processor.processSingleAction(shellAction);
@@ -90,7 +90,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testJavaMethod() throws AIProcessingException, IOException {
+     void testJavaMethod() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String weatherAction = "ey I am in Toronto do you think i can go out without jacket";
         Double result = (Double)processor.processSingleAction(weatherAction);
@@ -99,8 +99,25 @@ public class OpenAIActionValidation {
         log.debug(success);
         Assertions.assertTrue("True".equalsIgnoreCase(success));
     }
+
+    /**
+     * {
+     *     "methodName": "saveInformationToLocalFile",
+     *     "parameters": [{
+     *         "name": "args",
+     *         "isArray": true,
+     *         "className": "java.lang.String",
+     *         "type": "String[]",
+     *         "fieldValue": ["Vishal", "Toronto"],
+     *         "prompt": "If you find more than 1 String add it as another object inside fields array  "
+     *     }],
+     *     "returnType": "Object"
+     * }
+     * @throws AIProcessingException
+     * @throws IOException
+     */
     @Test
-    public void testJavaMethodForFile() throws AIProcessingException, IOException {
+     void testJavaMethodForFile() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String weatherAction = "My friends name is Vishal ,he lives in toronto.I want save this info locally";
         String result = (String)processor.processSingleAction(weatherAction);
@@ -232,7 +249,7 @@ public class OpenAIActionValidation {
 }
      */
     @Test
-    public void testActionWithList() throws AIProcessingException, IOException {
+     void testActionWithList() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay.Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
         ListAction action = new ListAction();
@@ -242,7 +259,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testActionWithListAndArray() throws AIProcessingException, IOException {
+     void testActionWithListAndArray() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay.Hrithik roshan is another employee of MovieHits inc based in Chennai his taks are jumping and Gym he joined on Indian Independce Day.Vishal Mysore is customer of MovieHits inc and he styas in Paris the reason he is not happy is that he did nto like the movie date is labor day. Deepak Rao is another customer for MovieHits inc date is independence day";
         ListAction action = new ListAction();
@@ -252,7 +269,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testActionWithMap() throws AIProcessingException, IOException {
+     void testActionWithMap() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String promptText = "id of Cricket is 1 and then Polo is at 5, Footbal is at 9";
         MapAction action = new MapAction();
@@ -263,7 +280,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testPojoWithMap() throws AIProcessingException, IOException {
+     void testPojoWithMap() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "id of Cricket is 1 and then Polo is at 5, Footbal is at 9";
         Map map = (Map) tra.transformIntoPojo(promptText, Map.class.getName(),"","");
@@ -272,7 +289,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testPojoWithMapInsideClass() throws AIProcessingException, IOException {
+     void testPojoWithMapInsideClass() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "Create a dictionary with name Hindi Kosh, add words big=large thing , small=tiny thing in it";
         Dictionary dict = (Dictionary) tra.transformIntoPojo(promptText, Dictionary.class.getName(),"","");
@@ -281,15 +298,119 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testPojoWithSeveralObjects() throws AIProcessingException, IOException {
+     void testPojoWithSeveralObjects() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
         MyDiary dict = (MyDiary) tra.transformIntoPojo(promptText, MyDiary.class.getName(),"","");
         log.info(dict.toString());
     }
 
+    /**
+     * {
+     *     "methodName": "buildMyDiary",
+     *     "parameters": [{
+     *         "name": "diary",
+     *         "fields": [
+     *             {
+     *                 "fieldName": "allTheDatesOfAppointment",
+     *                 "dateFormat": "ddMMyyyy",
+     *                 "isArray": true,
+     *                 "className": "java.util.Date",
+     *                 "type": "Date[]",
+     *                 "fieldValue": ["03072021", "07082021", "19092021"],
+     *                 "prompt": "If you find more than 1 Date add it as another object inside fields array ",
+     *                 "fieldType": "Date[]"
+     *             },
+     *             {
+     *                 "fieldName": "friendsNames",
+     *                 "isArray": true,
+     *                 "className": "java.lang.String",
+     *                 "type": "String[]",
+     *                 "fieldValue": ["Rahul", "Dhawal", "Aravind"],
+     *                 "prompt": "If you find more than 1 String add it as another object inside fields array ",
+     *                 "fieldType": "String[]"
+     *             },
+     *             {
+     *                 "fieldName": "customer",
+     *                 "fields": [
+     *                     {
+     *                         "fieldName": "firstName",
+     *                         "fieldType": "String",
+     *                         "fieldValue": "Amitabh"
+     *                     },
+     *                     {
+     *                         "fieldName": "lastName",
+     *                         "fieldType": "String",
+     *                         "fieldValue": "Bacchan"
+     *                     },
+     *                     {
+     *                         "fieldName": "reasonForCalling",
+     *                         "fieldDescription": "convert this to Hindi",
+     *                         "fieldType": "String",
+     *                         "fieldValue": "मुझे एक्टिंग सीखनी है"
+     *                     },
+     *                     {
+     *                         "fieldName": "dateJoined",
+     *                         "dateFormat": "yyyy-MM-dd",
+     *                         "fieldDescription": "if you dont find date provide todays date in fieldValue",
+     *                         "fieldType": "Date",
+     *                         "fieldValue": "2021-09-06"
+     *                     }
+     *                 ],
+     *                 "fieldType": "com.t4a.examples.actions.Customer"
+     *             },
+     *             {
+     *                 "fieldName": "employee",
+     *                 "fields": [
+     *                     {
+     *                         "fieldName": "name",
+     *                         "fieldType": "String",
+     *                         "fieldValue": "Jhonny Napper"
+     *                     },
+     *                     {
+     *                         "fieldName": "department",
+     *                         "fieldType": "String",
+     *                         "fieldValue": "Unknown"
+     *                     },
+     *                     {
+     *                         "fieldName": "salary",
+     *                         "fieldType": "double",
+     *                         "fieldValue": 0.0
+     *                     },
+     *                     {
+     *                         "fieldName": "location",
+     *                         "fieldType": "String",
+     *                         "fieldValue": "Unknown"
+     *                     },
+     *                     {
+     *                         "fieldName": "dateJoined",
+     *                         "dateFormat": "ddMMyyyy",
+     *                         "fieldDescription": "convert to actual date",
+     *                         "fieldType": "Date",
+     *                         "fieldValue": "15082021"
+     *                     },
+     *                     {
+     *                         "fieldName": "tasks",
+     *                         "isArray": true,
+     *                         "className": "java.lang.String",
+     *                         "type": "String[]",
+     *                         "fieldValue": ["Unknown"],
+     *                         "prompt": "If you find more than 1 String add it as another object inside fields array ",
+     *                         "fieldType": "String[]"
+     *                     }
+     *                 ],
+     *                 "fieldType": "com.t4a.examples.pojo.Employee"
+     *             }
+     *         ],
+     *         "type": "com.t4a.examples.pojo.MyDiary"
+     *     }],
+     *     "returnType": "MyDiary"
+     * }
+     * @throws AIProcessingException
+     * @throws IOException
+     */
     @Test
-    public void testActionWithSeveralObjects() throws AIProcessingException, IOException {
+     void testActionWithSeveralObjects() throws AIProcessingException, IOException {
         OpenAiActionProcessor tra = new OpenAiActionProcessor();
         String promptText = "I have dentist appointment on 3rd July, then i have Gym appointment on 7th August and I am meeting famous Bollywood actor Shahrukh Khan on 19 Sep. My friends Rahul, Dhawal, Aravind are coming with me. My employee Jhonny Napper is comign with me he joined on Indian Independce day.My customer name is Amitabh Bacchan he wants to learn acting form me he joined on labor day";
         MyDiaryAction action = new MyDiaryAction();
@@ -297,7 +418,7 @@ public class OpenAIActionValidation {
         log.info(dict.toString());
     }
     @Test
-    public void testPojoWithMapAndArrayInsideClass() throws AIProcessingException, IOException {
+     void testPojoWithMapAndArrayInsideClass() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "Create a dictionary with name Hindi Kosh, add words big=large thing , small=tiny thing in it, publish this dictionary in toronto and bangalore";
         Dictionary dict = (Dictionary) tra.transformIntoPojo(promptText, Dictionary.class.getName(),"","");
@@ -306,7 +427,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testPojoArray() throws AIProcessingException, IOException {
+     void testPojoArray() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "Create a dictionary with name Hindi Kosh, add words big=large thing , small=tiny thing in it, publish this dictionary in toronto and bangalore. I just need list of locations fomr here";
         List dict = (List) tra.transformIntoPojo(promptText, List.class.getName(),"","");
@@ -314,7 +435,7 @@ public class OpenAIActionValidation {
         Assertions.assertTrue(dict.get(0).equals("Toronto"));
     }
     @Test
-    public void testActionWithArray() throws AIProcessingException, IOException {
+     void testActionWithArray() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String promptText = "Vishal Mysore is customer of MovieHits inc and he styas in Paris the reason he is not happy is that he did nto like the movie date is labor day. Deepak Rao is another customer for MovieHits inc date is independence day";
         ArrayAction action = new ArrayAction();
@@ -325,7 +446,7 @@ public class OpenAIActionValidation {
     }
 
     @Test
-    public void testActionWithArrayOfObject() throws AIProcessingException, IOException {
+     void testActionWithArrayOfObject() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String promptText = "Vishal Mysore is going to restaurant on 2nd August, he is going to gym on 3rd septembr and then he is Celebrating Diwali on 11 Nov";
         ArrayOfObjectAction action = new ArrayOfObjectAction();
@@ -335,7 +456,7 @@ public class OpenAIActionValidation {
 
     }
     @Test
-    public void testPojoWithList() throws AIProcessingException, IOException {
+     void testPojoWithList() throws AIProcessingException, IOException {
         OpenAIPromptTransformer tra = new OpenAIPromptTransformer();
         String promptText = "Shahrukh Khan works for MovieHits inc and his salary is $ 100  he joined Toronto on Labor day, his tasks are acting and dancing. He also works out of Montreal and Bombay. Hrithik roshan is another employee of same company based in Chennai his taks are jumping and Gym he joined on Indian Independce Day";
         Organization org = (Organization) tra.transformIntoPojo(promptText, Organization.class.getName(),"","");
@@ -346,7 +467,7 @@ public class OpenAIActionValidation {
 
 
     @Test
-    public void testHighRiskAction() throws AIProcessingException, IOException {
+     void testHighRiskAction() throws AIProcessingException, IOException {
         OpenAiActionProcessor processor = new OpenAiActionProcessor();
         String ecomActionPrmt = "Hey This is Vishal, the ecommerce Server is very slow and users are not able to do online shopping";
         String result = (String)processor.processSingleAction(ecomActionPrmt);

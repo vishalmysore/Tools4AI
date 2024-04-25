@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>
@@ -54,19 +57,20 @@ public class ShellPredictedAction implements PredictedAIAction {
     private String group;
     private String groupDescription;
 
-    public  void executeShell(String arguments[]) throws IOException, InterruptedException {
+    public void executeShell(String[] arguments) throws IOException, InterruptedException {
         scriptPath = loadScript(scriptPath);
-        StringBuilder commandBuilder = new StringBuilder();
-        commandBuilder.append("cmd /c ").append(scriptPath);
-        for (String arg : arguments) {
-            commandBuilder.append(" ").append(arg);
-            log.debug(arg);
-        }
-        String command = commandBuilder.toString();
+        List<String> commandList = new ArrayList<>();
+        commandList.add("cmd");
+        commandList.add("/c");
+        commandList.add(scriptPath);
+        commandList.addAll(Arrays.asList(arguments));
+        ProcessBuilder builder = new ProcessBuilder(commandList);
 
-        log.debug(command);
-        // Execute the command
-        Process process = Runtime.getRuntime().exec(command);
+        // Log the command
+        log.debug(String.join(" ", commandList));
+
+        // Start the process
+        Process process = builder.start();
 
         // Read the output of the script (if any)
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -113,7 +117,7 @@ public class ShellPredictedAction implements PredictedAIAction {
         // Load from absolute path
         File file = new File(absolutePath);
         // Perform file loading operations
-        return absolutePath;
+        return file.getAbsolutePath();
     }
 
     public  String loadFromClasspath(String fileName) {
@@ -125,7 +129,7 @@ public class ShellPredictedAction implements PredictedAIAction {
             try {
                 f = new File(resourceUrl.toURI());
             } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+                log.warn(e.getMessage());
             }
             return f.getAbsolutePath();
         } else {

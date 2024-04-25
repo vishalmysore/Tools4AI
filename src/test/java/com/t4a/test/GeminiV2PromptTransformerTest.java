@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class GeminiV2PromptTransformerTest {
+ class GeminiV2PromptTransformerTest {
     private GeminiV2PromptTransformer transformer;
 
     @BeforeEach

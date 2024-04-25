@@ -37,7 +37,7 @@ public class ShellPredictionLoader {
 
 
 
-    public void load(Map<String, AIAction> predictions, StringBuffer actionNameList, ActionList listOfActions) throws LoaderException {
+    public void load(Map<String, AIAction> predictions, StringBuilder actionNameList, ActionList listOfActions) throws LoaderException {
 
         try {
             loadYamlFile(predictions,actionNameList,listOfActions);
@@ -48,10 +48,10 @@ public class ShellPredictionLoader {
 
     }
 
-    public  void loadYamlFile(Map<String,AIAction> predictions,StringBuffer actionNameList, ActionList listOfActions) throws URISyntaxException {
-        if(resourceUrl == null)
-        resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
-
+    public  void loadYamlFile(Map<String,AIAction> predictions,StringBuilder actionNameList, ActionList listOfActions) throws URISyntaxException {
+        if(resourceUrl == null) {
+            resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
+        }
         if (resourceUrl == null) {
             log.warning("File not found: " + yamlFile);
             return;
@@ -97,7 +97,7 @@ public class ShellPredictionLoader {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warning(e.getMessage());
 
         }
     }

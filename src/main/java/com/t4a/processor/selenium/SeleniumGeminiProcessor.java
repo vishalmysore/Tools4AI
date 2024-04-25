@@ -30,7 +30,8 @@ public class SeleniumGeminiProcessor extends GeminiV2ActionProcessor implements 
         if (WebDriverAction.GET.equals(action)) {
             String urlOfTheWebPage = getStringFromPrompt(prompt, "urlToClick");
             driver.get(urlOfTheWebPage);
-        }if (WebDriverAction.CLICK.equals(action)) {
+        }
+        if (WebDriverAction.CLICK.equals(action)) {
             String textOfElementToClick = getStringFromPrompt(prompt, "textOfElementToClick");
             WebElement elementToClick = driver.findElement(By.linkText(textOfElementToClick));
             elementToClick.click();

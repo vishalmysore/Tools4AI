@@ -62,7 +62,7 @@ public class AnthropicActionProcessor implements AIProcessor {
             JsonUtils utils = new JsonUtils();
             Method m = null;
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
-            Class clazz = javaMethodAction.getActionClass();
+            Class<?> clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods
             ) {
@@ -85,23 +85,21 @@ public class AnthropicActionProcessor implements AIProcessor {
                 jsonStr = utils.extractJson(jsonStr.trim());
             }
             JavaMethodInvoker invoke = new JavaMethodInvoker();
-            Object obj[] = invoke.parse(jsonStr);
+            Object[] obj = invoke.parse(jsonStr);
             List<Object> parameterValues = (List<Object>) obj[1];
             List<Class<?>> parameterTypes = (List<Class<?>>) obj[0];
             Method method = null;
             try {
                 method = clazz.getMethod(m.getName(), parameterTypes.toArray(new Class<?>[0]));
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                throw new AIProcessingException(e);
             }
 
             Object result = null;
             try {
                 result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                throw new AIProcessingException(e);
             }
             return result;
         } else {
@@ -116,9 +114,7 @@ public class AnthropicActionProcessor implements AIProcessor {
                     obj = methodExecutor.action(params, action);
                     log.debug(" the action returned " + obj);
                 }
-            } catch (InvocationTargetException e) {
-                throw new AIProcessingException(e);
-            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new AIProcessingException(e);
             }
             return obj;

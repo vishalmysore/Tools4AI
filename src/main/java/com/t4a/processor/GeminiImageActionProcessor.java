@@ -15,14 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
- * Take actions based on images
+ * Take actions based on images, compare images, get text from images, get values from images , convert
+ * images into Pojo and Json, get values for specific elements in images,
  *
  */
 @Slf4j
 public class GeminiImageActionProcessor {
+
+    /**
+     * Get text from image
+     * @param imageNameAndPath
+     * @return
+     * @throws AIProcessingException
+     */
     public String imageToText(String imageNameAndPath) throws AIProcessingException{
          try {
              String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
@@ -32,6 +41,66 @@ public class GeminiImageActionProcessor {
         }
     }
 
+    /**
+     * Compare two images and find differences
+     * @param imageNameAndPath
+     * @param imageNameAndPath2
+     * @return
+     * @throws AIProcessingException
+     */
+    public String compareImages(String imageNameAndPath,String imageNameAndPath2) throws AIProcessingException{
+        try {
+            String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
+            return compareImages(readImageFile(imageNameAndPath),readImageFile(imageNameAndPath2),mimeType, "List down all the differences between these two images?");
+        } catch (IOException e) {
+            throw new AIProcessingException(e);
+        }
+    }
+
+    /**
+     * Compare two images and find differences
+     * @param imageNameAndPath
+     * @param imageNameAndPath2
+     * @param prompt
+     * @return
+     * @throws AIProcessingException
+     */
+    public String compareImages(String imageNameAndPath,String imageNameAndPath2, String prompt) throws AIProcessingException{
+        try {
+            String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
+            return compareImages(readImageFile(imageNameAndPath),readImageFile(imageNameAndPath2),mimeType, prompt);
+        } catch (IOException e) {
+            throw new AIProcessingException(e);
+        }
+    }
+
+    public String compareImages(URL imageNameAndPathURL,URL imageNameAndPath2URL) throws AIProcessingException{
+        try {
+            File file = new File(imageNameAndPathURL.toURI());
+            File file2 = new File(imageNameAndPath2URL.toURI());
+            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            return compareImages(readImageFile(file.getPath()),readImageFile(file2.getPath()),mimeType, "List down all the differences between these two images?");
+        } catch (IOException | URISyntaxException e) {
+            throw new AIProcessingException(e);
+        }
+    }
+
+    public String compareImages(URL imageNameAndPathURL,URL imageNameAndPath2URL, String prompt) throws AIProcessingException{
+        try {
+            File file = new File(imageNameAndPathURL.toURI());
+            File file2 = new File(imageNameAndPath2URL.toURI());
+            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            return compareImages(readImageFile(file.getPath()),readImageFile(file2.getPath()),mimeType, prompt);
+        } catch (IOException | URISyntaxException e) {
+            throw new AIProcessingException(e);
+        }
+    }
+    /**
+     * Get text from image
+     * @param imageNameAndPath
+     * @return
+     * @throws AIProcessingException
+     */
     public String imageToText(URL imageNameAndPath) throws AIProcessingException{
         try {
             File file = new File(imageNameAndPath.toURI());
@@ -42,6 +111,14 @@ public class GeminiImageActionProcessor {
         }
     }
 
+    /**
+     * This method will convert image to json, the json will have fields populated with values from the image
+     * the name of the fields are passed in names attribute
+     * @param imageNameAndPath
+     * @param names
+     * @return
+     * @throws AIProcessingException
+     */
     public String imageToJson(URL imageNameAndPath, String... names) throws AIProcessingException{
         try {
             JsonUtils utils = new JsonUtils();
@@ -55,7 +132,16 @@ public class GeminiImageActionProcessor {
         }
     }
 
-    public String imageToJson(URL imageNameAndPath, Class clazz) throws AIProcessingException{
+    /**
+     * Converts the image into the json object matching with the class. The class passed to this method
+     * will be converted to Json and the values populated using AI
+     * @param imageNameAndPath
+     * @param clazz
+     * @return
+     * @throws AIProcessingException
+     */
+
+    public String imageToJson(URL imageNameAndPath, Class<?> clazz) throws AIProcessingException{
         try {
             JsonUtils utils = new JsonUtils();
             String jsonStr = utils.convertClassToJSONString(clazz);
@@ -67,7 +153,15 @@ public class GeminiImageActionProcessor {
             throw new AIProcessingException(e);
         }
     }
-    public Object imageToPojo(URL imageNameAndPath, Class clazz) throws AIProcessingException{
+
+    /**
+     * Convert the entire image into the Pojo object
+     * @param imageNameAndPath
+     * @param clazz
+     * @return
+     * @throws AIProcessingException
+     */
+    public Object imageToPojo(URL imageNameAndPath, Class<?> clazz) throws AIProcessingException{
         try {
             JsonUtils utils = new JsonUtils();
             String jsonStr = utils.convertClassToJSONString(clazz);
@@ -122,7 +216,7 @@ public class GeminiImageActionProcessor {
                                 prompt,
                                 PartMaker.fromMimeTypeAndData(mimeType, imageBytes)));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new AIProcessingException(e);
             }
 
 
@@ -131,7 +225,28 @@ public class GeminiImageActionProcessor {
             return output;
         }
     }
-    public  byte[] readImageFileDeprecated(String url) throws IOException {
+
+    public String compareImages(byte[] imageBytes1,byte[] imageBytes2, String mimeType, String prompt) throws AIProcessingException{
+        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
+            GenerativeModel model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
+            GenerateContentResponse response = null;
+            try {
+                response = model.generateContent(
+                        ContentMaker.fromMultiModalData(
+                                prompt,
+                                PartMaker.fromMimeTypeAndData(mimeType, imageBytes1),PartMaker.fromMimeTypeAndData(mimeType, imageBytes2)
+                                ));
+            } catch (IOException e) {
+                throw new AIProcessingException(e);
+            }
+
+
+            String output = ResponseHandler.getText(response);
+            log.debug(output);
+            return output;
+        }
+    }
+    public  byte[] readImageFileDeprecated(String url) throws AIProcessingException, IOException{
         URL urlObj = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
         connection.setRequestMethod("GET");
@@ -150,15 +265,15 @@ public class GeminiImageActionProcessor {
 
             return outputStream.toByteArray();
         } else {
-            throw new RuntimeException("Error fetching file: " + responseCode);
+            throw new AIProcessingException("Error fetching file: " + responseCode);
         }
     }
 
     public byte[] readImageFile(String url) throws IOException {
         InputStream inputStream = null;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        try {
+
+        try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // Check if the URL is an HTTP URL
             if (url.startsWith("http://") || url.startsWith("https://")) {
                 URL urlObj = new URL(url);
@@ -185,13 +300,14 @@ public class GeminiImageActionProcessor {
                 outputStream.write(buffer, 0, bytesRead);
             }
 
+
+
+        return outputStream.toByteArray();
         } finally {
             // Close resources
             if (inputStream != null) {
                 inputStream.close();
             }
         }
-
-        return outputStream.toByteArray();
     }
 }

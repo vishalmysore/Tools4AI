@@ -15,8 +15,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActionList {
-    private List<ActionGroup> groups = new ArrayList<ActionGroup>();
-    private List<GroupInfo> groupInfo = new ArrayList();
+    private List<ActionGroup> groups = new ArrayList<>();
+    private List<GroupInfo> groupInfo = new ArrayList<>();
     private Map<GroupInfo,String> groupActions = new HashMap<>();
     public void addAction(AIAction action) {
       ActionGroup group = new ActionGroup(action.getActionGroup(),action.getGroupDescription());

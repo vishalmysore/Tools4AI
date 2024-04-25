@@ -21,25 +21,13 @@ public class LoggingHumanDecision implements HumanInLoop {
             Object value = entry.getValue();
             log.debug("Key: " + key + ", Value: " + value);
         }
-        return new FeedbackLoop() {
-
-            @Override
-            public boolean isAIResponseValid() {
-                return true;
-            }
-        };
+        return () -> true;
     }
     @Override
     public FeedbackLoop allow(String promptText, String methodName, String params) {
 
         log.debug(" Do you allow "+methodName+" for "+promptText);
 
-        return new FeedbackLoop() {
-
-            @Override
-            public boolean isAIResponseValid() {
-                return true;
-            }
-        };
+        return () -> true;
     }
 }

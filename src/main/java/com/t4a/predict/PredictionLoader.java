@@ -14,16 +14,17 @@ import com.google.gson.Gson;
 import com.t4a.JsonUtils;
 import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
-import com.t4a.action.shell.ShellPredictedAction;
 import com.t4a.annotations.Action;
 import com.t4a.annotations.ActivateLoader;
 import com.t4a.annotations.Predict;
 import com.t4a.api.*;
+import com.t4a.processor.AIProcessingException;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -45,16 +46,21 @@ import java.util.*;
 @Slf4j
 public class PredictionLoader {
 
+    public static final String PRMPT = " This is the prompt - {";
+    public static final String GRP = "} - which group does it belong - {";
+    public static final String LOOK_FOR_ACTION_IN_THE_GROUP = " will look for action in the group ";
+    public static final String OUT_OF = " out of ";
+
+
+    private final Map<String,AIAction> predictions = new HashMap<>();
+    private final StringBuilder actionNameList = new StringBuilder();
     @Getter
-    private Map<String,AIAction> predictions = new HashMap<String,AIAction>();
-    private StringBuffer actionNameList = new StringBuffer();
-    private ActionList actionGroupList = new ActionList();
+    private final ActionList actionGroupList = new ActionList();
     private static PredictionLoader predictionLoader =null;
 
     private final String PREACTIONCMD = "here is my prompt - ";
     private final  String ACTIONCMD = "- what action do you think we should take out of these  - {  ";
 
-    private final String OPEN_AIPRMT = "here is your prompt - prompt_str - here is you action- action_name(params_values) - what parameter should you pass to this function. give comma separated name=values only and nothing else";
     private final  String POSTACTIONCMD = " } - reply back with ";
     private final  String NUMACTION = " action only. Make sure Action matches exactly from this list";
 
@@ -64,9 +70,11 @@ public class PredictionLoader {
     private ChatSession chatExplain;
     private ChatSession chatMulti;
     private ChatSession chatGroupFinder;
-    private ChatSession chatScript;
+    @Getter
     private String projectId;
+    @Getter
     private String location;
+    @Getter
     private String modelName;
     @Getter
     private String geminiVisionModelName;
@@ -85,10 +93,6 @@ public class PredictionLoader {
     private String actionGroupJson;
     private ApplicationContext springContext;
 
-    /**
-     * If the action name returned by AI is not in the list of approved action it will try again this many times
-     */
-    private final int NUM_OF_RETRIES = 2;
     private PredictionLoader() {
         initProp();
         if((modelName!=null)&&(projectId!=null)&&(location!=null)) {
@@ -110,11 +114,7 @@ public class PredictionLoader {
                                 .setModelName(modelName)
                                 .setVertexAi(vertexAI)
                                 .build();
-                GenerativeModel scriptCommand =
-                        new GenerativeModel.Builder()
-                                .setModelName(modelName)
-                                .setVertexAi(vertexAI)
-                                .build();
+
                 GenerativeModel chatGroupFinderCommand =
                         new GenerativeModel.Builder()
                                 .setModelName(modelName)
@@ -123,7 +123,6 @@ public class PredictionLoader {
                 chat = model.startChat();
                 chatExplain = modelExplain.startChat();
                 chatMulti = multiCommand.startChat();
-                chatScript = scriptCommand.startChat();
                 chatGroupFinder = chatGroupFinderCommand.startChat();
             }
         }
@@ -140,18 +139,6 @@ public class PredictionLoader {
                      .maxTokens(4000)
                     .build();
         }
-    }
-
-    public String getProjectId() {
-        return projectId;
-    }
-
-    public String getModelName() {
-        return modelName;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     private void initProp() {
@@ -183,14 +170,14 @@ public class PredictionLoader {
             openAiKey = prop.getProperty("openAiKey");
             if(openAiKey != null)
                 openAiKey = openAiKey.trim();
-            if(openAiKey == null || openAiKey.trim().length() <1) {
+            if(openAiKey == null || openAiKey.trim().isEmpty()) {
                 openAiKey = System.getProperty("openAiKey");
             }
-            if(claudeKey == null || claudeKey.trim().length() <1) {
+            if(claudeKey == null || claudeKey.trim().isEmpty()) {
                 claudeKey = System.getProperty("claudeKey");
             }
             serperKey = prop.getProperty("serperKey");
-            if(serperKey == null || serperKey.trim().length() <1) {
+            if(serperKey == null || serperKey.trim().isEmpty()) {
                 serperKey = System.getProperty("serperKey");
             }
             if(serperKey != null)
@@ -203,25 +190,21 @@ public class PredictionLoader {
             log.debug("openAiKey: " + openAiKey);
             log.debug("claudeKey: " + claudeKey);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.warn(e.getMessage());
         }
     }
 
-    public ActionList getActionGroupList() {
-        return actionGroupList;
-    }
-
-    public List<AIAction> getPredictedAction(String prompt, int num)  {
-        GenerateContentResponse response = null;
-        List<AIAction> actionList = new ArrayList<AIAction>();
+    public List<AIAction> getPredictedAction(String prompt, int num) throws AIProcessingException {
+        GenerateContentResponse response;
+        List<AIAction> actionList = new ArrayList<>();
         try {
             String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt -"+prompt+" - which group does it belong "+actionGroupJson+" - just provide the group name and nothing else"));
             log.info(" will look in group "+groupName);
-            String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
-            log.info(" list of actions "+actionNameList);
-            response = chat.sendMessage(buildPrompt(prompt,num,actionNameList));
+            String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+            log.info(" list of actions "+actionNameListTemp);
+            response = chat.sendMessage(buildPrompt(prompt,num,actionNameListTemp));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         }
         String actionNameListStr = ResponseHandler.getText(response);
         String[] actionNames = actionNameListStr.split(",");
@@ -249,7 +232,8 @@ public class PredictionLoader {
         }
         return builder.toString();
     }
-    public String getActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params)  {
+    public String getActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params) throws AIProcessingException {
+        String OPEN_AIPRMT = "here is your prompt - prompt_str - here is you action- action_name(params_values) - what parameter should you pass to this function. give comma separated name=values only and nothing else";
         String prmpt = OPEN_AIPRMT.replace("prompt_str",prompt);
         prmpt = prmpt.replace("action_name",action.getActionName());
         String realParms = getCommaSeparatedKeys(params);
@@ -257,28 +241,29 @@ public class PredictionLoader {
         log.debug(prmpt);
         if(aiProvider == AIPlatform.OPENAI) {
             return openAiChatModel.generate(prmpt);
-        } if(aiProvider == AIPlatform.ANTHROPIC) {
+        }
+        if(aiProvider == AIPlatform.ANTHROPIC) {
             return anthropicChatModel.generate(prmpt);
         } else {
             try {
                 return ResponseHandler.getText(chatExplain.sendMessage(prmpt));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new AIProcessingException(e);
             }
         }
     }
-    public Object[] getComplexActionParams(AIAction action, String prompt, AIPlatform aiProvider, Map<String, Object> params, Gson gson)  {
+    public Object[] getComplexActionParams(String prompt, Map<String, Object> params, Gson gson)  {
         Object[] paramsRet = new Object[params.keySet().size()];
         int i  = 0 ;
         for (String key: params.keySet()
              ) {
-            String json = null;
+            String json;
             try {
                 Object value = params.get(key);
-                json = classToJson((Class)value);
+                json = classToJson((Class<?>)value);
 
             String response = openAiChatModel.generate(" here is you prompt { "+prompt+"} and here is your json "+json+" - fill the json with values and return");
-            Object ret = gson.fromJson(response,((Class)value) )   ;
+            Object ret = gson.fromJson(response,((Class<?>)value) )   ;
             paramsRet[i] = ret;
             i++;
 
@@ -289,48 +274,50 @@ public class PredictionLoader {
         return paramsRet;
     }
 
-    private String classToJson(Class cazz) throws JsonProcessingException {
+    private String classToJson(Class<?> clazz) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         SchemaFactoryWrapper visitor = new SchemaFactoryWrapper();
-        mapper.acceptJsonFormatVisitor(cazz, visitor);
+        mapper.acceptJsonFormatVisitor(clazz, visitor);
         JsonSchema jsonSchema = visitor.finalSchema();
         JsonNode propertiesNode = mapper.valueToTree(jsonSchema).path("properties");
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(propertiesNode);
     }
-    public String postActionProcessing(AIAction action, String prompt, AIPlatform aiProvider,String result)  {
+    public String postActionProcessing(String prompt, String result)  {
 
         return openAiChatModel.generate(prompt+" result "+result);
     }
     public AIAction getPredictedAction(String prompt,AIPlatform aiProvider)  {
         int numRetries = 0;
-        GenerateContentResponse response = null;
-        String actionName = null;
+        GenerateContentResponse response;
+        String actionName;
         AIAction action = null;
         try {
             if(AIPlatform.GEMINI == aiProvider) {
-                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - which group does this prompt belong to? response back in this format {'groupName':'','explanation':''}"));
                 JsonUtils utils = new JsonUtils();
+                
+                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(PRMPT +prompt+ GRP +actionGroupJson+"} - which group does this prompt belong to? response back in this format {'groupName':'','explanation':''}"));                
                 groupName= utils.fetchGroupName(groupName);
-                log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
-                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName.trim())).getGroupInfo()).trim();
-                log.info(" list of actions "+actionNameList);
-                response = chat.sendMessage(buildPromptWithJsonResponse(prompt, 1,actionNameList));
+                log.info(LOOK_FOR_ACTION_IN_THE_GROUP +groupName+ OUT_OF +actionGroupJson);
+                String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName.trim())).getGroupInfo()).trim();
+                log.info(" list of actions "+actionNameListTemp);
+                response = chat.sendMessage(buildPromptWithJsonResponse(prompt, 1,actionNameListTemp));
 
                 actionName = ResponseHandler.getText(response).trim();
                 actionName = utils.fetchActionName(actionName);
-                actionNameList = ","+actionNameList+",";
-                if(!actionNameList.toString().contains(","+actionName+",")) {
+                actionNameListTemp = ","+actionNameListTemp+",";
+                if(!actionNameListTemp.contains(","+actionName+",")) {
                     response = chat.sendMessage("give me just the action name from this query { "+actionName+"}");
                     actionName = ResponseHandler.getText(response).trim();
-                    if(actionNameList.toString().contains(","+actionName+",")) {
+                    if(actionNameListTemp.contains(","+actionName+",")) {
                         log.info(" Got the name correct "+actionName);
                     } else {
+                        int NUM_OF_RETRIES = 2;
                         while (numRetries++ < NUM_OF_RETRIES) {
                             log.debug(" got " + actionName + " Trying again " + numRetries);
-                            response = chat.sendMessage(buildPrompt(prompt, 1, actionNameList));
+                            response = chat.sendMessage(buildPrompt(prompt, 1, actionNameListTemp));
                             actionName = ResponseHandler.getText(response);
-                            if (actionNameList.toString().contains("," + actionName + ",")) {
+                            if (actionNameListTemp.contains("," + actionName + ",")) {
                                 break;
                             }
                         }
@@ -341,11 +328,7 @@ public class PredictionLoader {
                 log.debug(" Predicted action by AI is "+actionName);
                 action = getAiAction(actionName);
             }else if (AIPlatform.OPENAI == aiProvider) {
-                String groupName = openAiChatModel.generate(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else");
-                log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
-                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
-                actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuffer(actionNameList)));
-                actionName = actionName.replace("()","");
+                actionName = getOpenAiActionName(prompt);
                 action = getAiAction(actionName);
                 if(action == null) {
                     actionName = openAiChatModel.generate("provide action name from this and nothing else - "+actionName);
@@ -358,11 +341,7 @@ public class PredictionLoader {
                     action = getAiAction(actionName);
                 }
             }else if (AIPlatform.ANTHROPIC == aiProvider) {
-                String groupName = anthropicChatModel.generate(" This is the prompt - {"+prompt+"} - which group does it belong - {"+actionGroupJson+"} - just provide the group name and nothing else");
-                log.info(" will look for action in the group "+groupName+ " out of "+actionGroupJson);
-                String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
-                actionName = anthropicChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuffer(actionNameList)));
-                actionName = actionName.replace("()","");
+                actionName = getAnthrpicActionName(prompt);
                 action = getAiAction(actionName);
                 if(action == null) {
                     actionName = anthropicChatModel.generate("provide action name from this and nothing else - "+actionName);
@@ -385,8 +364,30 @@ public class PredictionLoader {
 
     }
 
+    @NotNull
+    private String getOpenAiActionName(String prompt) {
+        String actionName;
+        String groupName = openAiChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else");
+        log.info(LOOK_FOR_ACTION_IN_THE_GROUP +groupName+ OUT_OF +actionGroupJson);
+        String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+        actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuilder(actionNameListTemp)));
+        actionName = actionName.replace("()","");
+        return actionName;
+    }
+
+    @NotNull
+    private String getAnthrpicActionName(String prompt) {
+        String actionName;
+        String groupName = anthropicChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else");
+        log.info(LOOK_FOR_ACTION_IN_THE_GROUP+groupName+ OUT_OF+actionGroupJson);
+        String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+        actionName = anthropicChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuilder(actionNameList)));
+        actionName = actionName.replace("()","");
+        return actionName;
+    }
+
     public String fetchActionNameFromList(String actionName) {
-        String namesArray[] = actionNameList.toString().split(",");
+        String[] namesArray = actionNameList.toString().split(",");
         String realName = null;
         for (String name:namesArray
              ) {
@@ -402,23 +403,23 @@ public class PredictionLoader {
        return getPredictedAction(prompt,AIPlatform.GEMINI);
     }
 
-    public String getMultiStepResult(String json) {
-        GenerateContentResponse response = null;
+    public String getMultiStepResult(String json) throws AIProcessingException {
+        GenerateContentResponse response;
         try {
             response = chatMulti.sendMessage("look at the json string - "+json+" -  provide the information inside json in plain english language which is understandable");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         }
         String nlpans = ResponseHandler.getText(response);
         log.debug(nlpans);
         return nlpans;
     }
-    public String getPredictedActionMultiStep(String prompt)  {
-        GenerateContentResponse response = null;
+    public String getPredictedActionMultiStep(String prompt) throws AIProcessingException {
+        GenerateContentResponse response;
         try {
             response = chatMulti.sendMessage(buildPromptMultiStep(prompt));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new AIProcessingException(e);
         }
         String subprompts = ResponseHandler.getText(response);
         log.debug(subprompts);
@@ -432,8 +433,9 @@ public class PredictionLoader {
             response = chatExplain.sendMessage("explain why this action "+action+" is appropriate for this command "+prompt+" out of all these actions "+actionNameList);
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
         }
+        assert response != null;
         return  ResponseHandler.getText(response);
 
 
@@ -445,20 +447,14 @@ public class PredictionLoader {
         if(action != null) {
 
             if (action.getActionType() == ActionType.SHELL) {
-                ShellPredictedAction shellAction = (ShellPredictedAction) action;
-
-                return shellAction;
+                return action;
             } else if (action.getActionType() == ActionType.HTTP) {
                 if (action instanceof HttpPredictedAction) {
-                    HttpPredictedAction genericHttpAction = (HttpPredictedAction) action;
-
-                    return genericHttpAction;
+                    return action;
 
                 }
                 if (action.getActionType() == ActionType.EXTEND) {
-                    ExtendedPredictedAction shellAction = (ExtendedPredictedAction) action;
-
-                    return shellAction;
+                    return action;
                 }
             }
         }
@@ -536,7 +532,7 @@ public class PredictionLoader {
                 }
 
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                log.warn(e.getMessage());
             }
         });
     }
@@ -552,21 +548,23 @@ public class PredictionLoader {
                 } else {
                     List<Method> annoatatedMethods =   getAnnotatedMethods(actionCLAZZ);
                     for (Method method : annoatatedMethods) {
-                          {
-                              GenericJavaMethodAction action = new GenericJavaMethodAction(actionCLAZZ,method);
-                              addGenericJavaMethodAction(action);
-                          }
+                        annotated(actionCLAZZ, method);
                     }
 
                 }
 
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                log.warn(e.getMessage());
             }
         });
     }
 
-    private  void loadFromLoader(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private void annotated(Class<?> actionCLAZZ, Method method) throws AIProcessingException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        GenericJavaMethodAction action = new GenericJavaMethodAction(actionCLAZZ, method);
+        addGenericJavaMethodAction(action);
+    }
+
+    private  void loadFromLoader(Class<?> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         ExtendedPredictionLoader instance = (ExtendedPredictionLoader)clazz.getDeclaredConstructor().newInstance();
         try {
             Map<String, ExtendedPredictedAction> extendedPredictOptionsMap = instance.getExtendedActions();
@@ -601,29 +599,31 @@ public class PredictionLoader {
         if(springContext != null) {
             instance = springContext.getBean(action.getActionClass());
             log.debug(" instance from Spring " + instance);
-        } if(instance == null) {
+        } 
+        if(instance == null) {
             instance =  action.getActionClass().getDeclaredConstructor().newInstance();
         }
         action.setActionInstance(instance);
         String actionName = action.getActionName();
 
-        actionNameList.append(actionName+",");
+        actionNameList.append(actionName).append(",");
         actionGroupList.addAction(action);
         predictions.put(actionName,action);
     }
 
-    private  void addAction(Class clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    private  void addAction(Class<?> clazz) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         AIAction instance = null;
         if(springContext != null) {
             instance = (AIAction) springContext.getBean(clazz);
             log.debug(" instance from Spring " + instance);
-        } if(instance == null) {
+        }
+        if(instance == null) {
             instance = (AIAction) clazz.getDeclaredConstructor().newInstance();
         }
 
         String actionName = instance.getActionName();
 
-        actionNameList.append(actionName+",");
+        actionNameList.append(actionName).append(",");
         actionGroupList.addAction(instance);
         predictions.put(actionName,instance);
     }
@@ -632,7 +632,7 @@ public class PredictionLoader {
         return predictions;
     }
 
-    public StringBuffer getActionNameList() {
+    public StringBuilder getActionNameList() {
         return actionNameList;
     }
 
@@ -640,19 +640,17 @@ public class PredictionLoader {
         String append = NUMACTION;
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
-        String query = PREACTIONCMD+ "{ "+prompt+" }"+ACTIONCMD+actionNameList.toString() +POSTACTIONCMD+number +append;
+        String query = PREACTIONCMD+ "{ "+prompt+" }"+ACTIONCMD+actionNameList +POSTACTIONCMD+number +append;
         log.debug(query);
         return query;
     }
     private String buildPromptWithJsonResponse(String prompt, int number, String actionNameList) {
-        String append = NUMACTION;
-        if(number > 1)
-            append = NUMACTION_MULTIPROMPT;
         String query = " this is your prompt {"+prompt+"} and these are your actionNames {"+actionNameList+"}"+" reply back with just one action name in json format {'actionName':'','reasoning':''}";
         log.debug(query);
+        log.debug(number+"");
         return query;
     }
-    private String getModifiedActionName(StringBuffer stringBuffer) {
+    private String getModifiedActionName(StringBuilder stringBuffer) {
         String[] functionNames = stringBuffer.toString().split(",");
 
         // StringBuilder to build the modified string
@@ -667,7 +665,7 @@ public class PredictionLoader {
         }
         return modifiedString.toString();
     }
-    private String buildPromptForOpenAI(String prompt, int number, StringBuffer actionNameList) {
+    private String buildPromptForOpenAI(String prompt, int number, StringBuilder actionNameList) {
         String append = NUMACTION;
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
@@ -677,7 +675,7 @@ public class PredictionLoader {
     }
 
     private String buildPromptMultiStep(String prompt) {
-        return "break down this prompt into multiple logical prompts in this json format { prmpt : [ { id:unique_id,subprompt:'',depend_on=id} ] }- "+prompt+" - just give JSON and dont put any characters ";
+        return "break down this prompt into multiple logical prompts in this json format { prompt : [ { id:unique_id,subprompt:'',depend_on=id} ] }- "+prompt+" - just give JSON and dont put any characters ";
     }
 
 }

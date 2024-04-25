@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class HttpPredictedActionTest {
+ class HttpPredictedActionTest {
 
     @Mock
     private HttpClient mockHttpClient;
@@ -36,7 +36,7 @@ public class HttpPredictedActionTest {
     private HttpPredictedAction httpPredictedAction;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
         httpPredictedAction = new HttpPredictedAction();
         httpPredictedAction.setUrl("http://test.com");
@@ -48,7 +48,7 @@ public class HttpPredictedActionTest {
     }
 
     @Test
-    public void testExecuteHttpGet() throws IOException {
+     void testExecuteHttpGet() throws IOException {
         String expectedResponse = "Expected response";
         InputStream stream = new ByteArrayInputStream(expectedResponse.getBytes(StandardCharsets.UTF_8));
         when(mockHttpClient.execute(any(HttpGet.class))).thenReturn(mockHttpResponse);
@@ -64,7 +64,7 @@ public class HttpPredictedActionTest {
     }
 
     @Test
-    public void testExecuteHttpPost() throws IOException {
+     void testExecuteHttpPost() throws IOException {
         String expectedResponse = "Expected response";
         InputStream stream = new ByteArrayInputStream(expectedResponse.getBytes(StandardCharsets.UTF_8));
         when(mockHttpClient.execute(any(HttpPost.class))).thenReturn(mockHttpResponse);

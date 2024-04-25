@@ -1,0 +1,46 @@
+
+¤
+AY8SEb_jwWCABySxhhHH	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8øÖ•æ1J$99fe34e6-54d4-43d7-a192-62762c066e1d
+¤
+AY8SEb_jwWCABySxhhHG	java:S112æ"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8Ð¥ì´à1J$511e78db-cdc0-487a-8c04-572560a7eae3
+”	java:S117ì"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ûÊŠÍ8¾’Ñªñ1J$8608e85f-a217-4f48-84b3-43a2352e4961
+”	java:S117»"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏžõ8¾’Ñªñ1J$805fb60e-cd49-4a8d-a172-a0a3ef60f788
+´
+AY8SEb_jwWCABySxhhHT	java:S116="WRename this field "PREACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•†Ÿùýÿÿÿÿ8œ‡±á1J$da898ac6-6d4a-45ac-acae-0bf8f87b28c5
+±
+AY8SEb_jwWCABySxhhHU	java:S116>"TRename this field "ACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³ƒ„·þÿÿÿÿ8˜ìØ®ê1J$a9e94793-3cc9-439c-abdb-497dad11d737
+°
+AY8SEb_jwWCABySxhhHW	java:S116@"XRename this field "POSTACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•·ØÎ8˜ìØ®ê1J$7024a19f-0fe0-4d2f-9885-43e4efba298e
+±
+AY8SEb_jwWCABySxhhHX	java:S116A"TRename this field "NUMACTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨°ªàþÿÿÿÿ8°Ç²¼æ1J$e83b051e-7544-42fd-a0c9-5c4e88f0d838
+½
+AY8SEb_jwWCABySxhhHY	java:S116C"`Rename this field "NUMACTION_MULTIPROMPT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä£”«úÿÿÿÿ8œ‡±á1J$4295a419-34bd-4e93-9d70-9909e24cdace
+
+AY8SEb_jwWCABySxhhHf
+java:S1170="!Make this final field static too.(•†Ÿùýÿÿÿÿ8œ‡±á1J$3e3836e2-b336-4934-9313-c7676ee09093
+
+AY8SEb_jwWCABySxhhHb
+java:S1170>"!Make this final field static too.(³ƒ„·þÿÿÿÿ8˜ìØ®ê1J$eacb189a-4da0-47ae-a628-ce7c9b1643b2
+z
+AY8SEb_jwWCABySxhhHd
+java:S1170@"!Make this final field static too.(•·ØÎ8˜ìØ®ê1J$ae9073fd-c116-4a0a-86d7-28caa43683bf
+
+AY8SEb_jwWCABySxhhHe
+java:S1170A"!Make this final field static too.(¨°ªàþÿÿÿÿ8°Ç²¼æ1J$5b815856-8767-414c-b28b-94d2e4cb36d6
+i
+java:S1170C"!Make this final field static too.(Ä£”«úÿÿÿÿ8û’Ñªñ1J$8dc2f85e-41b2-4851-875e-e8bfe69aedea
+ƒ
+AY8SEb_jwWCABySxhhHn
+java:S1940Ó")Use the opposite operator ("<=") instead.(‰ç„œ8Â¢ˆá1J$b8c94c49-f852-40b9-9784-b7dc25b07d54
+Ž
+AY8SEb_jwWCABySxhhHq
+java:S2864‚"4Iterate over the "entrySet" instead of the "keySet".(÷ÄÆù8ˆ«¦Ùê1J$f1b962a0-0073-4ad9-97bb-83d4864d635a
+±
+AY8SEb_jwWCABySxhhHs
+java:S3776¢"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(ÔåÄþúÿÿÿÿ8àØÊí1J$144b5527-4798-48c4-8c42-ef9f6f73286c
+œ
+AY8SEb_jwWCABySxhhHy
+java:S1117ÿ"BRename "actionNameList" which hides the field declared at line 56.(¦øü 8àØÊí1J$099a58f3-bd12-4898-9d78-9914d7b20ec3
+“
+AY8SEb_jwWCABySxhhH1
+java:S2864»"4Iterate over the "entrySet" instead of the "keySet".(ŸÒƒÛøÿÿÿÿ8¨¶ÔÙá1J$697b2b74-3607-4f17-96e9-f071d92477fd

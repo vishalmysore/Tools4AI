@@ -1,5 +1,10 @@
 package com.t4a.predict;
 
+/**
+ * LoaderException is a custom exception class that extends Exception. Its thrown when a config file
+ * is not being parsed correctly.
+
+ */
 public class LoaderException extends Exception {
     public LoaderException() {
     }
