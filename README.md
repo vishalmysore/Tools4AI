@@ -7,9 +7,9 @@
     <img  src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fgithub.com%2Fvishalmysore%2Ftools4ai&countColor=black&style=flat%22">
     <a target="_blank" href="https://github.com/vishalmyore/tools4ai"><img src="https://img.shields.io/github/stars/vishalmysore/tools4ai?color=black" /></a>   
 </p>
-
+<p align="center">
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=vishalmysore_Tools4AI)](https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI) [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=bugs)](https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI)  
-
+</p>
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
