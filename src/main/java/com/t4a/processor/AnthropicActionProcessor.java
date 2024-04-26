@@ -88,14 +88,14 @@ public class AnthropicActionProcessor implements AIProcessor {
             Object[] obj = invoke.parse(jsonStr);
             List<Object> parameterValues = (List<Object>) obj[1];
             List<Class<?>> parameterTypes = (List<Class<?>>) obj[0];
-            Method method = null;
+            Method method ;
             try {
                 method = clazz.getMethod(m.getName(), parameterTypes.toArray(new Class<?>[0]));
             } catch (NoSuchMethodException e) {
                 throw new AIProcessingException(e);
             }
 
-            Object result = null;
+            Object result ;
             try {
                 result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
             } catch (InvocationTargetException | IllegalAccessException e) {

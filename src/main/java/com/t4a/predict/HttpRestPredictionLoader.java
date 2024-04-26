@@ -84,7 +84,8 @@ public class HttpRestPredictionLoader {
                 httpPredictedAction.setAuthInterface(authInterface);
                 httpPredictedAction.setInputObjects(inputObjects);
                 httpPredictedAction.setOutputObject(outputObject);
-                actionNameList.append(actionName+", ");
+                actionNameList.append(actionName);
+                actionNameList.append(", ");
                 predictions.put(actionName,httpPredictedAction);
 
             }

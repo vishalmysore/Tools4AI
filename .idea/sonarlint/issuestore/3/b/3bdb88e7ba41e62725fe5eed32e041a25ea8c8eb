@@ -1,66 +1,66 @@
 
 ‰
 AY8SEb8BwWCABySxhhD4
-java:S3740Ê"/Provide the parametrized type for this generic.(‰Ô‚8˜ğ¨€ì1J$8f4b9ee5-b100-41b9-8f23-9db699b4645f
+java:S3740Ê"/Provide the parametrized type for this generic.(‰Ô‚8˜ğ¨€ì1J$41f78a24-badf-4e61-a674-be3bdb6a2bae
 ‰
 AY8SEb8BwWCABySxhhD5
-java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$75763d67-6782-4eb0-a8be-9847495a8bf3
+java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$eb7ecefe-d25f-484f-94c0-9708f2827d24
 ‰
 AY8SEb8BwWCABySxhhD6
-java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$8e297131-f42f-4e10-8943-9aa1e2c8ca43
+java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$9a92f310-e189-43a2-b9f6-0ca1ff1eb4b0
 £
 AY8XP84fEG-L7x89lGjB
-java:S1192E"JDefine a constant instead of duplicating this literal "fieldName" 3 times.(Ò¼á8Àšş¹ñ1J$e27fc9aa-e210-4601-9db1-9ba7ab6ebfbd
+java:S1192E"JDefine a constant instead of duplicating this literal "fieldName" 3 times.(Ò¼á8Àšş¹ñ1J$15baba3e-240b-4ff0-b36f-487bff78d9b7
 ©
 AY8SEb8BwWCABySxhhD7
-java:S1192*"KDefine a constant instead of duplicating this literal "fieldValue" 6 times.(³İÀ“ûÿÿÿÿ8˜ğ¨€ì1J$05a6c682-0680-47c2-b1a3-4b9873295439
+java:S1192*"KDefine a constant instead of duplicating this literal "fieldValue" 6 times.(³İÀ“ûÿÿÿÿ8˜ğ¨€ì1J$d503f259-c72f-44ec-9e51-71115f14024e
  
 AY8SEb8BwWCABySxhhD8
-java:S1192,"GDefine a constant instead of duplicating this literal "fields" 4 times.(ËÅïÛ8À°¿¦ë1J$2f4cbb9a-ffa4-4367-8964-436229368cd0
+java:S1192,"GDefine a constant instead of duplicating this literal "fields" 4 times.(ËÅïÛ8À°¿¦ë1J$5d7fbac1-e20e-4f02-8c91-6fb2d1a564d7
 ˆ
 AY8XP84fEG-L7x89lGjC
-java:S1066H"/Merge this if statement with the enclosing one.(‰àÔ®8Àšş¹ñ1J$7db3d661-d3c9-4996-af43-b578237a300a
+java:S1066H"/Merge this if statement with the enclosing one.(‰àÔ®8Àšş¹ñ1J$4de9842a-e361-4f74-8389-26b13927eca1
 Ú
 AY8SEb8BwWCABySxhhD9
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ĞØØ§8À°¿¦ë1J$769d5fd5-beab-4a6e-b199-abaeae039a96
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ĞØØ§8À°¿¦ë1J$ab71fbd0-a189-411e-b413-613c85838b73
 z
-java:S1854">Remove this useless assignment to local variable "returnType".(¦™—J$d79684ce-be31-4728-a1ba-90a1cc9f3ac7
+java:S1854">Remove this useless assignment to local variable "returnType".(¦™—J$7b90f4dc-6996-45f7-9e1e-78be318c932b
 
-java:S1854">Remove this useless assignment to local variable "methodName".(úÓïıÿÿÿÿJ$ec2deec4-4b45-42f4-9559-821fbebe2d9e
+java:S1854">Remove this useless assignment to local variable "methodName".(úÓïıÿÿÿÿJ$60859cb2-b080-43e1-9e5e-e812efe9a33f
 
 AY8SEb8BwWCABySxhhD-
-java:S1481"/Remove this unused "methodName" local variable.(úÓïıÿÿÿÿ8À°¿¦ë1J$472b6ee4-123b-4e0f-93af-0115d48e18d5
+java:S1481"/Remove this unused "methodName" local variable.(úÓïıÿÿÿÿ8À°¿¦ë1J$85e73067-8de6-48d0-981a-c69524b800ae
 ˆ
 AY8SEb8BwWCABySxhhD_
-java:S1481"/Remove this unused "returnType" local variable.(¦™—8À°¿¦ë1J$2daecab3-be4d-45bf-832e-6383cecd97a8
+java:S1481"/Remove this unused "returnType" local variable.(¦™—8À°¿¦ë1J$806e2933-1357-4384-ad74-96aeaee483d9
 «
 AY8SEb8BwWCABySxhhEB
-java:S3776D"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(«¬åß8ÈğƒĞì1J$9eecfe7e-22e0-432b-8ccc-f5287ca81a5e
+java:S3776D"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(«¬åß8ÈğƒĞì1J$e57db7da-2676-4a10-b8e7-308905f6903a
 y
-java:S1854}"=Remove this useless assignment to local variable "jsonUtils".(ïâŒ‘J$aa738f39-2058-4551-8b67-c34004388bf2
+java:S1854}"=Remove this useless assignment to local variable "jsonUtils".(ïâŒ‘J$bac7983f-a326-40ec-8865-12e6d884d6a4
 ™
-AY8SEb8BwWCABySxhhEE	java:S125s"<This block of commented-out lines of code should be removed.(şĞåäúÿÿÿÿ8àØÊí1J$c9406f60-cc56-4650-b806-124fdef8d376
+AY8SEb8BwWCABySxhhEE	java:S125s"<This block of commented-out lines of code should be removed.(şĞåäúÿÿÿÿ8àØÊí1J$1e59601f-edfb-47b9-a9c6-c59b314cb3fd
 ‡
 AY8SEb8BwWCABySxhhEF
-java:S1481}".Remove this unused "jsonUtils" local variable.(ïâŒ‘8˜ğ¨€ì1J$5ab13a30-0ca9-4d2b-a272-eecc1cb4ffb9
+java:S1481}".Remove this unused "jsonUtils" local variable.(ïâŒ‘8˜ğ¨€ì1J$96c1e075-a84a-4574-9085-63e7b22210a5
 n
-java:S3011€",This accessibility update should be removed.(À–‰§úÿÿÿÿJ$c639788a-2ac7-4d13-8084-dee9091169a9
+java:S3011€",This accessibility update should be removed.(À–‰§úÿÿÿÿJ$5a566536-342f-41ba-befe-a9892f45b783
 ‡
-java:S1854"ERemove this useless assignment to local variable "componentTypeName".(ÌºÿÖşÿÿÿÿJ$01bd6099-70e3-4c29-8cd5-49e2ee4abf14
+java:S1854"ERemove this useless assignment to local variable "componentTypeName".(ÌºÿÖşÿÿÿÿJ$ef157c5b-720b-4a5d-a343-b0408aade31e
 •
 AY8SEb8BwWCABySxhhEH
-java:S1481"6Remove this unused "componentTypeName" local variable.(ÌºÿÖşÿÿÿÿ8ˆÒ©§ë1J$72827524-3f9c-4b37-a079-b7fcdf51ed0c
+java:S1481"6Remove this unused "componentTypeName" local variable.(ÌºÿÖşÿÿÿÿ8ˆÒ©§ë1J$4868c2c3-64c7-45cd-add6-2e84e92c2ccf
 ±
 AY8SEb8BwWCABySxhhEI
-java:S3776©"RRefactor this method to reduce its Cognitive Complexity from 45 to the 15 allowed.(÷ÿËóıÿÿÿÿ8ĞÏªì1J$ca026922-a2af-44fd-aa29-745851c66af2
+java:S3776©"RRefactor this method to reduce its Cognitive Complexity from 45 to the 15 allowed.(÷ÿËóıÿÿÿÿ8ĞÏªì1J$61477408-7054-43fb-ada6-b1ac0bc6ea99
 š
-AY8SEb8BwWCABySxhhEJ	java:S125¹"<This block of commented-out lines of code should be removed.(—¢Ñÿÿÿÿÿ8À°¿¦ë1J$554ff6d1-597c-404f-ab51-4078dfe6e6eb
+AY8SEb8BwWCABySxhhEJ	java:S125¹"<This block of commented-out lines of code should be removed.(—¢Ñÿÿÿÿÿ8À°¿¦ë1J$51036c5c-ea94-48d2-83ff-818ac83d8a7d
 i
-java:S3011Â",This accessibility update should be removed.(˜ÂÓ˜J$abf5b942-aa34-4f41-9bc4-33dff471d751
+java:S3011Â",This accessibility update should be removed.(˜ÂÓ˜J$598fa4af-3a59-4466-9eed-e41180332485
 i
-java:S3011ä",This accessibility bypass should be removed.(•‚ÙßJ$d1d36750-ef26-4d1e-824a-acc3ebb1f06d
+java:S3011ä",This accessibility bypass should be removed.(•‚ÙßJ$7931afec-8b78-497d-aba0-9d506d905bdd
 i
-java:S3011è",This accessibility bypass should be removed.(•‚ÙßJ$99137d5a-4ba2-4bc1-9bf3-8f0326124283
+java:S3011è",This accessibility bypass should be removed.(•‚ÙßJ$6af85b8d-8f6a-48a2-917b-33020867e9fa
 Œ
 AY8SEb8BwWCABySxhhEL
-java:S1905ö"-Remove this unnecessary cast to "JSONObject".(‹Ùæğÿÿÿÿÿ8À°¿¦ë1J$00eab604-a1d9-438f-8df5-a3065d5dee43
+java:S1905ö"-Remove this unnecessary cast to "JSONObject".(‹Ùæğÿÿÿÿÿ8À°¿¦ë1J$1227a803-b470-4b1c-be50-75f0912e6d4c

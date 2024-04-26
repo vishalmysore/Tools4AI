@@ -1,20 +1,17 @@
 
-{
-AY8SEb_SwWCABySxhhGv
-java:S1643è"Use a StringBuilder instead.(‡®Û¤ÿÿÿÿÿ8ØšùËâ1J$e766cc42-a9b4-4e5e-8ac6-8e6300102bb8
 ™
-AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$e97c1d7d-4e53-4f0c-96d5-239de8825e4f
+AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$ca762ef6-4367-4642-b2c9-db2cf8db85be
 
 AY8SEb_SwWCABySxhhG1
-java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$ce6ef6aa-3703-4540-8eb8-01b75d7a0dfc
+java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$7cb27ad1-f69b-4b88-8091-0003970d457a
 °
 AY8SEb_SwWCABySxhhG2
-java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 90 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$936a86ec-04ef-4ee3-9d5e-87129fa9363f
+java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 90 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$e4d964f8-d5be-4eb8-9aad-0e5fb2372a91
 š
-AY8SEb_SwWCABySxhhG3	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ðî†æç1J$872714a0-5ba3-4124-b53b-e5302e3dbe14
+AY8SEb_SwWCABySxhhG3	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ðî†æç1J$2f3b252d-ebdc-42d7-8ded-0b1829201005
 •
 AY8SEb_SwWCABySxhhG5
-java:S1144ô"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$70997052-12c3-4fc3-a685-3b2321195946
+java:S1144ô"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$e9f656a3-30e9-45f2-a1e7-9612eb58bab9
 ¥
 AY8SEb_SwWCABySxhhG6
-java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 102 to 64, Complexity from 27 to 14, Nesting Level from 9 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$f38df3c5-b52f-4f6a-b63d-4853ea1889e0
+java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 103 to 64, Complexity from 27 to 14, Nesting Level from 9 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$ba51b95c-6cb5-4006-b1f5-f735832b5ff9

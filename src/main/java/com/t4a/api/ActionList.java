@@ -30,9 +30,9 @@ public class ActionList {
       }
       group.addAction(action);
         String oldValue = groupActions.get(group.getGroupInfo());
-        String value = null;
 
-            value = action.getActionName();
+
+        String    value = action.getActionName();
 
         if(oldValue == null) {
             groupActions.put(group.getGroupInfo(),value);

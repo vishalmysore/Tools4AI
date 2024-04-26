@@ -47,7 +47,7 @@ public class GeminiActionProcessor implements AIProcessor{
 
     @Override
     public String query(String promptText) throws AIProcessingException {
-        GenerateContentResponse response = null;
+        GenerateContentResponse response ;
         try {
             response = PredictionLoader.getInstance().getChatExplain().sendMessage(promptText);
 
@@ -80,9 +80,7 @@ public class GeminiActionProcessor implements AIProcessor{
 
 
             log.debug((predictedAction).getActionName());
-            if(explain != null) {
-               // explain.explain(promptText, predictedAction.getActionName(), PredictionLoader.getInstance().explainAction(promptText, predictedAction.getActionName()));
-            }
+
             JavaMethodExecutor methodAction = new JavaMethodExecutor(gson);
 
              methodAction.buildFunction(predictedAction);
@@ -241,7 +239,7 @@ public class GeminiActionProcessor implements AIProcessor{
             ChatSession chat = model.startChat();
 
             log.debug(String.format("Ask the question 1: %s", promptText));
-            GenerateContentResponse response = null;
+            GenerateContentResponse response ;
             try {
                 response = chat.sendMessage(promptText);
             } catch (IOException e) {
@@ -259,7 +257,7 @@ public class GeminiActionProcessor implements AIProcessor{
 
                 log.debug(methodExecutor.getPropertyValuesJsonString(response));
 
-                Object obj = null;
+                Object obj;
                 try {
                     obj = methodExecutor.action(response, methodExecutor.getAction());
                 } catch (InvocationTargetException e) {

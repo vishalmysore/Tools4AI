@@ -213,7 +213,8 @@ public class SwaggerPredictionLoader {
                         log.warn("cannot put action as its already there "+actionName);
                     }else {
                         predictions.put(actionName, httpAction);
-                        actionNameList.append("," + actionName);
+                        actionNameList.append(",");
+                        actionNameList.append(actionName);
                         listOfActions.addAction(httpAction);
                     }
                 }
@@ -224,16 +225,15 @@ public class SwaggerPredictionLoader {
     }
 
     private String getModifiedActionName(HttpPredictedAction httpAction) {
-        String actionName = httpAction.getActionName();
-        List<InputParameter> params =  httpAction.getInputObjects();
-        actionName = actionName +"_With";
-        for (InputParameter param:params
-             ) {
-            actionName = actionName+"_"+param.getName();
-
+        StringBuilder actionNameBuilder = new StringBuilder(httpAction.getActionName());
+        List<InputParameter> params = httpAction.getInputObjects();
+        actionNameBuilder.append("_With");
+        for (InputParameter param : params) {
+            actionNameBuilder.append("_").append(param.getName());
         }
-        return actionName;
+        return actionNameBuilder.toString();
     }
+
     private static Schema<?> resolveSchema(OpenAPI openAPI, String ref) {
         // Extract the reference key
         String refKey = ref.substring(ref.lastIndexOf("/") + 1);

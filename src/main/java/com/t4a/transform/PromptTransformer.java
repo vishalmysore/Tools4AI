@@ -22,7 +22,7 @@ public interface PromptTransformer {
         try {
             JsonUtils util = new JsonUtils();
             Class<?> clazz = Class.forName(className);
-            String jsonStr = null;
+            String jsonStr;
             if (clazz.getName().equalsIgnoreCase("java.util.Map")) {
                 jsonStr = util.buildBlankMapJsonObject(null).toString(4);
 

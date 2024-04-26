@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
             assertNotNull(result, "Result should not be null");
             // Add more assertions based on your expected output
         } catch (AIProcessingException e) {
+            e.printStackTrace();
             fail("Exception should not be thrown");
         }
     }

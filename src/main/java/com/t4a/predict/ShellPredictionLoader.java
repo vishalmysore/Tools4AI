@@ -90,7 +90,8 @@ public class ShellPredictionLoader {
 
                         shellAction.setGroup(groupName);
                         shellAction.setGroupDescription(groupDescription);
-                        actionNameList.append(actionName + ",");
+                        actionNameList.append(actionName );
+                        actionNameList.append(",");
                         predictions.put(actionName, shellAction);
                         listOfActions.addAction(shellAction);
                     }

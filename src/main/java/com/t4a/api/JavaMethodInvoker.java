@@ -84,7 +84,7 @@ public class JavaMethodInvoker {
         } else if (type == Date.class) {
             try {
                 String dateStr = (String) value;
-                if((dateStr != null) && (dateStr.trim().length() > 1))
+                if((dateStr.trim().length() > 1))
                   return new SimpleDateFormat(paramObj.getString("dateFormat")).parse((String) value);
                 else
                     return null;
@@ -167,7 +167,7 @@ public class JavaMethodInvoker {
 
     // Create POJO using reflection
     public  Object createPOJO(JSONArray fieldsArray, Class<?> clazz) throws Exception {
-        Object instance = null;
+        Object instance;
         if(clazz.getName().equalsIgnoreCase("java.util.Map")){
             instance = new HashMap<>();
             JsonUtils utls = new JsonUtils();

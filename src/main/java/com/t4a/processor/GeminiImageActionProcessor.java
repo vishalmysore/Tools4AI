@@ -209,7 +209,7 @@ public class GeminiImageActionProcessor {
     public String imageToText(byte[] imageBytes, String mimeType, String prompt) throws AIProcessingException{
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
             GenerativeModel model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
-            GenerateContentResponse response = null;
+            GenerateContentResponse response ;
             try {
                 response = model.generateContent(
                         ContentMaker.fromMultiModalData(
@@ -229,7 +229,7 @@ public class GeminiImageActionProcessor {
     public String compareImages(byte[] imageBytes1,byte[] imageBytes2, String mimeType, String prompt) throws AIProcessingException{
         try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
             GenerativeModel model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
-            GenerateContentResponse response = null;
+            GenerateContentResponse response ;
             try {
                 response = model.generateContent(
                         ContentMaker.fromMultiModalData(
