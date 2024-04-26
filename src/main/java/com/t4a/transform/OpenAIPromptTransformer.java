@@ -37,7 +37,5 @@ public class OpenAIPromptTransformer implements PromptTransformer {
 
     }
 
-    public String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
-        return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");
-    }
+   
 }

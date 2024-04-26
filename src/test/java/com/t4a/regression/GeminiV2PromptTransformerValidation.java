@@ -1,6 +1,7 @@
-package com.t4a.test;
+package com.t4a.regression;
 
 import com.t4a.processor.AIProcessingException;
+import com.t4a.test.Person;
 import com.t4a.transform.GeminiV2PromptTransformer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
- class GeminiV2PromptTransformerTest {
+ class GeminiV2PromptTransformerValidation {
     private GeminiV2PromptTransformer transformer;
 
     @BeforeEach
@@ -26,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.fail;
             assertNotNull(result, "Result should not be null");
             // Add more assertions based on your expected output
         } catch (AIProcessingException e) {
-            e.printStackTrace();
             fail("Exception should not be thrown");
         }
     }

@@ -215,3 +215,7 @@ j
 :src/main/java/com/t4a/processor/GeminiActionProcessor.java,b\6\b6a4b0e76a78abfc5b867f518f7e288f0388275e
 C
 azure-pipelines.yml,4\0\40ebc6823f24f296c0cd3fddd6ccda69b74ff2e4
+s
+Csrc/test/java/com/t4a/regression/GeminiV2PromptTransformerTest.java,e\9\e95c7831921aee26b37dce8c790e75eb10408b83
+y
+Isrc/test/java/com/t4a/regression/GeminiV2PromptTransformerValidation.java,1\2\12ce9c4bf962f513e9c5e98333ea8d74846a5b34

@@ -9,7 +9,9 @@ import com.t4a.processor.AIProcessingException;
  */
 
 public interface PromptTransformer {
-
+    public default String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
+        return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");
+    }
     public String transformIntoJson(String jsonString, String promptText, String funName, String description) throws AIProcessingException;
     public default  Object transformIntoPojo(String prompt, String className) throws AIProcessingException {
         return transformIntoPojo(prompt,  className,  "funName",  "description");

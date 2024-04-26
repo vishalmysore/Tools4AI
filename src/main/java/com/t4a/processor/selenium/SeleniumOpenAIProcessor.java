@@ -4,6 +4,7 @@ import com.t4a.JsonUtils;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.OpenAiActionProcessor;
 import com.t4a.transform.OpenAIPromptTransformer;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -15,8 +16,11 @@ import org.openqa.selenium.WebElement;
  */
 @Slf4j
 public class SeleniumOpenAIProcessor extends OpenAiActionProcessor implements SeleniumProcessor {
+    @Getter
     private WebDriver driver;
+    @Getter
     private JsonUtils utils ;
+    @Getter
     private OpenAIPromptTransformer transformer ;
     public SeleniumOpenAIProcessor(WebDriver driver) {
         this.driver = driver;
@@ -39,12 +43,7 @@ public class SeleniumOpenAIProcessor extends OpenAiActionProcessor implements Se
         }
     }
 
-    private String getStringFromPrompt(String prompt,  String key) throws AIProcessingException {
-        String urlOfTheWebPage = transformer.transformIntoJson(utils.createJson(key).toString(), prompt);
-        log.info(urlOfTheWebPage);
-        urlOfTheWebPage = utils.getFieldValue(urlOfTheWebPage,key);
-        return urlOfTheWebPage;
-    }
+
 
     public boolean trueFalseQuery(String question) throws AIProcessingException {
         String htmlSource = driver.getPageSource();

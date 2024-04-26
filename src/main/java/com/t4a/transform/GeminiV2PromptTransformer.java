@@ -55,9 +55,7 @@ public class GeminiV2PromptTransformer implements PromptTransformer {
 
 
 
-    public String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
-        return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");
-    }
+
 
     public String transformIntoJsonWithValues(String promptText, String... name) throws AIProcessingException{
         JsonUtils utils = new JsonUtils();
