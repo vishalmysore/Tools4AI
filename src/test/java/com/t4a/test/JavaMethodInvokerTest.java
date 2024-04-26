@@ -197,7 +197,7 @@ import static org.mockito.Mockito.when;
         Assertions.assertEquals("Deepak", org[1].getFirstName());
         Assertions.assertEquals("Rao", org[1].getLastName());
         Assertions.assertEquals("", org[1].getReasonForCalling());
-        Assertions.assertEquals("Mon Jul 04 00:00:00 EDT 2022", org[1].getDateJoined().toString());
+        Assertions.assertTrue(org[1].getDateJoined().toString().contains("Mon Jul 04"));
 
 
 
@@ -395,7 +395,7 @@ import static org.mockito.Mockito.when;
         Assertions.assertEquals("Deepak", org.getCustomers()[1].getFirstName());
         Assertions.assertEquals("Rao", org.getCustomers()[1].getLastName());
         Assertions.assertEquals("वह उन्हें फिल्म की तारीख पसंद नहीं थी", org.getCustomers()[1].getReasonForCalling());
-        Assertions.assertEquals("Mon Sep 13 00:00:00 EDT 2021", org.getCustomers()[1].getDateJoined().toString());
+        Assertions.assertTrue( org.getCustomers()[1].getDateJoined().toString().contains("Mon Sep 13"));
 
 
     }

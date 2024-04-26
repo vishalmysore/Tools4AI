@@ -37,5 +37,5 @@ public class OpenAIPromptTransformer implements PromptTransformer {
 
     }
 
-   
+
 }
