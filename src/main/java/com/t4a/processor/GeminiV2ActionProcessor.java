@@ -49,12 +49,12 @@ public class GeminiV2ActionProcessor implements AIProcessor{
         if (action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.GEMINI);
             if(action.getActionRisk() == ActionRisk.HIGH) {
-                log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI "+action.getActionName());
+                log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI, {} ",action.getActionName());
                 return "This is a high risk action will not proceed "+action.getActionName();
             }
         }
         if(action.getActionType() == ActionType.JAVAMETHOD) {
-            log.debug(action + "");
+            log.debug( "found action name {}",action );
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
             JsonUtils utils = new JsonUtils();
             Method m = null;

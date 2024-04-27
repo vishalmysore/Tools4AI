@@ -2,6 +2,8 @@ package com.t4a.transform;
 
 import com.t4a.JsonUtils;
 import com.t4a.processor.AIProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The PromptTransformer interface provides methods for transforming prompts into Java POJOs and JSON.
@@ -9,6 +11,7 @@ import com.t4a.processor.AIProcessingException;
  */
 
 public interface PromptTransformer {
+    Logger LOGGER = LoggerFactory.getLogger(PromptTransformer.class);
     public default String transformIntoJson(String jsonString, String promptText) throws AIProcessingException{
         return transformIntoJson(jsonString,promptText,"get me values", "Get me the values in json");
     }
@@ -36,8 +39,9 @@ public interface PromptTransformer {
             } else {
                 jsonStr = util.convertClassToJSONString(clazz);
             }
-
+            LOGGER.debug("Prompt: for JSON :  {},{}", prompt, jsonStr);
             jsonStr = getJSONResponseFromAI(prompt, jsonStr);
+            LOGGER.debug("return JSON :  {}",  jsonStr);
 
             jsonStr = jsonStr.trim();
 

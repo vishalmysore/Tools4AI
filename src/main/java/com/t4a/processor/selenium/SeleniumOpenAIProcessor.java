@@ -6,9 +6,7 @@ import com.t4a.processor.OpenAiActionProcessor;
 import com.t4a.transform.OpenAIPromptTransformer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 /**
  * The SeleniumOpenAIProcessor class extends the OpenAiActionProcessor and implements the SeleniumProcessor interface.
  * It provides methods for processing web actions using Selenium WebDriver and OpenAI's chat model.
@@ -27,22 +25,6 @@ public class SeleniumOpenAIProcessor extends OpenAiActionProcessor implements Se
         this.utils = new JsonUtils();
         this.transformer = new OpenAIPromptTransformer();
     }
-    public void processWebAction(String prompt) throws AIProcessingException {
-
-        DriverActions actions = (DriverActions)transformer.transformIntoPojo(prompt,DriverActions.class);
-        String act = actions.getTypeOfActionToTakeOnWebDriver();
-        WebDriverAction action = WebDriverAction.valueOf(act.toUpperCase());
-        if (WebDriverAction.GET.equals(action)) {
-            String urlOfTheWebPage = getStringFromPrompt(prompt, "urlToClick");
-            driver.get(urlOfTheWebPage);
-        }
-        if (WebDriverAction.CLICK.equals(action)) {
-            String textOfElementToClick = getStringFromPrompt(prompt, "textOfElementToClick");
-            WebElement elementToClick = driver.findElement(By.linkText(textOfElementToClick));
-            elementToClick.click();
-        }
-    }
-
 
 
     public boolean trueFalseQuery(String question) throws AIProcessingException {

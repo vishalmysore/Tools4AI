@@ -139,8 +139,6 @@ _
 /src/test/java/com/t4a/test/ActionGroupTest.java,b\d\bd96bd2f853113d4a6d10b6aec3ea5a50ac3d2d8
 _
 /src/test/java/com/t4a/test/BlankActionTest.java,b\0\b0ac8ba4a6ee7e89f4880b7283edea7548976dd7
-m
-=src/test/java/com/t4a/test/GeminiV2PromptTransformerTest.java,3\f\3fa41d2f226c5846d985612bdab1349757530649
 g
 7src/test/java/com/t4a/test/HttpPredictedActionTest.java,e\5\e5aa829ab6e23c2f2b366936cf92acd14473258e
 e
@@ -215,9 +213,13 @@ j
 :src/main/java/com/t4a/processor/GeminiActionProcessor.java,b\6\b6a4b0e76a78abfc5b867f518f7e288f0388275e
 C
 azure-pipelines.yml,4\0\40ebc6823f24f296c0cd3fddd6ccda69b74ff2e4
-s
-Csrc/test/java/com/t4a/regression/GeminiV2PromptTransformerTest.java,e\9\e95c7831921aee26b37dce8c790e75eb10408b83
 y
 Isrc/test/java/com/t4a/regression/GeminiV2PromptTransformerValidation.java,1\2\12ce9c4bf962f513e9c5e98333ea8d74846a5b34
 K
 .github/workflows/maven.yml,c\7\c709f6995f23dae0da365bff70068f8288fa89e0
+p
+@src/test/java/com/t4a/examples/enterprise/fly/BookingHelper.java,c\3\c391c48371d3259f870f6bdd42ad49c57c08296f
+d
+4src/test/java/com/t4a/examples/WebTestingWithAI.java,c\7\c77b3061cdc7382cb831ac6315a3f5afde6e1deb
+M
+.github/workflows/codecov.yml,9\0\90af1fb499967b0db490f4d263d6d719b7736a2e
