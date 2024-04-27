@@ -16,6 +16,7 @@
     <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/qodana_code_quality.yml"> <img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/qodana_code_quality.yml/badge.svg"/></a>
     <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/codecov.yml"> <img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/codecov.yml/badge.svg"/></a>
     <a href="https://codecov.io/gh/vishalmysore/Tools4AI" > <img src="https://codecov.io/gh/vishalmysore/Tools4AI/graph/badge.svg?token=9KLDLKUBW1"/> </a>
+    <a href="https://snyk.io/test/github/vishalmysore/tools4ai"><img src="https://snyk.io/test/github/vishalmysore/tools4ai/badge.svg"/> </a>
 </p>
 
 
