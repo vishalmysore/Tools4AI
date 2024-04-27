@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage
-        run: mvn -B test
+        run: mvn -B test jacoco:report
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         env:
