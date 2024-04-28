@@ -1,0 +1,15 @@
+name: Deploy Flow
+   
+on:
+  push:
+    branches: [main]
+   
+jobs:
+  example_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use secret key
+        run: |
+          echo "${{ secrets.GPG_SECRET_KEY }}" | gpg --import
+        env:
+          GPG_TTY: $(tty)
