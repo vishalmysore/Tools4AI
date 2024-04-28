@@ -24,14 +24,14 @@ jobs:
         distribution: 'temurin'
         java-version: '18'
         server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-        server-username: ${{ secrets.MAVEN_CENTRAL_USER }} # env variable for username in deploy
-        server-password: ${{ secrets.MAVEN_CENTRAL_USER }} # env variable for token in deploy
-        gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-        gpg-passphrase:  ${{ secrets.MAVEN_GPG_PASSPHRASE }} # env variable for GPG private key passphrase
+        server-username: ${{ secrets.MVN_USER }} # env variable for username in deploy
+        server-password: ${{ secrets.MVN_PASS }} # env variable for token in deploy
+        gpg-private-key: ${{ secrets.GPG }} # Value of the GPG private key to import
+        gpg-passphrase:  ${{ secrets.PASSPHRASE }} # env variable for GPG private key passphrase
 
     - name: Publish to Apache Maven Central
       run: mvn deploy
       env:
-        MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USER }}
-        MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        MAVEN_USERNAME: ${{ secrets.MVN_USER }}
+        MAVEN_CENTRAL_TOKEN: ${{ secrets.MVN_PASS}}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.PASSPHRASE }}
