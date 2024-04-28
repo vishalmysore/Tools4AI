@@ -196,9 +196,9 @@ public class PredictionLoaderTest {
             OpenAiChatModel mockGRP = Mockito.mock(OpenAiChatModel.class);
             responseHandlerMock.when(() -> OpenAiChatModel.withApiKey(any(String.class))).thenReturn(mockGRP);
             when(mockGRP.generate(argThat((String argument) -> {
-                if (argument.contains("reply back with just one action name in json format")) {
+                if (argument.contains("what action do you think we should take out of these")) {
                     return true;
-                } else if (argument.contains("which group does this prompt belong")) {
+                } else if (argument.contains("which group does it belong")) {
                     return true;
                 } else {
                     return false;
@@ -207,18 +207,19 @@ public class PredictionLoaderTest {
                 @Override
                 public String answer(InvocationOnMock invocation) throws Throwable {
                     String argument = (String) invocation.getArguments()[0];
-                    if (argument.contains("reply back with just one action name in json format")) {
-                        return "\"{'groupName':'No Group','explanation':'mock'}\\\";\";";
-                    } else if (argument.contains("which group does this prompt belong")) {
-                        return "{'actionName':'whatFoodDoesThisPersonLike','explanation':'mock'}";
+                    if (argument.contains("what action do you think we should take out of these")) {
+                        return "whatFoodDoesThisPersonLike";
+                    } else if (argument.contains("which group does it belong")) {
+                        return "No Group";
                     } else {
                         return null;
                     }
                 }
 
             });
+
+            GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.OPENAI);
+            Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());
         }
-        GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.OPENAI);
-        Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());
     }
 }
