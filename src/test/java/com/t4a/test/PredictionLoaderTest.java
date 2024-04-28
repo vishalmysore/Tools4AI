@@ -193,6 +193,7 @@ public class PredictionLoaderTest {
     @Test
     public void testGenerativeModelMockOpenAI() {
         try (MockedStatic<OpenAiChatModel> responseHandlerMock = Mockito.mockStatic(OpenAiChatModel.class)) {
+            System.setProperty("openAiKey", "test");
             OpenAiChatModel mockGRP = Mockito.mock(OpenAiChatModel.class);
             responseHandlerMock.when(() -> OpenAiChatModel.withApiKey(any(String.class))).thenReturn(mockGRP);
             when(mockGRP.generate(argThat((String argument) -> {

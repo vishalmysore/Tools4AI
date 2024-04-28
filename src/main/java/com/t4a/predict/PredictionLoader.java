@@ -355,6 +355,7 @@ public class PredictionLoader {
                 }
             }
         }  catch (Exception e) {
+            e.printStackTrace();
             log.error(" Please make sure actions are configured {} ",e.getMessage());
             return null;
         }
