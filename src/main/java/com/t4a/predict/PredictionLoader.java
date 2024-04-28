@@ -23,6 +23,7 @@ import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
@@ -84,6 +85,7 @@ public class PredictionLoader {
     private boolean anthropicLogReqFlag;
     private boolean anthropicLogResFlag;
 
+    @Setter
     @Getter
     private ChatLanguageModel openAiChatModel;
     private String openAiKey;
@@ -355,7 +357,6 @@ public class PredictionLoader {
                 }
             }
         }  catch (Exception e) {
-            e.printStackTrace();
             log.error(" Please make sure actions are configured {} ",e.getMessage());
             return null;
         }

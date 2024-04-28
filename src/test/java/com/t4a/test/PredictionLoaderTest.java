@@ -31,8 +31,10 @@ public class PredictionLoaderTest {
     @Mock
     private AIAction aiAction;
 
+
     @BeforeEach
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
 
          generativeModelMock = Mockito.mock(GenerativeModel.class);
@@ -194,6 +196,7 @@ public class PredictionLoaderTest {
     public void testGenerativeModelMockOpenAI() {
         try (MockedStatic<OpenAiChatModel> responseHandlerMock = Mockito.mockStatic(OpenAiChatModel.class)) {
             System.setProperty("openAiKey", "test");
+            System.setProperty("tools4ai.log", "DEBUG");
             OpenAiChatModel mockGRP = Mockito.mock(OpenAiChatModel.class);
             responseHandlerMock.when(() -> OpenAiChatModel.withApiKey(any(String.class))).thenReturn(mockGRP);
             when(mockGRP.generate(argThat((String argument) -> {
@@ -219,7 +222,8 @@ public class PredictionLoaderTest {
 
             });
 
-            GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.OPENAI);
+            PredictionLoader.getInstance().setOpenAiChatModel(mockGRP);
+            GenericJavaMethodAction action = (GenericJavaMethodAction)PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.OPENAI);
             Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());
         }
     }
