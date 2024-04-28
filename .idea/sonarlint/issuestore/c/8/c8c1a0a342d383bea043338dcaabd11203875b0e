@@ -1,54 +1,53 @@
 
 ¤
-AY8SEb_jwWCABySxhhHB	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ˆ«¦Ùê1J$7024c997-bec8-462e-86d8-5a5f4dc5b381
-¤
-AY8SEb_jwWCABySxhhHC	java:S112æ"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8¸æÇ½ß1J$eea3c6da-e315-4936-a433-6e1d34655d56
+AY8SEb_jwWCABySxhhHB	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ˆ«¦Ùê1J$4f16782a-1480-485c-96f2-62c41dac0b72
 ª
-AY8XP86pEG-L7x89lGjG	java:S117ì"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ûÊŠÍ8Àšş¹ñ1J$8a1e6bca-bcf8-47e0-9a65-df234a1e589d
+AY8XP86pEG-L7x89lGjG	java:S117ì"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ûÊŠÍ8Àšş¹ñ1J$724ee67e-6116-4935-86b7-c07e47b085a7
 ª
-AY8XP86pEG-L7x89lGjH	java:S117»"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏõ8Àšş¹ñ1J$e085b6f0-fcdc-45f7-aafd-5fbbb0d67111
+AY8XP86pEG-L7x89lGjH	java:S117»"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜÏõ8Àšş¹ñ1J$7fee94a1-26b2-4a77-be57-1ac6871f2831
 ´
-AY8SEb_jwWCABySxhhHT	java:S116="WRename this field "PREACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•†Ÿùıÿÿÿÿ8œ‡±á1J$4c250b3f-3ddd-4165-8c73-45e37f5ac4a1
+AY8SEb_jwWCABySxhhHT	java:S116="WRename this field "PREACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•†Ÿùıÿÿÿÿ8œ‡±á1J$43b44141-1fce-478e-99ef-8c3e8c5fd0e3
 ±
-AY8SEb_jwWCABySxhhHU	java:S116>"TRename this field "ACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³ƒ„·şÿÿÿÿ8˜ìØ®ê1J$fe4e359b-8df6-4240-9606-16f12f9e853c
+AY8SEb_jwWCABySxhhHU	java:S116>"TRename this field "ACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³ƒ„·şÿÿÿÿ8˜ìØ®ê1J$bb4e2544-354a-4120-adc4-0e2666637509
 °
-AY8SEb_jwWCABySxhhHW	java:S116@"XRename this field "POSTACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•·ØÎ8˜ìØ®ê1J$842bc03c-09c7-4fef-913c-78baae6a8d5b
+AY8SEb_jwWCABySxhhHW	java:S116@"XRename this field "POSTACTIONCMD" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(•·ØÎ8˜ìØ®ê1J$2df57c1a-87c5-4eb0-8141-50a769b27a11
 ±
-AY8SEb_jwWCABySxhhHX	java:S116A"TRename this field "NUMACTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨°ªàşÿÿÿÿ8°Ç²¼æ1J$5f542df1-2e57-4754-9bbe-6531d3064fc6
+AY8SEb_jwWCABySxhhHX	java:S116A"TRename this field "NUMACTION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨°ªàşÿÿÿÿ8°Ç²¼æ1J$f519e5aa-305d-4c8e-87f0-bd730bc44cf4
 ½
-AY8SEb_jwWCABySxhhHY	java:S116C"`Rename this field "NUMACTION_MULTIPROMPT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä£”«úÿÿÿÿ8œ‡±á1J$7c334383-b5ac-419b-9e47-b3306cae39d5
+AY8SEb_jwWCABySxhhHY	java:S116C"`Rename this field "NUMACTION_MULTIPROMPT" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ä£”«úÿÿÿÿ8œ‡±á1J$4eda4ecc-9feb-4805-9439-1808e23a6dfc
 
-AY8SEb_jwWCABySxhhHf
-java:S1170="!Make this final field static too.(•†Ÿùıÿÿÿÿ8œ‡±á1J$c53354a1-ba8a-4e28-b7a5-0265802c1028
+AY8SEb_jwWCABySxhhHa
+java:S1170="!Make this final field static too.(•†Ÿùıÿÿÿÿ8œ‡±á1J$4bcd320f-6519-42bc-9969-e9037806cef9
 
 AY8SEb_jwWCABySxhhHb
-java:S1170>"!Make this final field static too.(³ƒ„·şÿÿÿÿ8˜ìØ®ê1J$4efec4bd-9b1a-409d-ac44-8dfb343f3187
+java:S1170>"!Make this final field static too.(³ƒ„·şÿÿÿÿ8˜ìØ®ê1J$47f6e16d-c1be-48fb-aca0-8c9b59da216d
 z
 AY8SEb_jwWCABySxhhHd
-java:S1170@"!Make this final field static too.(•·ØÎ8˜ìØ®ê1J$a461efaf-700b-4c93-9875-76125e74ee58
+java:S1170@"!Make this final field static too.(•·ØÎ8˜ìØ®ê1J$a73f04d8-97c2-46a8-917e-c7c49e6d15ef
 
 AY8SEb_jwWCABySxhhHe
-java:S1170A"!Make this final field static too.(¨°ªàşÿÿÿÿ8°Ç²¼æ1J$f851167c-6d80-481e-b269-3fc25ed7581e
-i
-java:S1170C"!Make this final field static too.(Ä£”«úÿÿÿÿ8û’Ñªñ1J$52fa1e44-fa77-4383-b6ce-5b7ed36753d8
+java:S1170A"!Make this final field static too.(¨°ªàşÿÿÿÿ8°Ç²¼æ1J$e265edaa-c472-493a-af24-36d30a23ed25
+
+AY8SEb_jwWCABySxhhHf
+java:S1170C"!Make this final field static too.(Ä£”«úÿÿÿÿ8œ‡±á1J$aeef179c-0e39-4440-960a-f1607ea2400c
 ƒ
 AY8SEb_jwWCABySxhhHn
-java:S1940Ó")Use the opposite operator ("<=") instead.(‰ç„œ8Â¢ˆá1J$e5afac41-7d8d-492a-9b4c-162ed68ef8dc
+java:S1940Ó")Use the opposite operator ("<=") instead.(‰ç„œ8Â¢ˆá1J$f1646410-e067-4761-8e73-b9e983658fc1
 
 AY8SEb_jwWCABySxhhHq
-java:S2864‚"4Iterate over the "entrySet" instead of the "keySet".(÷ÄÆù8ˆ«¦Ùê1J$01aa1086-27d9-4236-a936-f9bb95e4423e
+java:S2864‚"4Iterate over the "entrySet" instead of the "keySet".(÷ÄÆù8ˆ«¦Ùê1J$0a42bc37-c6f8-4617-aa64-4ae1b2e5a86c
 ±
 AY8SEb_jwWCABySxhhHs
-java:S3776¢"RRefactor this method to reduce its Cognitive Complexity from 28 to the 15 allowed.(ÔåÄşúÿÿÿÿ8àØÊí1J$b7c407db-6877-4c56-a419-2d93efbf0681
+java:S3776¢"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(ÔåÄşúÿÿÿÿ8àØÊí1J$43c84624-065f-47d6-aa93-4ea3cbf86649
 œ
 AY8SEb_jwWCABySxhhHy
-java:S1117ÿ"BRename "actionNameList" which hides the field declared at line 56.(¦øü 8àØÊí1J$03d5f723-b740-4222-a8a6-397b4c95b51c
+java:S1117ş"BRename "actionNameList" which hides the field declared at line 56.(¦øü 8àØÊí1J$6125c5fa-5a3b-42cf-8b38-2b0bdae9780d
 “
 AY8SEb_jwWCABySxhhH1
-java:S2864»"4Iterate over the "entrySet" instead of the "keySet".(ŸÒƒÛøÿÿÿÿ8¨¶ÔÙá1J$a90c8de2-2e09-4a3f-8604-96d01da368da
+java:S2864º"4Iterate over the "entrySet" instead of the "keySet".(ŸÒƒÛøÿÿÿÿ8¨¶ÔÙá1J$968361fb-2fc3-4322-9aa8-30b7995e6332
 ‰
-java:S2147ñ"ECombine this catch with the one at line 623, which has the same body.(Å¡ß8òÿêºñ1J$fd30f729-3d73-4ca6-85fa-3a514c0d4c2e
+java:S2147ğ"ECombine this catch with the one at line 622, which has the same body.(Å¡ß8ù¾Ñ§ò1J$f52d4695-70b9-4e73-8a65-ac616a9871dc
 ‰
-java:S2147ó"ECombine this catch with the one at line 625, which has the same body.(åşáÿ8óÿêºñ1J$34a2a351-1d13-4e05-97c1-d4b1ac5f6b4d
+java:S2147ò"ECombine this catch with the one at line 624, which has the same body.(åşáÿ8ú¾Ñ§ò1J$07108ed7-defd-46f6-897f-015f80bbe45c
 
-java:S2147õ"ECombine this catch with the one at line 627, which has the same body.(¼¯•¶ùÿÿÿÿ8óÿêºñ1J$2d3c4d7b-2645-447d-bbf5-ddc39cf51450
+java:S2147ô"ECombine this catch with the one at line 626, which has the same body.(¼¯•¶ùÿÿÿÿ8ú¾Ñ§ò1J$925a2df3-a0e3-4de1-b683-a9f8d05272ca

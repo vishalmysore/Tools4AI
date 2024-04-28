@@ -354,10 +354,9 @@ public class PredictionLoader {
                     action = getAiAction(actionName);
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            log.error(" Please make sure actions are configured"+e.getMessage());
+        }  catch (Exception e) {
+            log.error(" Please make sure actions are configured {} ",e.getMessage());
+            return null;
         }
 
         return action;

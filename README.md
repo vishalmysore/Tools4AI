@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://www.linkedin.com/posts/vishalrow_ai-appdevelopment-actions-activity-7171302152101900288-64qg?utm_source=share&utm_medium=member_desktop">
-    <img src="tools4ai.png"  width="300" height="300">
+    <img src="tools4ai.png"  width="200" height="200">
   </a>
 </div>
 <p align="center">
@@ -17,6 +17,7 @@
     <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/codecov.yml"> <img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/codecov.yml/badge.svg"/></a>
     <a href="https://codecov.io/gh/vishalmysore/Tools4AI" > <img src="https://codecov.io/gh/vishalmysore/Tools4AI/graph/badge.svg?token=9KLDLKUBW1"/> </a>
     <a href="https://snyk.io/test/github/vishalmysore/tools4ai"><img src="https://snyk.io/test/github/vishalmysore/tools4ai/badge.svg"/> </a>
+    <a href="https://central.sonatype.com/artifact/io.github.vishalmysore/tools4ai"> <img alt="Maven Central Version" src="https://img.shields.io/maven-central/v/io.github.vishalmysore/tools4ai"></a>
 </p>
 
 

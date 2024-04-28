@@ -1,4 +1,4 @@
-name: Java CI
+name: Automated Deployment
 
 on:
   workflow_dispatch:
