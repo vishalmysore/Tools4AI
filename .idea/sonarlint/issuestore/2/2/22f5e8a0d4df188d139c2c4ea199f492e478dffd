@@ -1,0 +1,29 @@
+
+a	java:S112Å"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ
+J
+java:S3740`"/Provide the parametrized type for this generic.(‹²ûÈøÿÿÿÿ
+F
+java:S3740"/Provide the parametrized type for this generic.(šÂ™
+K
+java:S3740Â"/Provide the parametrized type for this generic.(ãÄ—¤ùÿÿÿÿ
+p
+java:S1488€"ZImmediately return this expression instead of assigning it to the temporary variable "sc".(«õİ2
+}
+java:S1488¤"aImmediately return this expression instead of assigning it to the temporary variable "resultMap".(ùúÑ¨üÿÿÿÿ
+~
+java:S1488†"bImmediately return this expression instead of assigning it to the temporary variable "jsonString".(‰›÷—øÿÿÿÿ
+~
+java:S1488Œ"bImmediately return this expression instead of assigning it to the temporary variable "jsonString".(İµ¯ùùÿÿÿÿ
+R
+java:S3972("7Move this "if" to a new line or add the missing "else".(·Úêüÿÿÿÿ
+7
+java:S1116`"Remove this empty statement.(‹²ûÈøÿÿÿÿ
+Q	java:S125z"<This block of commented-out lines of code should be removed.(ˆ·Ğ 
+n
+java:S3776Ã"RRefactor this method to reduce its Cognitive Complexity from 19 to the 15 allowed.(ÁøÌüøÿÿÿÿ
+U
+java:S1155È">Use isEmpty() to check whether the collection is empty or not.(ÏûÍ
+Z
+java:S1155ã">Use isEmpty() to check whether the collection is empty or not.(êïÿÿÿÿÿ
+B
+java:S1172Š"+Remove this unused method parameter "asIs".(ŒÄƒ
