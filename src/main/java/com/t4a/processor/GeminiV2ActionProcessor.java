@@ -1,5 +1,6 @@
 package com.t4a.processor;
 
+import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.google.gson.Gson;
 import com.t4a.JsonUtils;
@@ -10,6 +11,7 @@ import com.t4a.detect.HumanInLoop;
 import com.t4a.predict.PredictionLoader;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -24,7 +26,14 @@ public class GeminiV2ActionProcessor implements AIProcessor{
 
     @Override
     public String query(String promptText) throws AIProcessingException {
-        return PredictionLoader.getInstance().getOpenAiChatModel().generate(promptText);
+        GenerateContentResponse response ;
+        try {
+            response = PredictionLoader.getInstance().getChatExplain().sendMessage(promptText);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return  ResponseHandler.getText(response);
     }
     public GeminiV2ActionProcessor() {
         this.gson = new Gson();

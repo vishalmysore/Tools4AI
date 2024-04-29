@@ -9,5 +9,5 @@ package com.t4a.detect;
  * </p>
  */
 public interface ExplainDecision {
-    public void explain(String promptText, String methodName, String reason) ;
+    public String explain(String promptText, String methodName, String reason) ;
 }

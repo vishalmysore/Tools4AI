@@ -1,24 +1,11 @@
 package com.t4a.detect;
 
-import com.google.cloud.vertexai.VertexAI;
-import com.google.cloud.vertexai.api.FunctionDeclaration;
-import com.google.cloud.vertexai.api.GenerateContentResponse;
-import com.google.cloud.vertexai.api.Tool;
-import com.google.cloud.vertexai.generativeai.ChatSession;
-import com.google.cloud.vertexai.generativeai.GenerativeModel;
-import com.google.cloud.vertexai.generativeai.ResponseHandler;
-import com.t4a.api.ActionType;
-import com.t4a.api.DetectorAction;
+import com.t4a.api.AIPlatform;
 import com.t4a.api.GuardRailException;
-import com.t4a.api.JavaMethodExecutor;
-import com.t4a.processor.AIProcessingException;
+import com.t4a.processor.*;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,25 +18,30 @@ import java.util.List;
  * By systematically analyzing responses in this manner, the class provides a robust mechanism for assessing the reliability and coherence of LLM-generated content
  */
 @Slf4j
-@NoArgsConstructor
+
 @AllArgsConstructor
-public class ZeroShotHallucinationDetector implements DetectorAction {
-    static String projectId = "cookgptserver";
-    static String location = "us-central1";
-    static String modelName = "gemini-1.0-pro";
+public class ZeroShotHallucinationDetector  {
+    private AIProcessor processor;
+    public ZeroShotHallucinationDetector(AIPlatform platform) {
+        if(platform == AIPlatform.GEMINI) {
+            this.processor = new GeminiV2ActionProcessor();
+        }else if(platform == AIPlatform.OPENAI) {
+            this.processor = new OpenAiActionProcessor();
+        }else if(platform == AIPlatform.ANTHROPIC) {
+            this.processor = new AnthropicActionProcessor();
+        }
+        else {
+            log.error("Platform not supported");
+        }
+    }
+    public ZeroShotHallucinationDetector(AIProcessor processor) {
+        this.processor = processor;
+    }
+
     private int numberOfQuestions = 4;
     private String breakIntoQuestionPrompt = "Can you derive 4 questions from this context and provide me a single line without line breaks or backslash n character, you should reply with questions and nothing else - ";
 
-    private static String sampleResponse = "Mohandas Karamchand Gandhi (ISO: Mōhanadāsa Karamacaṁda Gāṁdhī;[pron 1] 2 October 1869 – 30 January 1948) was an Indian lawyer, anti-colonial nationalist and political ethicist who employed nonviolent resistance to lead the successful campaign for India's independence from British rule. He inspired movements for civil rights and freedom across the world. The honorific Mahātmā (from Sanskrit 'great-souled, venerable'), first applied to him in South Africa in 1914, is now used throughout the world. Born and raised in a Hindu family in coastal Gujarat, Gandhi trained in the law at the Inner Temple in London, and was called to the bar in June 1891, at the age of 22. After two uncertain years in India, where he was unable to start a successful law practice, he moved to South Africa in 1893 to represent an Indian merchant in a lawsuit. He went on to live in South Africa for 21 years. There, Gandhi raised a family and first employed nonviolent resistance in a campaign for civil rights. In 1915, aged 45, he returned to India and soon set about organising peasants, farmers, and urban labourers to protest against discrimination and excessive land-tax.";
-    @Override
-    public ActionType getActionType() {
-        return ActionType.HALLUCINATION;
-    }
 
-    @Override
-    public String getDescription() {
-        return "Detect Hallucination in response";
-    }
 
     /**
      * This uses the Self Check method where the original request is broken down into multiple question
@@ -59,58 +51,34 @@ public class ZeroShotHallucinationDetector implements DetectorAction {
      * @return
      * @throws GuardRailException
      */
-    @Override
+
     public DetectValueRes execute(DetectValues dd) throws GuardRailException, AIProcessingException {
-        DetectValueRes res = new DetectValueRes();
-        try (VertexAI vertexAI = new VertexAI(projectId, location)) {
-            GenerateContentResponse response;
+            DetectValueRes res = new DetectValueRes();
 
 
-            GenerativeModel model =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .build();
-            ChatSession chatSession = new ChatSession(model);
+            String questions  = query(breakIntoQuestionPrompt + dd.getResponse());
 
-            response = chatSession.sendMessage(breakIntoQuestionPrompt + dd.getResponse());
 
-            String questions = ResponseHandler.getText(response);
             log.debug(questions);
-            JavaMethodExecutor methodAction = new JavaMethodExecutor();
-            HallucinationAction questionAction = new HallucinationAction(projectId, location, modelName, sampleResponse);
 
-            //FileWriteAction action = new FileWriteAction();
-            FunctionDeclaration questionActionFun = methodAction.buildFunction(questionAction);
-            Tool tool = Tool.newBuilder()
-                    .addFunctionDeclarations(questionActionFun)
-                    .build();
-            model =
-                    new GenerativeModel.Builder()
-                            .setModelName(modelName)
-                            .setVertexAi(vertexAI)
-                            .setTools(Arrays.asList(tool))
-                            .build();
-            chatSession = new ChatSession(model);
-            log.debug(questions);
-            response = chatSession.sendMessage("ask these questions -  " + questions + " - end of questions");
-            log.debug("" + ResponseHandler.getContent(response));
-            List<HallucinationQA> hallucinationList = (List<HallucinationQA>) methodAction.action(response, questionAction);
+            HallucinationAction questionAction = new HallucinationAction(processor, dd.getResponse());
+
+
+
+
+            String responseStr = query("ask these questions -  " + questions + " - end of questions");
+
+            List<HallucinationQA> hallucinationList = (List<HallucinationQA>) processor.processSingleAction(responseStr,questionAction);
 
             res.setHallucinationList(hallucinationList);
 
-        } catch (IOException | InvocationTargetException | IllegalAccessException e) {
-            //e.printStackTrace();
-            throw new RuntimeException(e);
-        }
         return res;
     }
 
-    public static void main(String[] args) throws GuardRailException, AIProcessingException {
-        DetectValues dv = new DetectValues();
-        dv.setResponse(sampleResponse);
-        ZeroShotHallucinationDetector detec = new ZeroShotHallucinationDetector();
-        detec.execute(dv);
+    private String query(String prompt) throws AIProcessingException {
+        return processor.query(prompt);
 
     }
+
+
 }

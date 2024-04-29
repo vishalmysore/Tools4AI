@@ -682,7 +682,7 @@ import static org.mockito.Mockito.when;
     }
 
     @Test
-    public void testGoogleSearch() {
+     void testGoogleSearch() {
         String jsonString = "{\n" +
                 "    \"methodName\": \"googleSearch\",\n" +
                 "    \"parameters\": [\n" +
@@ -710,4 +710,6 @@ import static org.mockito.Mockito.when;
             throw new RuntimeException(e);
         }
     }
+
+
 }

@@ -48,41 +48,46 @@ public  class ScriptProcessor {
         ScriptResult result = new ScriptResult();
         try (InputStream is = ScriptProcessor.class.getClassLoader().getResourceAsStream(fileName);
             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-            AIProcessor processor = getActionProcessor();
-            String line;
-
-            String resultStr = null;
-            while ((line = reader.readLine()) != null) {
-
-                log.info(line);
-                String decision = "yes";
-                String previousResult = getGson().toJson(result);
-                log.info(previousResult);
-                if(result.getResults().isEmpty() ) {
-                    String prompt = "these are the results of previous actions - "+previousResult+" - should we proceed with this step - " +line+" - provide an answer as yes or no only";
-                    decision = getActionProcessor().query(prompt);
-                }
-                if(decision.toLowerCase().contains("yes")) {
-                    resultStr =  (String) processor.processSingleAction(line + " - here are previous action results "+previousResult);
-                    result.addResult(line,resultStr);
-                } else {
-                    result.addResult(line," No action taken due to "+previousResult);
-                }
-
-                if(callback != null) {
-                    resultStr = callback.lineResult(resultStr);
-                }
-                log.info(resultStr);
-
-            }
+            processCommands(callback, reader, result);
         } catch (IOException e) {
             log.error(e.getMessage());
         } catch (NullPointerException e) {
+
             log.info("Resource file not found. Make sure the file path is correct.");
         } catch (AIProcessingException e) {
             log.error(e.getMessage());
         }
         return result;
+    }
+
+    public void processCommands(ScriptCallback callback, BufferedReader reader, ScriptResult result) throws IOException, AIProcessingException {
+        AIProcessor processor = getActionProcessor();
+        String line;
+
+        String resultStr = null;
+        while ((line = reader.readLine()) != null) {
+
+            log.info(line);
+            String decision = "yes";
+            String previousResult = getGson().toJson(result);
+            log.info(previousResult);
+            if(result.getResults().isEmpty() ) {
+                String prompt = "these are the results of previous actions - "+previousResult+" - should we proceed with this step - " +line+" - provide an answer as yes or no only";
+                decision = getActionProcessor().query(prompt);
+            }
+            if(decision.toLowerCase().contains("yes")) {
+                resultStr =  (String) processor.processSingleAction(line + " - here are previous action results "+previousResult);
+                result.addResult(line,resultStr);
+            } else {
+                result.addResult(line," No action taken due to "+previousResult);
+            }
+
+            if(callback != null) {
+                resultStr = callback.lineResult(resultStr);
+            }
+            log.info(resultStr);
+
+        }
     }
 
     public String summarize(ScriptResult result) {
