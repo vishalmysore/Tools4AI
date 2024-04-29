@@ -182,9 +182,11 @@ public class PredictionLoaderTest {
                 responseHandlerMock.when(() -> ResponseHandler.getText(eq(responseMockGRP))).thenReturn(mockGRP);
 
 
+                try (MockedConstruction<VertexAI> mockedVertex = Mockito.mockConstruction(VertexAI.class)) {
+                    GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.GEMINI);
 
-                GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.GEMINI);
-                Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());
+                    Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());
+                }
             }
             // Add your test assertions here
         } catch (IOException e) {
