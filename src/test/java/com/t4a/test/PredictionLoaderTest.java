@@ -160,6 +160,8 @@ public class PredictionLoaderTest {
                         return true;
                     } else if (argument.contains("which group does this prompt belong")) {
                         return true;
+                    } else if (argument.contains("give me just the action name from this query {")) {
+                        return true;
                     } else {
                         return false;
                     }
@@ -171,6 +173,8 @@ public class PredictionLoaderTest {
                             return responseMockACT;
                         } else if (argument.contains("which group does this prompt belong")) {
                             return responseMockGRP;
+                        }  else if (argument.contains("give me just the action name from this query {")) {
+                            return responseMockACT;
                         } else {
                             return null;
                         }
