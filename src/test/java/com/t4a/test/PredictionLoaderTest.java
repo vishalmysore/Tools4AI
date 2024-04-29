@@ -183,6 +183,7 @@ public class PredictionLoaderTest {
 
 
                 try (MockedConstruction<VertexAI> mockedVertex = Mockito.mockConstruction(VertexAI.class)) {
+                    PredictionLoader.getInstance().setChatGroupFinder(chatMock);
                     GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.GEMINI);
 
                     Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());

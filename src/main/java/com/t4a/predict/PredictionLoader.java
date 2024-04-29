@@ -70,6 +70,8 @@ public class PredictionLoader {
     @Getter
     private ChatSession chatExplain;
     private ChatSession chatMulti;
+    @Setter
+    @Getter
     private ChatSession chatGroupFinder;
     @Getter
     private String projectId;
