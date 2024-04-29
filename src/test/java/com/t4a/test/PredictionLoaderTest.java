@@ -192,6 +192,10 @@ public class PredictionLoaderTest {
                     GenericJavaMethodAction action = (GenericJavaMethodAction) PredictionLoader.getInstance().getPredictedAction("test the action", AIPlatform.GEMINI);
 
                     Assertions.assertEquals("whatFoodDoesThisPersonLike", action.getActionName());
+
+                    Assertions.assertNotNull(PredictionLoader.getInstance().getPredictions());
+                    Assertions.assertNotNull(PredictionLoader.getInstance().getChat());
+                    Assertions.assertNotNull(PredictionLoader.getInstance().getProjectId());
                 }
             }
             // Add your test assertions here
