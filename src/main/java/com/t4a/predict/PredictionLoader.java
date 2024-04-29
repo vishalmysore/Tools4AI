@@ -66,6 +66,8 @@ public class PredictionLoader {
     private final  String NUMACTION = " action only. Make sure Action matches exactly from this list";
 
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
+    @Getter
+    @Setter
     private ChatSession chat;
     @Getter
     private ChatSession chatExplain;
@@ -361,6 +363,7 @@ public class PredictionLoader {
         }  catch (Exception e) {
             e.printStackTrace();
             log.error(" Please make sure actions are configured {} ",e.getMessage());
+            log.error(" Details ",e);
             return null;
         }
 
