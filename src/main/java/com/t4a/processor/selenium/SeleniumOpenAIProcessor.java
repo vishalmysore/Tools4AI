@@ -5,6 +5,7 @@ import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.OpenAiActionProcessor;
 import com.t4a.transform.OpenAIPromptTransformer;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 /**
@@ -15,10 +16,13 @@ import org.openqa.selenium.WebDriver;
 @Slf4j
 public class SeleniumOpenAIProcessor extends OpenAiActionProcessor implements SeleniumProcessor {
     @Getter
+    @Setter
     private WebDriver driver;
     @Getter
+    @Setter
     private JsonUtils utils ;
     @Getter
+    @Setter
     private OpenAIPromptTransformer transformer ;
     public SeleniumOpenAIProcessor(WebDriver driver) {
         this.driver = driver;

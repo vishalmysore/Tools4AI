@@ -3,8 +3,7 @@ package com.t4a.test;
 import com.t4a.JsonUtils;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.processor.selenium.DriverActions;
-import com.t4a.processor.selenium.SeleniumGeminiProcessor;
-import com.t4a.transform.GeminiV2PromptTransformer;
+import com.t4a.processor.selenium.SeleniumOpenAIProcessor;
 import com.t4a.transform.OpenAIPromptTransformer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ public class SeleniumOpenAIProcessorTest {
 
 
         OpenAIPromptTransformer mockTransformer = Mockito.mock(OpenAIPromptTransformer.class);
-        SeleniumGeminiProcessor processor = new SeleniumGeminiProcessor(mockAction);
+        SeleniumOpenAIProcessor processor = new SeleniumOpenAIProcessor(mockAction);
         processor.setUtils(mockUtils);
         DriverActions actions = new DriverActions();
         actions.setTypeOfActionToTakeOnWebDriver("get");
@@ -54,8 +53,8 @@ public class SeleniumOpenAIProcessorTest {
         JsonUtils mockUtils = new JsonUtils();
 
 
-        GeminiV2PromptTransformer mockTransformer = Mockito.mock(GeminiV2PromptTransformer.class);
-        SeleniumGeminiProcessor processor = new SeleniumGeminiProcessor(mockAction);
+        OpenAIPromptTransformer mockTransformer = Mockito.mock(OpenAIPromptTransformer.class);
+        SeleniumOpenAIProcessor processor = new SeleniumOpenAIProcessor(mockAction);
         processor.setUtils(mockUtils);
         DriverActions actions = new DriverActions();
         actions.setTypeOfActionToTakeOnWebDriver("CLICK");
