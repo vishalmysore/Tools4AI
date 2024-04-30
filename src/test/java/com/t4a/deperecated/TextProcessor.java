@@ -1,10 +1,14 @@
-package com.t4a.processor;
+package com.t4a.deperecated;
 
 import com.t4a.api.AIAction;
 import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.HumanInLoop;
+import com.t4a.processor.AIProcessingException;
+import com.t4a.processor.AIProcessor;
+import com.t4a.processor.LoggingHumanDecision;
+import com.t4a.processor.LogginggExplainDecision;
 
-public class TextProcessor implements  AIProcessor{
+public class TextProcessor implements AIProcessor {
     @Override
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) {
         return null;

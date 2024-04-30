@@ -1,4 +1,4 @@
-package com.t4a.transform;
+package com.t4a.deperecated;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.vertexai.VertexAI;
@@ -13,6 +13,7 @@ import com.t4a.JsonUtils;
 import com.t4a.api.JavaClassExecutor;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
+import com.t4a.transform.PromptTransformer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

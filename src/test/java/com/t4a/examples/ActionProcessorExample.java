@@ -2,7 +2,7 @@ package com.t4a.examples;
 
 import com.t4a.examples.actions.PlayerWithRestaurant;
 import com.t4a.processor.AIProcessingException;
-import com.t4a.processor.GeminiActionProcessor;
+import com.t4a.deperecated.GeminiActionProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

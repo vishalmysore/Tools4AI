@@ -70,6 +70,7 @@ public class PredictionLoader {
     @Setter
     private ChatSession chat;
     @Getter
+    @Setter
     private ChatSession chatExplain;
     private ChatSession chatMulti;
     @Setter
@@ -84,6 +85,7 @@ public class PredictionLoader {
     @Getter
     private String geminiVisionModelName;
     @Getter
+    @Setter
     private ChatLanguageModel anthropicChatModel;
     private String anthropicModelName;
     private boolean anthropicLogReqFlag;

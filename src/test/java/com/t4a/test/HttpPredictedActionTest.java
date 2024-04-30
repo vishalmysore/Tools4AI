@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,4 +79,18 @@ import static org.mockito.Mockito.when;
 
         assertEquals(expectedResponse, actualResponse);
     }
+    @Test
+     void testReplacePlaceholders() throws UnsupportedEncodingException {
+       String url = "http://test.com/{param1}/{param2}";
+       Map<String, Object> placeholderValues = new HashMap<>();
+       placeholderValues.put("param1", "value1");
+       placeholderValues.put("param2", "value2");
+
+       String expectedUrl = "http://test.com/value1/value2";
+       String actualUrl = httpPredictedAction.replacePlaceholders(url, placeholderValues);
+
+       assertEquals(expectedUrl, actualUrl);
+    }
+
+
 }

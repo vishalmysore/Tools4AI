@@ -1,7 +1,7 @@
 package com.t4a.examples;
 
 import com.t4a.processor.AIProcessingException;
-import com.t4a.processor.GeminiActionProcessor;
+import com.t4a.deperecated.GeminiActionProcessor;
 
 import java.util.Properties;
 

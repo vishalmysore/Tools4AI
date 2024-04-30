@@ -1,4 +1,4 @@
-package com.t4a.processor;
+package com.t4a.deperecated;
 
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.Content;
@@ -13,6 +13,10 @@ import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.FeedbackLoop;
 import com.t4a.detect.HumanInLoop;
 import com.t4a.predict.PredictionLoader;
+import com.t4a.processor.AIProcessingException;
+import com.t4a.processor.AIProcessor;
+import com.t4a.processor.LoggingHumanDecision;
+import com.t4a.processor.LogginggExplainDecision;
 import com.t4a.processor.chain.Prompt;
 import com.t4a.processor.chain.SubPrompt;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +41,7 @@ import java.util.List;
  */
 @Deprecated // This class is deprecated and will be removed in future versions please use GeminiV2ActionProcessor instead
 @Slf4j
-public class GeminiActionProcessor implements AIProcessor{
+public class GeminiActionProcessor implements AIProcessor {
     private Gson gson;
     public GeminiActionProcessor() {
     }

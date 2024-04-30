@@ -7,7 +7,7 @@ import com.t4a.examples.actions.Customer;
 import com.t4a.examples.actions.ListAction;
 import com.t4a.examples.basic.DateDeserializer;
 import com.t4a.examples.pojo.Organization;
-import com.t4a.transform.GeminiPromptTransformer;
+import com.t4a.deperecated.GeminiPromptTransformer;
 import com.t4a.transform.OpenAIPromptTransformer;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.transform.PromptTransformer;

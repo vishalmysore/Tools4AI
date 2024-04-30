@@ -1,6 +1,6 @@
 package com.t4a.examples.basic;
 
-import com.t4a.transform.GeminiPromptTransformer;
+import com.t4a.deperecated.GeminiPromptTransformer;
 import com.t4a.processor.AIProcessingException;
 import lombok.extern.slf4j.Slf4j;
 

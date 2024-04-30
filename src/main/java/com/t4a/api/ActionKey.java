@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 
 @Getter
@@ -26,8 +26,8 @@ public class ActionKey {
     }
 
     private void generateUniqueKey() {
-        AtomicLong counter = new AtomicLong(System.currentTimeMillis());
-        uniqueKey = counter.incrementAndGet();
+        UUID uuid = UUID.randomUUID();
+        uniqueKey = uuid.getMostSignificantBits() & Long.MAX_VALUE;
 
     }
 

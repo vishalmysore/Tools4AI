@@ -7,6 +7,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,6 +53,23 @@ class ShellPredictedActionTest {
             verify(process, times(1)).waitFor();
         }
     }
+    @Test
+    public void testDetectPathType_AbsolutePath() {
+        // Arrange
+        String scriptPath = "/path/to/file";
+        try (MockedConstruction<File> mocked = mockConstruction(File.class,
+                (mock, context) -> when(mock.isAbsolute()).thenReturn(true))) {
+            // Act
+            String result = shellPredictedAction.detectPathType(scriptPath);
+
+            // Assert
+            assertEquals("Absolute path", result);
+        }
+    }
+
+    
+
+
     @Test
      void testGetActionName() {
         String actionName = shellPredictedAction.getActionName();

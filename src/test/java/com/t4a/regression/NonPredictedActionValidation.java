@@ -1,5 +1,6 @@
 package com.t4a.regression;
 
+import com.t4a.deperecated.GeminiActionProcessor;
 import com.t4a.examples.basic.NonPredictionAction;
 import com.t4a.processor.*;
 import lombok.extern.java.Log;

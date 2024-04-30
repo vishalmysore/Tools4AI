@@ -3,6 +3,7 @@ package com.t4a.test;
 import com.google.cloud.vertexai.api.GenerateContentResponse;
 import com.google.cloud.vertexai.generativeai.ChatSession;
 import com.google.cloud.vertexai.generativeai.ResponseHandler;
+import com.google.gson.Gson;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.transform.GeminiV2PromptTransformer;
@@ -39,6 +40,9 @@ public class GeminiTransformerTest {
                 GeminiV2PromptTransformer transformer = new GeminiV2PromptTransformer();
                 String json = transformer.getJSONResponseFromAI("My name is vishal and I am from India. I love vegetarian food", "{}");
                 Assertions.assertEquals("{'groupName':'No Group','explanation':'mock'}", json);
+                Gson gsonMock = Mockito.mock(Gson.class);
+                GeminiV2PromptTransformer transformer2 = new GeminiV2PromptTransformer(gsonMock);
+                Assertions.assertNotNull(transformer2.getGson());
             }
         } catch (AIProcessingException e) {
             throw new RuntimeException(e);
