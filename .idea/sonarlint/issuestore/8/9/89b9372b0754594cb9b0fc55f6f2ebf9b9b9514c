@@ -1,17 +1,16 @@
 
 ™
-AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$ca762ef6-4367-4642-b2c9-db2cf8db85be
+AY8SEb_SwWCABySxhhGz	java:S107c"<Method has 8 parameters, which is greater than 7 authorized.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$d0728124-b7ef-4032-b4eb-f9c76d9b0043
 
 AY8SEb_SwWCABySxhhG1
-java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$7cb27ad1-f69b-4b88-8091-0003970d457a
+java:S1481P"'Remove this unused "id" local variable.(¿Â@8€‘Ðªâ1J$97ce485b-65cf-4b36-afe9-adf0e914edf6
 °
 AY8SEb_SwWCABySxhhG2
-java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 90 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$e4d964f8-d5be-4eb8-9aad-0e5fb2372a91
-š
-AY8SEb_SwWCABySxhhG3	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ðî†æç1J$2f3b252d-ebdc-42d7-8ded-0b1829201005
+java:S3776c"RRefactor this method to reduce its Cognitive Complexity from 82 to the 15 allowed.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$0baf0272-a8af-42be-a074-2a4b0c8175f0
+^	java:S125·"<This block of commented-out lines of code should be removed.(œù‚„øÿÿÿÿ8ìîŸ³ó1
 •
 AY8SEb_SwWCABySxhhG5
-java:S1144ô"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$e9f656a3-30e9-45f2-a1e7-9612eb58bab9
+java:S1144ó"6Remove this unused private "findJsonMediaType" method.(˜¡éÞýÿÿÿÿ8€‘Ðªâ1J$30f3aee8-6f66-4fa0-aa99-c54eba47c22e
 ¥
 AY8SEb_SwWCABySxhhG6
-java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 103 to 64, Complexity from 27 to 14, Nesting Level from 9 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$ba51b95c-6cb5-4006-b1f5-f735832b5ff9
+java:S6541c"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 102 to 64, Complexity from 26 to 14, Nesting Level from 8 to 2, Number of Variables from 36 to 6.(öÌô§úÿÿÿÿ8˜ìØ®ê1J$7df53f69-1dfc-447c-884a-f8f7af154846

@@ -169,7 +169,7 @@ public class SwaggerPredictionLoader {
 
 
                         }
-                    } else if((operation.getRequestBody()!=null)&&(operation.getRequestBody().getContent() != null)){ if (operation != null) {
+                    } else if((operation.getRequestBody()!=null)&&(operation.getRequestBody().getContent() != null)){
                         inputParameter = new InputParameter();
                         RequestBody requestBody = operation.getRequestBody();
                         if (requestBody != null && requestBody.getContent() != null) {
@@ -195,9 +195,8 @@ public class SwaggerPredictionLoader {
                             }
                         }
 
-                    }
                     } else {
-                        log.debug("nothing found for "+actionName+" it could be direct call without parameters");
+                        log.debug("nothing found for {} ,  it could be direct call without parameters ",actionName);
                     }
                     if(inputParameter!=null) {
                         inputParameters.add(inputParameter);
@@ -205,12 +204,12 @@ public class SwaggerPredictionLoader {
                     httpAction.setInputObjects(inputParameters);
 
                     if(predictions.containsKey(actionName)) {
-                        log.debug(actionName+" is present");
+                        log.debug("action is present {} ",actionName);
                         actionName = getModifiedActionName(httpAction);
-                        log.debug(actionName+" is new the name ");
+                        log.debug(" is new the name {}",actionName);
                     }
                     if(predictions.containsKey(actionName)) {
-                        log.warn("cannot put action as its already there "+actionName);
+                        log.warn("cannot put action as its already there {}",actionName);
                     }else {
                         predictions.put(actionName, httpAction);
                         actionNameList.append(",");

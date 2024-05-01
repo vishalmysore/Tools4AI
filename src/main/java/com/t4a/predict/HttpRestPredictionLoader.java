@@ -69,7 +69,7 @@ public class HttpRestPredictionLoader {
                     Object defaultValue = inputObj.get("defaultValue");
                     InputParameter parameter =  new InputParameter(inputname, inputType, inputDescription);
                     if(defaultValue != null) {
-                        parameter.setDefaultValue((String)defaultValue);
+                        parameter.setDefaultValue(defaultValue.toString());
                     }
                     inputObjects.add(parameter);
                 }

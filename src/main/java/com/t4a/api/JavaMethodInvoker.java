@@ -66,7 +66,7 @@ public class JavaMethodInvoker {
         return new Object[0];
     }
     private  Object getValue(Object value, Class<?> type,JSONObject paramObj) {
-        log.info("parsing value "+type.getName()+" value "+value+" for field Name "+paramObj.optString("fieldName"));
+        log.info("parsing value type {}, value {}, param {} ",type.getName(),value,paramObj.optString("fieldName"));
         if(value==null) return null;
         if(value instanceof  String) {
             if(((String)value).trim().length() == 0) return null;
@@ -83,13 +83,14 @@ public class JavaMethodInvoker {
             return Boolean.parseBoolean(value.toString());
         } else if (type == Date.class) {
             try {
+                assert value instanceof String;
                 String dateStr = (String) value;
                 if((dateStr.trim().length() > 1))
                   return new SimpleDateFormat(paramObj.getString("dateFormat")).parse((String) value);
                 else
                     return null;
             } catch (ParseException e) {
-                log.warn("not able to parse date "+value+" for field "+paramObj.optString("fieldName") );
+                log.warn("not able to parse date {} , for {}",value, paramObj.optString("fieldName") );
                 return null;
             }
         }else if (type.isArray()) {
@@ -111,7 +112,7 @@ public class JavaMethodInvoker {
                         elementValue = getValue(insideObject,componentType,paramObj);
                     }
                 } catch (Exception e) {
-                    log.warn("not able to populate "+paramObj);
+                    log.warn("not able to populate {} ",paramObj);
                     //throw new RuntimeException(e);
                 }
 
@@ -172,7 +173,6 @@ public class JavaMethodInvoker {
             instance = new HashMap<>();
             JsonUtils utls = new JsonUtils();
             utls.buildMapFromJsonArray(fieldsArray,(Map)instance);
-            return instance;
         } else {
             Constructor<?> constructor = clazz.getConstructor();
             instance = constructor.newInstance();
@@ -182,7 +182,7 @@ public class JavaMethodInvoker {
                 String fieldName = fieldObj.getString("fieldName");
                 String fieldType = fieldObj.getString("fieldType");
                 Class<?> parameterType = getType(fieldType, fieldObj);
-                Object fieldValue = null;// getValue(fieldObj.get("fieldValue"),parameterType);
+                Object fieldValue;// getValue(fieldObj.get("fieldValue"),parameterType);
                 if (fieldObj.has("fieldValue")) {
                     fieldValue = getValue(fieldObj.get("fieldValue"), parameterType, fieldObj);
                 } else if (fieldObj.has("fields")) {
@@ -219,25 +219,19 @@ public class JavaMethodInvoker {
                         fieldValue = objList;
 
                     } else {
-                        if(fieldValue!= null) {
-                            fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
-                        }
+                        fieldValue = createPOJO(fieldValue, Class.forName(fieldType));
 
                     }
-                    if(fieldValue!= null) {
-                        field.set(instance, fieldValue);
-                    }
-                } else {
-                    if(fieldValue!= null) {
-                        field.set(instance, fieldValue);
-                    }
+                }
+                if(fieldValue!= null) {
+                    field.set(instance, fieldValue);
                 }
 
 
             }
 
-            return instance;
         }
+        return instance;
     }
 
     // Overloaded method for handling nested arrays

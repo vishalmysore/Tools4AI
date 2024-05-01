@@ -343,7 +343,7 @@ public class PredictionLoader {
                     action = getAiAction(actionName);
                 }
                 if(action == null) {
-                    log.debug("action not found , trying again");
+                    log.debug("action not since it was null found , trying again");
                     actionName = fetchActionNameFromList(actionName);
                     log.debug("Predicted action by AI is "+actionName);
                     action = getAiAction(actionName);
@@ -356,7 +356,7 @@ public class PredictionLoader {
                     action = getAiAction(actionName);
                 }
                 if(action == null) {
-                    log.debug("action not found , trying again");
+                    log.debug("action not again found , trying again");
                     actionName = fetchActionNameFromList(actionName);
                     log.debug("Predicted action by AI is "+actionName);
                     action = getAiAction(actionName);
@@ -623,7 +623,7 @@ public class PredictionLoader {
         AIAction instance = null;
         if(springContext != null) {
             instance = (AIAction) springContext.getBean(clazz);
-            log.debug(" instance from Spring " + instance);
+            log.debug("got instance from Spring " + instance);
         }
         if(instance == null) {
             try {
