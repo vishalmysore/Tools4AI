@@ -9,14 +9,14 @@ import com.google.cloud.vertexai.generativeai.ResponseHandler;
 import com.t4a.JsonUtils;
 import com.t4a.api.MimeType;
 import com.t4a.predict.PredictionLoader;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 
 /**
  * Take actions based on images, compare images, get text from images, get values from images , convert
@@ -25,6 +25,20 @@ import java.net.URL;
  */
 @Slf4j
 public class GeminiImageActionProcessor {
+
+    @Getter
+    @Setter
+    private  GenerativeModel model;
+
+    public GeminiImageActionProcessor() {
+        initModel();
+    }
+
+    protected void initModel(){
+        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
+             model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
+        }
+    }
 
     /**
      * Get text from image
@@ -207,8 +221,8 @@ public class GeminiImageActionProcessor {
     }
 
     public String imageToText(byte[] imageBytes, String mimeType, String prompt) throws AIProcessingException{
-        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
-            GenerativeModel model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
+
+
             GenerateContentResponse response ;
             try {
                 response = model.generateContent(
@@ -223,12 +237,11 @@ public class GeminiImageActionProcessor {
             String output = ResponseHandler.getText(response);
             log.debug(output);
             return output;
-        }
+
     }
 
     public String compareImages(byte[] imageBytes1,byte[] imageBytes2, String mimeType, String prompt) throws AIProcessingException{
-        try (VertexAI vertexAI = new VertexAI(PredictionLoader.getInstance().getProjectId(),PredictionLoader.getInstance().getLocation())) {
-            GenerativeModel model = new GenerativeModel(PredictionLoader.getInstance().getGeminiVisionModelName(), vertexAI);
+
             GenerateContentResponse response ;
             try {
                 response = model.generateContent(
@@ -244,28 +257,19 @@ public class GeminiImageActionProcessor {
             String output = ResponseHandler.getText(response);
             log.debug(output);
             return output;
-        }
+
     }
-    public  byte[] readImageFileDeprecated(String url) throws AIProcessingException, IOException{
+
+    public InputStream getHttpInputStream(String url) throws IOException {
         URL urlObj = new URL(url);
         HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
         connection.setRequestMethod("GET");
 
         int responseCode = connection.getResponseCode();
-
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            InputStream inputStream = connection.getInputStream();
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-
-            return outputStream.toByteArray();
+            return connection.getInputStream();
         } else {
-            throw new AIProcessingException("Error fetching file: " + responseCode);
+            throw new IOException("Error fetching file: " + responseCode);
         }
     }
 
@@ -276,16 +280,7 @@ public class GeminiImageActionProcessor {
         try(ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             // Check if the URL is an HTTP URL
             if (url.startsWith("http://") || url.startsWith("https://")) {
-                URL urlObj = new URL(url);
-                HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-                connection.setRequestMethod("GET");
-
-                int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    inputStream = connection.getInputStream();
-                } else {
-                    throw new IOException("Error fetching file: " + responseCode);
-                }
+                inputStream = getHttpInputStream(url);
             }
             // If not an HTTP URL, assume it's a local file path
             else {

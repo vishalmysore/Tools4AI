@@ -30,5 +30,8 @@ public class BiasDetectorTest {
     @Test
     public void testExecute() throws GuardRailException {
         assertNull(biasDetector.execute(null));
+        assertNotNull(biasDetector.getActionName());
+        assertEquals("execute", biasDetector.getActionName());
+
     }
 }

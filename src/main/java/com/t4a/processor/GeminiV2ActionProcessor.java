@@ -84,7 +84,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
                 jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json"));
             }
             catch(Exception e) {
-                
+
                 throw new AIProcessingException(" Make sure Gemini properties are set in tools4Ai.properties "+e.getMessage());
             }
             log.info(jsonStr);
