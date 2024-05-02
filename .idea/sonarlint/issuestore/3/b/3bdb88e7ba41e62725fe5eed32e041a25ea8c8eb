@@ -1,64 +1,49 @@
 
-‰
-AY8SEb8BwWCABySxhhD4
-java:S3740Ê"/Provide the parametrized type for this generic.(‰Ô‚8˜ğ¨€ì1J$4c56b863-81de-4e14-8b97-6c132572bbf5
-‰
-AY8SEb8BwWCABySxhhD5
-java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$e1f437d2-9462-44be-b90f-78f5c9d07d79
-‰
-AY8SEb8BwWCABySxhhD6
-java:S3740Ì"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$1d223efe-0aff-4a99-96b8-84e52d50ef85
-¨
-AY8XP84fEG-L7x89lGjB
-java:S1192E"JDefine a constant instead of duplicating this literal "fieldName" 3 times.(¾Õµúÿÿÿÿÿ8Àšş¹ñ1J$6b8ff8c0-8336-468c-b696-b15b1891f4f9
-©
-AY8SEb8BwWCABySxhhD7
-java:S1192*"KDefine a constant instead of duplicating this literal "fieldValue" 6 times.(³İÀ“ûÿÿÿÿ8˜ğ¨€ì1J$e8c09cc3-c4f3-4066-8198-312ce80ec830
- 
-AY8SEb8BwWCABySxhhD8
-java:S1192,"GDefine a constant instead of duplicating this literal "fields" 4 times.(ËÅïÛ8À°¿¦ë1J$adee132d-ed0b-4610-bcb7-3100c0b1bdee
-ˆ
-AY8XP84fEG-L7x89lGjC
-java:S1066H"/Merge this if statement with the enclosing one.(‰àÔ®8Àšş¹ñ1J$376c8943-9ad3-4392-9918-800a92e62392
-Ú
-AY8SEb8BwWCABySxhhD9
-java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ĞØØ§8À°¿¦ë1J$ea137ebc-9afb-4c15-9050-bf4c9547ceed
-z
-java:S1854">Remove this useless assignment to local variable "returnType".(¦™—J$f5f12c0f-1ac0-4ab7-8e3a-d47634cecc0e
-
-java:S1854">Remove this useless assignment to local variable "methodName".(úÓïıÿÿÿÿJ$ae665da2-30f8-40d7-8f14-b138fd9a50f1
-
-AY8SEb8BwWCABySxhhD-
-java:S1481"/Remove this unused "methodName" local variable.(úÓïıÿÿÿÿ8À°¿¦ë1J$0c53d498-0e65-47c6-98e4-53b891d8be5f
-ˆ
-AY8SEb8BwWCABySxhhD_
-java:S1481"/Remove this unused "returnType" local variable.(¦™—8À°¿¦ë1J$8363d356-02d7-4ddb-95dc-d28073501b9e
-«
-AY8SEb8BwWCABySxhhEB
-java:S3776D"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(«¬åß8ÈğƒĞì1J$dbf2e28a-48c1-4aec-ab13-4c8702cdfa2e
-y
-java:S1854~"=Remove this useless assignment to local variable "jsonUtils".(ïâŒ‘J$b9489cd4-f170-4f0c-94f0-d264c0672cbd
-™
-AY8SEb8BwWCABySxhhEE	java:S125t"<This block of commented-out lines of code should be removed.(şĞåäúÿÿÿÿ8àØÊí1J$e3c04a89-5e6a-4e6c-9791-dc64d0194879
-‡
-AY8SEb8BwWCABySxhhEF
-java:S1481~".Remove this unused "jsonUtils" local variable.(ïâŒ‘8˜ğ¨€ì1J$95a512eb-e5e4-4809-968a-b4d49a491b64
-n
-java:S3011",This accessibility update should be removed.(À–‰§úÿÿÿÿJ$6ace584c-88c5-4a9b-bc44-bac0159e2c8f
-‡
-java:S1854"ERemove this useless assignment to local variable "componentTypeName".(ÌºÿÖşÿÿÿÿJ$58b6ace0-9409-48ea-a6ad-4b44b10bb377
-•
-AY8SEb8BwWCABySxhhEH
-java:S1481"6Remove this unused "componentTypeName" local variable.(ÌºÿÖşÿÿÿÿ8ˆÒ©§ë1J$7601e4d5-e204-4057-809c-c54cd58a5a91
-±
-AY8SEb8BwWCABySxhhEI
-java:S3776ª"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(÷ÿËóıÿÿÿÿ8ĞÏªì1J$7772b4a9-fe23-4e24-a4a4-579b20329551
-•
-AY8SEb8BwWCABySxhhEJ	java:S125¹"<This block of commented-out lines of code should be removed.(Ÿ„«Ï8À°¿¦ë1J$6f519421-8ccd-49c4-931a-e6827aec5fd0
-p
-java:S3011Â",This accessibility update should be removed.(˜ÂÓ˜8ƒ–™³ó1J$2b6db5e0-c717-46c4-9432-9262c3e49f56
-p
-java:S3011ã",This accessibility bypass should be removed.(•‚Ùß8Ù‹œ³ó1J$4115e8cc-e649-4c45-b28a-23c7c0e61d0d
-Œ
-AY8SEb8BwWCABySxhhEL
-java:S1905ğ"-Remove this unnecessary cast to "JSONObject".(‹Ùæğÿÿÿÿÿ8À°¿¦ë1J$40bff9ba-313e-436e-bcc7-336fc43acc22
+M
+java:S3740Ë"/Provide the parametrized type for this generic.(‰Ô‚8®ÍîÍó1
+M
+java:S3740Í"/Provide the parametrized type for this generic.(ü½÷ó8®ÍîÍó1
+M
+java:S3740Í"/Provide the parametrized type for this generic.(ü½÷ó8®ÍîÍó1
+l
+java:S1192F"JDefine a constant instead of duplicating this literal "fieldName" 3 times.(¾Õµúÿÿÿÿÿ8²ÍîÍó1
+m
+java:S1192+"KDefine a constant instead of duplicating this literal "fieldValue" 7 times.(³İÀ“ûÿÿÿÿ8²ÍîÍó1
+d
+java:S1192-"GDefine a constant instead of duplicating this literal "fields" 5 times.(ËÅïÛ8²ÍîÍó1
+L
+java:S1066I"/Merge this if statement with the enclosing one.(‰àÔ®8ÒĞîÍó1
+
+java:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ĞØØ§8’ÔîÍó1
+[
+java:S1854">Remove this useless assignment to local variable "returnType".(¦™—8™ÔîÍó1
+`
+java:S1854">Remove this useless assignment to local variable "methodName".(úÓïıÿÿÿÿ8™ÔîÍó1
+Q
+java:S1481"/Remove this unused "methodName" local variable.(úÓïıÿÿÿÿ8¥ÔîÍó1
+L
+java:S1481"/Remove this unused "returnType" local variable.(¦™—8¥ÔîÍó1
+o
+java:S3776E"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(«¬åß8°ÔîÍó1
+Z
+java:S1854"=Remove this useless assignment to local variable "jsonUtils".(ïâŒ‘8°ÔîÍó1
+]	java:S125u"<This block of commented-out lines of code should be removed.(şĞåäúÿÿÿÿ8½ÔîÍó1
+K
+java:S1481".Remove this unused "jsonUtils" local variable.(ïâŒ‘8¾ÔîÍó1
+O
+java:S3011‚",This accessibility update should be removed.(À–‰§úÿÿÿÿ8ÁÔîÍó1
+h
+java:S1854"ERemove this useless assignment to local variable "componentTypeName".(ÌºÿÖşÿÿÿÿ8ÃÔîÍó1
+Y
+java:S1481"6Remove this unused "componentTypeName" local variable.(ÌºÿÖşÿÿÿÿ8ÅÔîÍó1
+u
+java:S3776«"RRefactor this method to reduce its Cognitive Complexity from 34 to the 15 allowed.(÷ÿËóıÿÿÿÿ8ÉÔîÍó1
+Y	java:S125º"<This block of commented-out lines of code should be removed.(Ÿ„«Ï8ÎÔîÍó1
+J
+java:S3011Ã",This accessibility update should be removed.(˜ÂÓ˜8ÒÔîÍó1
+J
+java:S3011ä",This accessibility bypass should be removed.(•‚Ùß8ÖÔîÍó1
+O
+java:S1905ò",Remove this unnecessary cast to "JSONArray".(ùÑ˜Ñşÿÿÿÿ8ÛÔîÍó1
+P
+java:S1905ö"-Remove this unnecessary cast to "JSONObject".(ŸÒÊûşÿÿÿÿ8ÜÔîÍó1

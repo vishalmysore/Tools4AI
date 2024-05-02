@@ -329,3 +329,15 @@ b
 2src/test/java/com/t4a/test/ToolsConstantsTest.java,3\5\350098c2bb1beddb1614a442ee4dd60bcc9f2570
 n
 >src/test/java/com/t4a/test/GeminiImageActionProcessorTest.java,b\7\b715d32f676e19c588baf4baaf10e32bda9b7a42
+c
+3src/test/java/com/t4a/examples/pojo/Dictionary.java,e\a\ea342d657dc75ea8b7164c6efa648bbe566194a2
+a
+1src/test/java/com/t4a/examples/pojo/Employee.java,a\7\a7874217f1c348b9629a3c271b75b00d3adca4ef
+e
+5src/test/java/com/t4a/examples/pojo/Organization.java,d\b\db5bb4f447b86022fee9ade879549e0d98e79ed1
+c
+3src/test/java/com/t4a/test/LoaderExceptionTest.java,a\5\a5f776bff9ac90a8b263e480f8ea4bc56f696b98
+c
+3src/test/java/com/t4a/test/HallucinationQATest.java,a\b\ab498b39f0ec70c5644d32f6acfcff99aadb9ffb
+\
+,src/test/java/com/t4a/test/AIActionTest.java,1\d\1d99fc053be0ec595a647b0bc92de0274faa1839

@@ -1,5 +1,6 @@
 package com.t4a.api;
 
+
 import com.t4a.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -235,9 +236,16 @@ public class JavaMethodInvoker {
     }
 
     // Overloaded method for handling nested arrays
-    private  Object createPOJO(Object fieldValue, Class<?> clazz) throws Exception {
+    public  Object createPOJO(Object fieldValue, Class<?> clazz) throws Exception {
         if (fieldValue instanceof JSONObject) {
-            return createPOJO((JSONObject) fieldValue, clazz);
+            JSONObject jsonObject = (JSONObject) fieldValue;
+            JSONArray jsonArray = (JSONArray) jsonObject.optJSONArray("fields");
+            if (jsonArray != null) {
+                return createPOJO(jsonArray, clazz);
+            } else {
+                jsonObject = (JSONObject) ((JSONObject) fieldValue).optJSONObject("fieldValue");
+                return createPOJO(jsonObject, clazz);
+            }
         } else if (fieldValue instanceof JSONArray) {
             List<Object> nestedList = new ArrayList<>();
             JSONArray jsonArray = (JSONArray) fieldValue;

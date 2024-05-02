@@ -11,6 +11,8 @@ import com.t4a.examples.pojo.Organization;
 import com.t4a.predict.PredictionLoader;
 import com.t4a.processor.AIProcessingException;
 import dev.langchain4j.model.openai.OpenAiChatModel;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -710,6 +712,103 @@ import static org.mockito.Mockito.when;
             throw new RuntimeException(e);
         }
     }
+     @Test
+     void testCreatePOJO() throws Exception {
+         JavaMethodInvoker invoker = new JavaMethodInvoker();
+
+         // Create a JSON string that represents an object of the Player class
+         String jsonString = "{\n" +
+                 "    \"fields\": [\n" +
+                 "        {\n" +
+                 "            \"fieldName\": \"matches\",\n" +
+                 "            \"fieldType\": \"int\",\n" +
+                 "            \"fieldValue\": \"400\"\n" +
+                 "        },\n" +
+                 "        {\n" +
+                 "            \"fieldName\": \"maxScore\",\n" +
+                 "            \"fieldType\": \"int\",\n" +
+                 "            \"fieldValue\": \"1000\"\n" +
+                 "        },\n" +
+                 "        {\n" +
+                 "            \"fieldName\": \"firstName\",\n" +
+                 "            \"fieldType\": \"String\",\n" +
+                 "            \"fieldValue\": \"Sachin\"\n" +
+                 "        },\n" +
+                 "        {\n" +
+                 "            \"fieldName\": \"lastName\",\n" +
+                 "            \"fieldType\": \"String\",\n" +
+                 "            \"fieldValue\": \"Tendulkar\"\n" +
+                 "        }\n" +
+                 "    ]\n" +
+                 "}";
+
+         // Parse the JSON string into a JSONObject
+         Object jsonObject = new JSONObject(jsonString);
+
+         // Call the createPOJO method
+         Object result = invoker.createPOJO(jsonObject, Class.forName(Player.class.getName()));
+
+         // Assert that the returned object is of the Player class
+         Assertions.assertTrue(result instanceof Player);
+
+         // Cast the result to Player and assert the field values
+         Player player = (Player) result;
+         Assertions.assertEquals(400, player.getMatches());
+         Assertions.assertEquals(1000, player.getMaxScore());
+         Assertions.assertEquals("Sachin", player.getFirstName());
+         Assertions.assertEquals("Tendulkar", player.getLastName());
+     }
+     @Test
+     void testCreatePOJOWithNestedJSONObject() throws Exception {
+         JavaMethodInvoker invoker = new JavaMethodInvoker();
+
+         // Create a JSON object that contains another JSON object as its fieldValue
+         String jsonString = "{\n" +
+                 "    \"fieldValue\": {\n" +
+                 "        \"fieldName\": \"matches\",\n" +
+                 "        \"fieldType\": \"int\",\n" +
+                 "        \"fieldValue\": \"400\"\n" +
+                 "    }\n" +
+                 "}";
+         JSONObject jsonObject = new JSONObject(jsonString);
+
+         // Call the createPOJO method
+         Object result = invoker.createPOJO(jsonObject, Player.class);
+
+
+         Assertions.assertFalse(result instanceof Player);
+
+
+     }
+
+     @Test
+     void testCreatePOJOWithJSONArray() throws Exception {
+         JavaMethodInvoker invoker = new JavaMethodInvoker();
+
+         // Create a JSON array that represents a list of Player objects
+         String jsonString = "[\n" +
+                 "    {\n" +
+                 "        \"fieldName\": \"matches\",\n" +
+                 "        \"fieldType\": \"int\",\n" +
+                 "        \"fieldValue\": \"400\"\n" +
+                 "    },\n" +
+                 "    {\n" +
+                 "        \"fieldName\": \"matches\",\n" +
+                 "        \"fieldType\": \"int\",\n" +
+                 "        \"fieldValue\": \"500\"\n" +
+                 "    }\n" +
+                 "]";
+         JSONArray jsonArray = new JSONArray(jsonString);
+
+         // Call the createPOJO method
+         Object result = invoker.createPOJO(jsonArray, Player.class);
+
+         // Assert that the returned object is a list
+         Assertions.assertFalse(result instanceof List);
+
+
+     }
+
 
 
 }

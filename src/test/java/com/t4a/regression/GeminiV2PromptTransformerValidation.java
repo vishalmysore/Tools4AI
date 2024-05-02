@@ -1,5 +1,6 @@
 package com.t4a.regression;
 
+import com.t4a.examples.pojo.Organization;
 import com.t4a.processor.AIProcessingException;
 import com.t4a.test.Person;
 import com.t4a.transform.GeminiV2PromptTransformer;
@@ -59,4 +60,20 @@ import static org.junit.jupiter.api.Assertions.fail;
             fail("Exception should not be thrown");
         }
     }
+
+     @Test
+     void testTransformOrganizationIntoPojo() {
+         String prompt = "Gulab Movies Inc is a big company and its based out of Mumbai and Bangalore, Amitabh Kapoor and Anil Bacchan are two of its famos employees.";
+         String className = Organization.class.getName();
+         String funName = "Create Organization Object";
+         String description = "Create a Org object from the prompt";
+
+         try {
+             Object result = transformer.transformIntoPojo(prompt, className, funName, description);
+             assertNotNull(result, "Result should not be null");
+             // Add more assertions based on your expected output
+         } catch (AIProcessingException e) {
+             fail("Exception should not be thrown");
+         }
+     }
 }

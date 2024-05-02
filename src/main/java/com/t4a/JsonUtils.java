@@ -33,6 +33,10 @@ import java.util.*;
  */
 @Slf4j
 public class JsonUtils {
+    private static final String  FIELDTYPE=  "fieldType";
+    private static final String  DATEFORMAT = "dateFormat";
+    private static final String  FIELDS= "fields";
+    private static final String  FIELDNAME= "fieldName";
     private static final String  FIELDVALUE_JSON = "fieldValue";
     private static final String CLASSNAME_JSON = "className";
     public static final String IF_YOU_FIND_MORE_THAN_1 = "If you find more than 1 ";
@@ -171,14 +175,14 @@ public class JsonUtils {
         try {
             if (clazz.getName().equalsIgnoreCase("java.util.Map")) {
                 instance = new HashMap<>();
-                JSONArray fieldsArray = jsonObject.getJSONArray("fields");
+                JSONArray fieldsArray = jsonObject.getJSONArray(FIELDS);
                 buildMapFromJsonArray(fieldsArray, (Map) instance);
                 return instance;
 
             }
             if (clazz.getName().equalsIgnoreCase("java.util.List")) {
                 instance = new ArrayList<>();
-                JSONArray fieldsArray = jsonObject.getJSONArray("fields");
+                JSONArray fieldsArray = jsonObject.getJSONArray(FIELDS);
                 buildListFromJsonArray(fieldsArray, (List) instance);
                 return instance;
 
@@ -186,11 +190,11 @@ public class JsonUtils {
                 instance = clazz.getDeclaredConstructor().newInstance();
 
 
-                JSONArray fields = jsonObject.getJSONArray("fields");
+                JSONArray fields = jsonObject.getJSONArray(FIELDS);
                 for (int i = 0; i < fields.length(); i++) {
                     JSONObject fieldObj = fields.getJSONObject(i);
-                    String fieldName = fieldObj.getString("fieldName");
-                    String fieldType = fieldObj.getString("fieldType");
+                    String fieldName = fieldObj.getString(FIELDNAME);
+                    String fieldType = fieldObj.getString(FIELDTYPE);
                     Field field = clazz.getDeclaredField(fieldName);
                     field.setAccessible(true);
 
@@ -230,7 +234,7 @@ public class JsonUtils {
                             } else if ("Date".equalsIgnoreCase(componentType)) {
                                 array = new Date[jsonArray.length()];
                                 for (int j = 0; j < jsonArray.length(); j++) {
-                                    String dateFormat = fieldObj.optString("dateFormat");
+                                    String dateFormat = fieldObj.optString(DATEFORMAT);
                                     if (dateFormat.trim().isEmpty())
                                         dateFormat = "yyyy-MM-dd";
                                     SimpleDateFormat format = new SimpleDateFormat(dateFormat);
@@ -247,12 +251,12 @@ public class JsonUtils {
                         String dateStr = null;
                         try {
                             dateStr =  fieldObj.getString(FIELDVALUE_JSON);
-                            SimpleDateFormat sdf = new SimpleDateFormat(fieldObj.getString("dateFormat"));
+                            SimpleDateFormat sdf = new SimpleDateFormat(fieldObj.getString(DATEFORMAT));
                             Date d = sdf.parse(dateStr);
                             field.set(instance, d);
 
                         } catch (ParseException e) {
-                            log.error("error parsing " + dateStr + " in format " + fieldObj.getString("dateFormat") + " for " + fieldName + " for " + instance.getClass().getName());
+                            log.error("error parsing " + dateStr + " in format " + fieldObj.getString(DATEFORMAT) + " for " + fieldName + " for " + instance.getClass().getName());
 
 
                         }
@@ -284,7 +288,7 @@ public class JsonUtils {
                         }
                     } else if ("map".equalsIgnoreCase(fieldType)) {
                         Map map = new HashMap();
-                        buildMapFromJsonArray(fieldObj.getJSONArray("fields"), map);
+                        buildMapFromJsonArray(fieldObj.getJSONArray(FIELDS), map);
                         field.set(instance, map);
 
                     } else if ("list".equalsIgnoreCase(fieldType)) {
@@ -307,7 +311,7 @@ public class JsonUtils {
                         }
 
                         field.set(instance, objList);
-                    } else if (fieldObj.has("fields")) {
+                    } else if (fieldObj.has(FIELDS)) {
                         // Recursively populate nested objects
                         Object nestedInstance = populateObject(fieldObj,null);
                         field.set(instance, nestedInstance);
@@ -343,7 +347,7 @@ public class JsonUtils {
             fieldsArray.put(fieldJson);
         }
 
-        classJson.put("fields", fieldsArray);
+        classJson.put(FIELDS, fieldsArray);
         return classJson;
     }
 
@@ -355,7 +359,7 @@ public class JsonUtils {
         JSONObject object = new JSONObject();
         object.put(FIELDVALUE_JSON, "");
         fieldsArray.put(object);
-        fieldJson.put("fields", fieldsArray);
+        fieldJson.put(FIELDS, fieldsArray);
         if (field != null) {
             fieldJson.put("type", field.getType().getName());
             if (field.isAnnotationPresent(MapKeyType.class)) {
@@ -382,7 +386,7 @@ public class JsonUtils {
         object.put("key", "");
         object.put("value", "");
         fieldsArray.put(object);
-        fieldJson.put("fields", fieldsArray);
+        fieldJson.put(FIELDS, fieldsArray);
         if (field != null) {
             fieldJson.put("type", field.getType().getName());
             if (field.isAnnotationPresent(MapKeyType.class)) {
@@ -402,7 +406,7 @@ public class JsonUtils {
         return fieldJson;
     }
 
-    private JSONObject getJsonObjectForList(Class<?> clazz, String fieldName) {
+    public JSONObject getJsonObjectForList(Class<?> clazz, String fieldName) {
         JSONObject classJson = new JSONObject();
         classJson.put(CLASSNAME_JSON, clazz.getName());
         JSONArray fieldsArray = new JSONArray();
@@ -412,9 +416,9 @@ public class JsonUtils {
 
             fieldsArray.put(fieldJson);
         }
-        classJson.put("fieldName", fieldName);
-        classJson.put("fieldType", clazz.getName());
-        classJson.put("fields", fieldsArray);
+        classJson.put(FIELDNAME, fieldName);
+        classJson.put(FIELDTYPE, clazz.getName());
+        classJson.put(FIELDS, fieldsArray);
         return classJson;
     }
 
@@ -430,19 +434,19 @@ public class JsonUtils {
         }
 
         JSONObject fieldJson = new JSONObject();
-        fieldJson.put("fieldName", field.getName());
+        fieldJson.put(FIELDNAME, field.getName());
 
         if (field.getType().equals(Integer.class)) {
-            fieldJson.put("fieldType", "Integer");
+            fieldJson.put(FIELDTYPE, "Integer");
             fieldJson.put(FIELDVALUE_JSON, "");
         } else if (field.getType().equals(Double.class)) {
-            fieldJson.put("fieldType", "Double");
+            fieldJson.put(FIELDTYPE, "Double");
             fieldJson.put(FIELDVALUE_JSON, "");
         } else if (field.getType().equals(Long.class)) {
-            fieldJson.put("fieldType", "Long");
+            fieldJson.put(FIELDTYPE, "Long");
             fieldJson.put(FIELDVALUE_JSON, "");
         } else if (field.getType().equals(Float.class)) {
-            fieldJson.put("fieldType", "Float");
+            fieldJson.put(FIELDTYPE, "Float");
             fieldJson.put(FIELDVALUE_JSON, "");
         } else if (!field.getType().isPrimitive()
                 && !field.getType().equals(String.class)
@@ -456,15 +460,15 @@ public class JsonUtils {
                     innerFieldsDetails.put(innerFieldJson);
                 }
             }
-            fieldJson.put("fields", innerFieldsDetails);
-            fieldJson.put("fieldType", field.getType().getName());
+            fieldJson.put(FIELDS, innerFieldsDetails);
+            fieldJson.put(FIELDTYPE, field.getType().getName());
             fieldJson.put(CLASSNAME_JSON, field.getType().getName());
         } else if (List.class.isAssignableFrom(field.getType())) {
             addList(field, fieldJson);
         } else if (field.getType().isArray()) {
             Class<?> componentType = field.getType().getComponentType();
             fieldJson.put("isArray", true);
-            fieldJson.put("fieldType", componentType.getSimpleName() + "[]");
+            fieldJson.put(FIELDTYPE, componentType.getSimpleName() + "[]");
             JSONArray array = new JSONArray();
 
             if (!componentType.isPrimitive() && !componentType.equals(String.class)
@@ -477,7 +481,7 @@ public class JsonUtils {
         } else if (Map.class.isAssignableFrom(field.getType())) {
             addMap(field, fieldJson);
         }else {
-            fieldJson.put("fieldType", field.getType().getSimpleName());
+            fieldJson.put(FIELDTYPE, field.getType().getSimpleName());
             fieldJson.put(FIELDVALUE_JSON, "");
         }
 
@@ -487,14 +491,14 @@ public class JsonUtils {
                 fieldJson.put("description", promptAnnotation.describe());
             }
             if (!promptAnnotation.dateFormat().isEmpty()) {
-                fieldJson.put("dateFormat", promptAnnotation.dateFormat());
+                fieldJson.put(DATEFORMAT, promptAnnotation.dateFormat());
             }
         }
         return fieldJson;
     }
 
     private void addList(Field field, JSONObject fieldJson) {
-        fieldJson.put("fieldType", "list");
+        fieldJson.put(FIELDTYPE, "list");
 
         if (field.isAnnotationPresent(ListType.class)) {
             Class<?> listType = field.getAnnotation(ListType.class).value();
@@ -506,17 +510,17 @@ public class JsonUtils {
                     && !listType.isArray()
                     && !List.class.isAssignableFrom(listType)) {
 
-                fieldJson.put("fieldType", "list");
+                fieldJson.put(FIELDTYPE, "list");
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
-                fieldJson.put("fieldName", field.getName());
+                fieldJson.put(FIELDNAME, field.getName());
                 fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + listType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
                 // innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
             } else {
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
-                fieldJson.put("fieldType", "list");
-                fieldJson.put("fieldName", field.getName());
+                fieldJson.put(FIELDTYPE, "list");
+                fieldJson.put(FIELDNAME, field.getName());
                 fieldJson.put("description", "there could be multiple " + listType.getSimpleName());
                 innerFieldsDetails.put(listType.getName());
             }
@@ -528,14 +532,14 @@ public class JsonUtils {
     }
 
     private void addMap(Field field, JSONObject fieldJson) {
-        fieldJson.put("fieldType", "map");
+        fieldJson.put(FIELDTYPE, "map");
         fieldJson.put("prompt", "create the key value pair and put in fields");
         JSONArray array = new JSONArray();
         JSONObject object = new JSONObject();
         object.put("key", "");
         object.put("value", "");
         array.put(object);
-        fieldJson.put("fields", array);
+        fieldJson.put(FIELDS, array);
         fieldJson.put("type", field.getType().getName());
         if (field.isAnnotationPresent(MapKeyType.class)) {
             Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
@@ -551,15 +555,15 @@ public class JsonUtils {
         }
     }
 
-    private void addMap(Parameter field, JSONObject fieldJson) {
-        fieldJson.put("fieldType", "map");
+    public void addMap(Parameter field, JSONObject fieldJson) {
+        fieldJson.put(FIELDTYPE, "map");
         fieldJson.put("prompt", "create the key value pair and put in fields");
         JSONArray array = new JSONArray();
         JSONObject object = new JSONObject();
         object.put("key", "");
         object.put("value", "");
         array.put(object);
-        fieldJson.put("fields", array);
+        fieldJson.put(FIELDS, array);
         fieldJson.put("type", field.getType().getName());
         if (field.isAnnotationPresent(MapKeyType.class)) {
             Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
@@ -576,7 +580,7 @@ public class JsonUtils {
     }
 
     private void addList(Parameter field, JSONObject fieldJson) {
-        fieldJson.put("fieldType", "list");
+        fieldJson.put(FIELDTYPE, "list");
 
         if (field.isAnnotationPresent(ListType.class)) {
             Class<?> listType = field.getAnnotation(ListType.class).value();
@@ -588,16 +592,16 @@ public class JsonUtils {
                     && !listType.isArray()
                     && !List.class.isAssignableFrom(listType)) {
 
-                fieldJson.put("fieldType", "list");
+                fieldJson.put(FIELDTYPE, "list");
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
-                fieldJson.put("fieldName", field.getName());
+                fieldJson.put(FIELDNAME, field.getName());
                 fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + listType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
             } else {
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
-                fieldJson.put("fieldType", "list");
-                fieldJson.put("fieldName", field.getName());
+                fieldJson.put(FIELDTYPE, "list");
+                fieldJson.put(FIELDNAME, field.getName());
                 fieldJson.put("description", "there could be multiple " + listType.getSimpleName());
                 innerFieldsDetails.put(listType.getName());
             }
@@ -638,7 +642,7 @@ public class JsonUtils {
                         fieldDetails.put(fieldJson);
                     }
                 }
-                paramJson.put("fields", fieldDetails);
+                paramJson.put(FIELDS, fieldDetails);
                 paramJson.put("type", parameter.getType().getName());
             } else if (parameter.getType().isArray()) {
                 // This is an array type
@@ -675,7 +679,7 @@ public class JsonUtils {
 
                 // Check if format field is present in @Prompt annotation
                 if (!promptAnnotation.dateFormat().isEmpty()) {
-                    paramJson.put("dateFormat", promptAnnotation.dateFormat());
+                    paramJson.put(DATEFORMAT, promptAnnotation.dateFormat());
                 }
             }
             parameters.put(paramJson);
@@ -709,10 +713,10 @@ public class JsonUtils {
 
             // Check if format field is present in @Prompt annotation
             if (!promptAnnotation.dateFormat().isEmpty()) {
-                fieldJson.put("dateFormat", promptAnnotation.dateFormat());
+                fieldJson.put(DATEFORMAT, promptAnnotation.dateFormat());
             }
         }
-        fieldJson.put("fieldName", field.getName());
+        fieldJson.put(FIELDNAME, field.getName());
         Class<?> fieldType = field.getType();
         if (!fieldType.isPrimitive() && !fieldType.equals(String.class)
                 && !fieldType.equals(Date.class) && !fieldType.isArray() && !List.class.isAssignableFrom(fieldType)) {
@@ -723,8 +727,8 @@ public class JsonUtils {
                     fieldDetails.put(childfieldJson);
                 }
             }
-            fieldJson.put("fieldType", fieldType.getName());
-            fieldJson.put("fields", fieldDetails);
+            fieldJson.put(FIELDTYPE, fieldType.getName());
+            fieldJson.put(FIELDS, fieldDetails);
             return fieldJson;
         } else if (List.class.isAssignableFrom(fieldType)) {
             addList(field, fieldJson);
@@ -746,14 +750,14 @@ public class JsonUtils {
             fieldJson.put(FIELDVALUE_JSON, array);
             fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + componentType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
         }
-        fieldJson.put("fieldType", fieldType.getSimpleName());
+        fieldJson.put(FIELDTYPE, fieldType.getSimpleName());
         if (!fieldJson.has(FIELDVALUE_JSON)) {
             fieldJson.put(FIELDVALUE_JSON, "");
         }
         return fieldJson;
     }
 
-    private static void processProperties(ObjectNode parentNode, Map<String, Schema> properties) {
+    public  void processProperties(ObjectNode parentNode, Map<String, Schema> properties) {
         ObjectMapper mapper = new ObjectMapper();
 
         for (Map.Entry<String, Schema> entry : properties.entrySet()) {
@@ -799,7 +803,7 @@ public class JsonUtils {
         }
         JsonObject rootObject = new JsonObject();
         JsonArray array = new JsonArray();
-        rootObject.add("fields",array);
+        rootObject.add(FIELDS,array);
         for (String key:keys
              ) {
             array.add(createJson(key));
@@ -817,8 +821,8 @@ public class JsonUtils {
     @NotNull
     public  JsonObject createJson(String key) {
         JsonObject jsonObj = new JsonObject();
-        jsonObj.addProperty("fieldName", key);
-        jsonObj.addProperty("fieldType", "String");
+        jsonObj.addProperty(FIELDNAME, key);
+        jsonObj.addProperty(FIELDTYPE, "String");
         jsonObj.addProperty(FIELDVALUE_JSON, "");
         return jsonObj;
     }
