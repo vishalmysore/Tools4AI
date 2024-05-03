@@ -341,3 +341,7 @@ c
 3src/test/java/com/t4a/test/HallucinationQATest.java,a\b\ab498b39f0ec70c5644d32f6acfcff99aadb9ffb
 \
 ,src/test/java/com/t4a/test/AIActionTest.java,1\d\1d99fc053be0ec595a647b0bc92de0274faa1839
+W
+'src/main/java/com/t4a/api/MimeType.java,2\a\2ad02f03ba0f443b02a720f98d4654f5af384e22
+\
+,src/test/java/com/t4a/test/MimeTypeTest.java,c\c\cc01586e59039192bb70667a5a898ec21b0a4314
