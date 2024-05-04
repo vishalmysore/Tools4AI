@@ -12,20 +12,18 @@ test_count=$(cat $xml_files | grep -c "<testcase")
 echo "Total number of tests: $test_count"
 
 
-# GitHub Gist ID where you want to store the test count
-GIST_ID=$GIST_ID
 
-# Read GitHub Personal Access Token from environment variable
-GIST_TOKEN=$GIST_TOKEN
 
 echo "GIST_ID: $GIST_ID"
-echo "GIST_TOKEN: $GIST_TOKEN"
+
 
 json_data='{"schemaVersion": "1", "label": "testcount", "message": "'$test_count'", "color": "orange"}'
 
+echo "JSON data: $json_data"
+
 # Prevent any output from the script
-#exec > /dev/null
-#exec 2>&1
+exec > /dev/null
+exec 2>&1
 
 # Create or update the Gist with the test count
 curl -s -X PATCH \
