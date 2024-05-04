@@ -23,8 +23,8 @@ GIST_TOKEN=$GIST_TOKEN
 json_data='{"schemaVersion": "1", "label": "testcount", "message": "'$test_count'", "color": "orange"}'
 
 # Prevent any output from the script
-exec > /dev/null
-exec 2>&1
+#exec > /dev/null
+#exec 2>&1
 
 # Create or update the Gist with the test count
 curl -s -X PATCH \
