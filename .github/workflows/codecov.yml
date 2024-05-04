@@ -18,8 +18,14 @@ jobs:
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload test custom
+        env:
+          GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+          GIST_ID: ${{ secrets.GIST_ID }}
+        run: bash uploadnumber.sh
       - name: Upload test numbers
         uses: gaelgirodon/ci-badges-action@v1
         with:
           gist-id: ${{ secrets.GIST_ID }}
           token: ${{ secrets.GIST_TOKEN }}
+
