@@ -18,7 +18,8 @@ GIST_ID=$GIST_ID
 # Read GitHub Personal Access Token from environment variable
 GIST_TOKEN=$GIST_TOKEN
 
-
+echo "GIST_ID: $GIST_ID"
+echo "GIST_TOKEN: $GIST_TOKEN"
 
 json_data='{"schemaVersion": "1", "label": "testcount", "message": "'$test_count'", "color": "orange"}'
 
