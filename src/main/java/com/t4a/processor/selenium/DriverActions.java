@@ -11,7 +11,15 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class DriverActions {
-    @Prompt(describe = "What method should i invoke on org.openqa.selenium.WebDriver {navigate, get,findElement,findElements,click}")
+    @Prompt(describe = "What method should i invoke on org.openqa.selenium.WebDriver " +
+            "{navigate, get," +
+             "click, " +
+            "takescreenshot, sendKeys,clear,submit,getText," +
+            "isDisplayed,isEnabled," +
+            "isSelected,getAttribute,switchTo,selectByVisibleText," +
+            "selectByValue,selectByIndex" +
+            "}" +
+            "")
     String typeOfActionToTakeOnWebDriver;
 
 }

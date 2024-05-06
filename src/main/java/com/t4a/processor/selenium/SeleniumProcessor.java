@@ -2,12 +2,13 @@ package com.t4a.processor.selenium;
 
 import com.t4a.JsonUtils;
 import com.t4a.processor.AIProcessingException;
+import com.t4a.processor.AIProcessor;
 import com.t4a.transform.PromptTransformer;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public interface SeleniumProcessor {
     Logger LOGGER = LoggerFactory.getLogger(SeleniumProcessor.class);
@@ -17,16 +18,31 @@ public interface SeleniumProcessor {
         String act = actions.getTypeOfActionToTakeOnWebDriver();
         LOGGER.debug("Processing the web action: {}", act);
         WebDriverAction action = WebDriverAction.valueOf(act.toUpperCase());
-        if (WebDriverAction.GET.equals(action)) {
+        if (WebDriverAction.GET.equals(action)|| WebDriverAction.NAVIGATE.equals(action)) {
             String urlOfTheWebPage = getStringFromPrompt(prompt, "urlToClick");
             LOGGER.debug("Opening the web page: {}", urlOfTheWebPage);
             getDriver().get(urlOfTheWebPage);
         }
-        if (WebDriverAction.CLICK.equals(action)) {
+        else if (WebDriverAction.CLICK.equals(action)) {
             String textOfElementToClick = getStringFromPrompt(prompt, "textOfElementToClick");
             LOGGER.debug("Clicking on the element with text: {}", textOfElementToClick);
             WebElement elementToClick = getDriver().findElement(By.linkText(textOfElementToClick));
             elementToClick.click();
+        }
+        else if (WebDriverAction.TAKESCREENSHOT.equals(action)) {
+            String fileNameToSaveScreenshot = getStringFromPrompt(prompt, "fileNameToSaveScreenshot");
+            LOGGER.debug("Clicking on the element with text: {}", fileNameToSaveScreenshot);
+            TakesScreenshot ts = (TakesScreenshot) getDriver();
+            File screenshotFile = ts.getScreenshotAs(OutputType.FILE);
+            try {
+
+                // Save the screenshot file
+               boolean result =  screenshotFile.renameTo(new File(fileNameToSaveScreenshot));
+
+                LOGGER.debug("Screenshot saved successfully at: {} is {}" , fileNameToSaveScreenshot,result);
+            } catch (Exception e) {
+               throw new AIProcessingException("Failed to save the screenshot file: " + e.getMessage());
+            }
         }
     }
 
@@ -41,4 +57,5 @@ public interface SeleniumProcessor {
     public WebDriver getDriver();
     public JsonUtils getUtils();
     public PromptTransformer getTransformer();
+    public AIProcessor getActionProcessor();
 }

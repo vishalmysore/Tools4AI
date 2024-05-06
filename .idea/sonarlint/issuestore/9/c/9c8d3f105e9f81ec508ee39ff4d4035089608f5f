@@ -1,83 +1,106 @@
 
-h	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(æÍĞ²úÿÿÿÿ8Ÿ®ø×ó1
-R
-java:S3740¢"/Provide the parametrized type for this generic.(™Ş­Ôşÿÿÿÿ8¥®ø×ó1
-R
-java:S3740¢"/Provide the parametrized type for this generic.(™Ş­Ôşÿÿÿÿ8¥®ø×ó1
-M
-java:S3740©"/Provide the parametrized type for this generic.(‰Ô‚8¥®ø×ó1
-M
-java:S3740«"/Provide the parametrized type for this generic.(ü½÷ó8¥®ø×ó1
-M
-java:S3740«"/Provide the parametrized type for this generic.(ü½÷ó8¥®ø×ó1
-R
-java:S3740ø"/Provide the parametrized type for this generic.(ø€±åúÿÿÿÿ8¦®ø×ó1
-R
-java:S3740û"/Provide the parametrized type for this generic.(•ãÉâúÿÿÿÿ8¦®ø×ó1
-L
-java:S3740ı"/Provide the parametrized type for this generic.(™‘Œ8¦®ø×ó1
-o
-java:S1192ë"LDefine a constant instead of duplicating this literal "description" 3 times.(Ú¶Ã¥úÿÿÿÿ8­®ø×ó1
-e
-java:S1192É"GDefine a constant instead of duplicating this literal "String" 3 times.(á¥‰ê8®®ø×ó1
-m
-java:S1192õ"JDefine a constant instead of duplicating this literal "valueType" 4 times.(¿¯´šøÿÿÿÿ8®®ø×ó1
-Œ
-java:S1192ñ"iDefine a constant instead of duplicating this literal "Not able to derive the map Key type for " 4 times.(âÜ˜Êûÿÿÿÿ8®®ø×ó1
-k
-java:S1192ï"HDefine a constant instead of duplicating this literal "keyType" 4 times.(àÉ—¨úÿÿÿÿ8®®ø×ó1
-i
-java:S1192…"FDefine a constant instead of duplicating this literal "value" 4 times.(¥°ùŠıÿÿÿÿ8®®ø×ó1
-
-java:S1192÷"kDefine a constant instead of duplicating this literal "Not able to derive the map Value type for " 4 times.(ãÙàêüÿÿÿÿ8®®ø×ó1
-f
-java:S1192Ö"HDefine a constant instead of duplicating this literal "isArray" 3 times.(à”•8¯®ø×ó1
-e
-java:S1192å"GDefine a constant instead of duplicating this literal "prompt" 7 times.(÷ƒ„·8¯®ø×ó1
-X
-java:S1141ü"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8´®ø×ó1
-v
-java:S3776­"SRefactor this method to reduce its Cognitive Complexity from 103 to the 15 allowed.(›ÇÆµüÿÿÿÿ8â¼ø×ó1
-J
-java:S3011Ç",This accessibility update should be removed.(˜ÂÓ˜8ü¼ø×ó1
-O
-java:S3011Ê",This accessibility bypass should be removed.(â¾­úÿÿÿÿ8ş¼ø×ó1
-J
-java:S3011ø",This accessibility bypass should be removed.(ä¾˜®8“½ø×ó1
-O
-java:S3011€",This accessibility bypass should be removed.(Íùšøÿÿÿÿ8–½ø×ó1
-J
-java:S3011‰",This accessibility bypass should be removed.(ÀÃ³‡8™½ø×ó1
-J
-java:S3011‹",This accessibility bypass should be removed.(ÀÃ³‡8š½ø×ó1
-O
-java:S3011",This accessibility bypass should be removed.(Ò¿“ıÿÿÿÿ8œ½ø×ó1
-O
-java:S3011‘",This accessibility bypass should be removed.(éÆ“¤ıÿÿÿÿ8½ø×ó1
-J
-java:S3011”",This accessibility bypass should be removed.(æäû8½ø×ó1
-O
-java:S3011–",This accessibility bypass should be removed.(á¥ ëÿÿÿÿÿ8 ½ø×ó1
-J
-java:S3011š",This accessibility bypass should be removed.(œŸ™8¢½ø×ó1
-O
-java:S3011Ÿ",This accessibility bypass should be removed.(šÈ»«ùÿÿÿÿ8¤½ø×ó1
-O
-java:S3011¤",This accessibility bypass should be removed.(¡éèøøÿÿÿÿ8§½ø×ó1
-J
-java:S3011¹",This accessibility bypass should be removed.(ô¤Ùò8®½ø×ó1
-I
-java:S3011½",This accessibility bypass should be removed.(Ü¤èT8°½ø×ó1
+¤
+AY8cf0Z58LtJ9iwZvbR1	java:S112"FDefine and throw a dedicated exception instead of using a generic one.(æÍĞ²úÿÿÿÿ8°Ïûãñ1J$bd242606-2322-43f4-801d-f822b234e98d
+
+AY8SEb-VwWCABySxhhFy
+java:S3740¢"/Provide the parametrized type for this generic.(™Ş­Ôşÿÿÿÿ8ĞÏªì1J$1105ed3a-2c23-4436-b96f-ce191ae7eb4d
+
+AY8SEb-VwWCABySxhhFz
+java:S3740¢"/Provide the parametrized type for this generic.(™Ş­Ôşÿÿÿÿ8ĞÏªì1J$94a0a6f6-a29d-4d5b-9a0c-37f6dbc7ab9a
+‰
+AY8SEb-VwWCABySxhhF0
+java:S3740©"/Provide the parametrized type for this generic.(‰Ô‚8˜ğ¨€ì1J$d9eeca9f-0d36-479e-ab66-b44bb427fb17
+‰
+AY8SEb-VwWCABySxhhF2
+java:S3740«"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$009a34e5-2bde-4a44-a9e3-73533d4c2060
+‰
+AY8SEb-VwWCABySxhhF1
+java:S3740«"/Provide the parametrized type for this generic.(ü½÷ó8˜ğ¨€ì1J$f8f7a517-1dc2-4425-97f9-10ca3edae967
+x
+java:S3740ø"/Provide the parametrized type for this generic.(ø€±åúÿÿÿÿ8¦®ø×ó1J$b4b751ca-460a-4f26-81f3-a10249ca8fa3
+x
+java:S3740û"/Provide the parametrized type for this generic.(•ãÉâúÿÿÿÿ8¦®ø×ó1J$35894b07-dbf6-48da-a665-88d825862711
+r
+java:S3740ı"/Provide the parametrized type for this generic.(™‘Œ8¦®ø×ó1J$6fd89c7f-9dad-40af-b3ff-e69d80c6caf1
+«
+AY8SEb-VwWCABySxhhF6
+java:S1192ë"LDefine a constant instead of duplicating this literal "description" 3 times.(Ú¶Ã¥úÿÿÿÿ8˜ğ¨€ì1J$04399898-938c-4c4e-a170-9a7956f355fc
+¡
+AY8SEb-VwWCABySxhhF8
+java:S1192É"GDefine a constant instead of duplicating this literal "String" 3 times.(á¥‰ê8Ø¥¾ñî1J$3fb3ba99-cc9b-49a6-a702-e549c6c52632
+©
+AY8SEb-VwWCABySxhhF-
+java:S1192õ"JDefine a constant instead of duplicating this literal "valueType" 4 times.(¿¯´šøÿÿÿÿ8ĞÏªì1J$f2555f3e-753e-4410-8bfb-e67164855efc
+È
+AY8SEb-VwWCABySxhhF_
+java:S1192ñ"iDefine a constant instead of duplicating this literal "Not able to derive the map Key type for " 4 times.(âÜ˜Êûÿÿÿÿ8ĞÏªì1J$5c20215e-c7ba-41ac-b0b7-5abd1faecbd0
+§
+AY8SEb-VwWCABySxhhGA
+java:S1192ï"HDefine a constant instead of duplicating this literal "keyType" 4 times.(àÉ—¨úÿÿÿÿ8ĞÏªì1J$a4de662b-101a-4b26-a291-bff0532ee2cc
+¥
+AY8SEb-VwWCABySxhhGB
+java:S1192…"FDefine a constant instead of duplicating this literal "value" 4 times.(¥°ùŠıÿÿÿÿ8ĞÏªì1J$6f3fa62e-5b65-499e-acd0-816deac001d8
+Ê
+AY8SEb-VwWCABySxhhGD
+java:S1192÷"kDefine a constant instead of duplicating this literal "Not able to derive the map Value type for " 4 times.(ãÙàêüÿÿÿÿ8ĞÏªì1J$565cd6d9-43fc-4b71-b534-89b3963c2e4f
+¢
+AY8SEb-VwWCABySxhhGE
+java:S1192Ö"HDefine a constant instead of duplicating this literal "isArray" 3 times.(à”•8ğÇ®Ñë1J$a5eaada6-dc58-48e0-ac17-20e6eae28477
+¡
+AY8SEb-VwWCABySxhhGG
+java:S1192å"GDefine a constant instead of duplicating this literal "prompt" 7 times.(÷ƒ„·8€‹‘éğ1J$9eb629f8-6693-4b9d-9c05-01af4da1fd4b
+”
+AY8SEb-VwWCABySxhhGI
+java:S1141ü"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8Ø¥¾ñî1J$92c1cf12-a684-4d7c-ad87-b4d453b03c2b
+²
+AY8cf0Z58LtJ9iwZvbR2
+java:S3776­"SRefactor this method to reduce its Cognitive Complexity from 103 to the 15 allowed.(›ÇÆµüÿÿÿÿ8°Ïûãñ1J$8fc35426-10cd-4519-82d4-da1316230412
+p
+java:S3011Ç",This accessibility update should be removed.(˜ÂÓ˜8ü¼ø×ó1J$397a62ec-4b58-4fec-b380-1ba7119fed85
 u
-java:S3776ª"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(»Èûªÿÿÿÿÿ8Ó½ø×ó1
-J
-java:S3011«",This accessibility update should be removed.(ôË8Ö½ø×ó1
-Y	java:S125†"<This block of commented-out lines of code should be removed.(ßùŠƒ8…¾ø×ó1
+java:S3011Ê",This accessibility bypass should be removed.(â¾­úÿÿÿÿ8ş¼ø×ó1J$50e901fa-6997-44a1-a3a5-c30f070731bf
 p
-java:S3776ç"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(Ò›Â8¬¾ø×ó1
+java:S3011ø",This accessibility bypass should be removed.(ä¾˜®8“½ø×ó1J$3b65ee0f-86da-4351-9cb3-2bb9254f78d1
+u
+java:S3011€",This accessibility bypass should be removed.(Íùšøÿÿÿÿ8–½ø×ó1J$f0d054d0-aa09-40f4-8a55-a66e42afa5ed
 p
-java:S3776¹"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(ü¾ğ°8Î¾ø×ó1
-ê
-java:S6541­"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 137 to 64, Complexity from 40 to 14, Nesting Level from 8 to 2, Number of Variables from 34 to 6.(›ÇÆµüÿÿÿÿ8ş¾ø×ó1
-è
-java:S6541ª"ÄA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 67 to 64, Complexity from 26 to 14, Nesting Level from 3 to 2, Number of Variables from 8 to 6.(»Èûªÿÿÿÿÿ8ş¾ø×ó1
+java:S3011‰",This accessibility bypass should be removed.(ÀÃ³‡8™½ø×ó1J$45bc3149-6621-4744-81cb-b26b7988b0e8
+p
+java:S3011‹",This accessibility bypass should be removed.(ÀÃ³‡8š½ø×ó1J$fb9e4740-6eef-42d8-b0c1-e771b4252004
+u
+java:S3011",This accessibility bypass should be removed.(Ò¿“ıÿÿÿÿ8œ½ø×ó1J$714986b4-913f-4f85-8652-a38a10d70dd9
+u
+java:S3011‘",This accessibility bypass should be removed.(éÆ“¤ıÿÿÿÿ8½ø×ó1J$e0eee0cf-b2c0-4563-a4a8-cf86b729c138
+p
+java:S3011”",This accessibility bypass should be removed.(æäû8½ø×ó1J$20604018-7c8a-4c63-b513-e872bfd7d361
+u
+java:S3011–",This accessibility bypass should be removed.(á¥ ëÿÿÿÿÿ8 ½ø×ó1J$d21366df-57f3-4b13-849c-56c92fbe4125
+p
+java:S3011š",This accessibility bypass should be removed.(œŸ™8¢½ø×ó1J$2f9d92c7-ad8e-45df-ab1b-bde22d2b6aec
+u
+java:S3011Ÿ",This accessibility bypass should be removed.(šÈ»«ùÿÿÿÿ8¤½ø×ó1J$4b1fce62-30d2-4f7c-8b40-05dcf7a3108e
+u
+java:S3011¤",This accessibility bypass should be removed.(¡éèøøÿÿÿÿ8§½ø×ó1J$82cffd71-3308-44d9-a730-562857c5b0b1
+p
+java:S3011¹",This accessibility bypass should be removed.(ô¤Ùò8®½ø×ó1J$9c2d6d4f-b403-449d-b81f-64f179d9d885
+o
+java:S3011½",This accessibility bypass should be removed.(Ü¤èT8°½ø×ó1J$c87b052f-22a8-41ad-9c54-f1bfb24bd33b
+±
+AY8SEb-VwWCABySxhhGO
+java:S3776ª"RRefactor this method to reduce its Cognitive Complexity from 27 to the 15 allowed.(»Èûªÿÿÿÿÿ8Ø¥¾ñî1J$d58c32b7-11b9-4fd0-abd5-1e1f6d858df9
+p
+java:S3011«",This accessibility update should be removed.(ôË8Ö½ø×ó1J$af5aa0d5-bf31-4d97-9dd8-4d5879db1bab
+•
+AY8SEb-VwWCABySxhhGP	java:S125†"<This block of commented-out lines of code should be removed.(ßùŠƒ8˜ğ¨€ì1J$6763fff4-e69d-4b8d-8b48-7e4dced1c712
+¬
+AY8SEb-VwWCABySxhhGQ
+java:S3776ç"RRefactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.(Ò›Â8ĞÏªì1J$246425f4-4497-440f-b6ce-3a4d67830149
+¬
+AY8SEb-VwWCABySxhhGT
+java:S3776¹"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(ü¾ğ°8˜ğ¨€ì1J$d1a3129a-6778-411e-9b51-169c8343e992
+¦
+AY8cf0Z58LtJ9iwZvbR3
+java:S6541­"ÆA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 137 to 64, Complexity from 40 to 14, Nesting Level from 8 to 2, Number of Variables from 34 to 6.(›ÇÆµüÿÿÿÿ8°Ïûãñ1J$05532d22-2a85-4abd-bd80-312902528f61
+¤
+AY8SEb-VwWCABySxhhGX
+java:S6541ª"ÄA "Brain Method" was detected. Refactor it to reduce at least one of the following metrics: LOC from 67 to 64, Complexity from 26 to 14, Nesting Level from 3 to 2, Number of Variables from 8 to 6.(»Èûªÿÿÿÿÿ8˜ğ¨€ì1J$0bc5b741-de83-4a77-b135-ee2b8599a8c5
