@@ -121,7 +121,6 @@ public class GeminiImageActionProcessor {
             String mimeType = getMimeType(imageNameAndPath);
             return imageToText(readImageFile(imageNameAndPath.toURI().toString()),mimeType, "Describe this completely with values and each and every detail?");
         } catch (Exception e) {
-            e.printStackTrace();
             throw new AIProcessingException(e);
         }
     }
