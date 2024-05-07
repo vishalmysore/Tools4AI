@@ -60,8 +60,6 @@ X
 i
 9src/main/java/com/t4a/transform/AnthropicTransformer.java,c\0\c00a49aed1bb945e2393fc2ac5aecfb46afe7b16
 l
-<src/main/java/com/t4a/transform/GeminiPromptTransformer.java,b\d\bdbf8bd71f8ccc22f0a64ff3f27a0a9d31d82a69
-l
 <src/main/java/com/t4a/transform/OpenAIPromptTransformer.java,5\5\555fa71e803d4bddbb2843f2863afea509b0a3c0
 f
 6src/main/java/com/t4a/transform/PromptTransformer.java,b\b\bbaac2b27c461ef127b740cd79a19b8716f6c3e9
@@ -113,8 +111,6 @@ m
 =src/main/java/com/t4a/processor/AnthropicActionProcessor.java,f\4\f4f36add4cf7c46cece5debbb25fad8d916b8928
 ;
 qodana.yaml,8\5\85c3a901608a6b9adf48d245fa84828b66304e51
-b
-2src/main/java/com/t4a/processor/TextProcessor.java,c\1\c1c35b61d8c1bb6785b70e50e4b7c7e1628f5674
 j
 :src/main/java/com/t4a/processor/OpenAiActionProcessor.java,4\d\4db9191fdf229a4f5b09fe1e0601146df2c56b47
 i
@@ -209,8 +205,6 @@ k
 ;src/test/java/com/t4a/examples/PromptPredictionExample.java,7\4\74dbb89a67f5273bcb2e14aaafd1662e97dc77bf
 j
 :src/test/java/com/t4a/examples/ActionProcessorExample.java,2\b\2b28b6e913e8a25ba494a0a1cfee40bb144469b0
-j
-:src/main/java/com/t4a/processor/GeminiActionProcessor.java,b\6\b6a4b0e76a78abfc5b867f518f7e288f0388275e
 C
 azure-pipelines.yml,4\0\40ebc6823f24f296c0cd3fddd6ccda69b74ff2e4
 y
@@ -235,8 +229,6 @@ Y
 ).github/workflows/qodana_code_quality.yml,4\f\4f751ec70a5e7dcf5d05ba8965348b627e7b3e80
 k
 ;src/test/java/com/t4a/test/ExtendedPredictedActionTest.java,9\c\9cbcdebcb5aa8605d70ab6daa8fff3f1aa38dca0
-f
-6src/test/java/com/t4a/test/ExtendedInputParameter.java,1\f\1f7dce6c70043f8294de364c9a9a0a8cb11beb22
 a
 1src/main/java/com/t4a/api/JavaActionExecutor.java,2\2\22f5e8a0d4df188d139c2c4ea199f492e478dffd
 f
@@ -289,8 +281,6 @@ j
 -src/test/java/com/t4a/test/ActionKeyTest.java,8\b\8b406b2facd00a1f438d08e27afc99abbe9f16e0
 ^
 .src/test/java/com/t4a/test/ActionListTest.java,3\e\3e1e37ed7f9152cda244f2a57c9b28d924c6daf7
-l
-<src/test/java/com/t4a/test/SpringAnthropicProcessorTest.java,a\d\ad37f9a02cf05d30966eba6893eded01cdf36e9b
 d
 4src/test/java/com/t4a/examples/actions/Customer.java,2\8\2857d6f1fadcd9a3f8d1206bbec9a38b479371b6
 i
@@ -351,3 +341,7 @@ a
 1src/test/java/com/t4a/examples/ScriptExample.java,9\3\9344750fdec815e81b7923a17c983df50067e9ee
 t
 Dsrc/main/java/com/t4a/processor/scripts/SeleniumScriptProcessor.java,2\3\23319a86a03b91a71a5d99c9e634f9157f5b5401
+e
+5src/test/java/com/t4a/examples/agriculture/Plant.java,b\6\b654e6d8d903e5b4c3e8c00f77e34c12d4759ca0
+o
+?src/test/java/com/t4a/examples/agriculture/AgricultureDemo.java,2\9\29d6a1c1e9c8160e6fcbdc5d2f078d85d314c88a

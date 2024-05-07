@@ -39,6 +39,7 @@ public class GeminiImageActionProcessorTest {
             String text =  geminiImageActionProcessor.imageToText(this.getClass().getClassLoader().getResource("fitness.PNG"));
             Assertions.assertEquals(mockGRPSTR, text);
         } catch (AIProcessingException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }

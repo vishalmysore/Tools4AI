@@ -117,10 +117,11 @@ public class GeminiImageActionProcessor {
      */
     public String imageToText(URL imageNameAndPath) throws AIProcessingException{
         try {
-            File file = new File(imageNameAndPath.toURI());
-            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
-            return imageToText(readImageFile(file.getPath()),mimeType, "Describe this completely with values and each and every detail?");
+
+            String mimeType = getMimeType(imageNameAndPath);
+            return imageToText(readImageFile(imageNameAndPath.toURI().toString()),mimeType, "Describe this completely with values and each and every detail?");
         } catch (Exception e) {
+            e.printStackTrace();
             throw new AIProcessingException(e);
         }
     }
@@ -137,9 +138,9 @@ public class GeminiImageActionProcessor {
         try {
             JsonUtils utils = new JsonUtils();
             String jsonStr = utils.createJson(names);
-            File file = new File(imageNameAndPath.toURI());
-            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
-            jsonStr= imageToText(readImageFile(file.getPath()),mimeType, "look at this image and populate corresponding values for those fields in fieldValue in this json "+jsonStr);
+
+            String mimeType = getMimeType(imageNameAndPath);
+            jsonStr= imageToText(readImageFile(imageNameAndPath.toURI().toString()),mimeType, "look at this image and populate corresponding values for those fields in fieldValue in this json "+jsonStr);
             return utils.extractJson(jsonStr);
         } catch (Exception e) {
             throw new AIProcessingException(e);
@@ -159,9 +160,9 @@ public class GeminiImageActionProcessor {
         try {
             JsonUtils utils = new JsonUtils();
             String jsonStr = utils.convertClassToJSONString(clazz);
-            File file = new File(imageNameAndPath.toURI());
-            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
-            jsonStr= imageToText(readImageFile(file.getPath()),mimeType, "look at this image and populate fieldValue in this json "+jsonStr);
+
+            String mimeType = getMimeType(imageNameAndPath);
+            jsonStr= imageToText(readImageFile(imageNameAndPath.toURI().toString()),mimeType, "look at this image and populate fieldValue in this json "+jsonStr);
             return utils.extractJson(jsonStr);
         } catch (Exception e) {
             throw new AIProcessingException(e);
@@ -179,9 +180,8 @@ public class GeminiImageActionProcessor {
         try {
             JsonUtils utils = new JsonUtils();
             String jsonStr = utils.convertClassToJSONString(clazz);
-            File file = new File(imageNameAndPath.toURI());
-            String mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
-            jsonStr= imageToText(readImageFile(file.getPath()),mimeType, "look at this image and populate fieldValue in this json "+jsonStr);
+            String mimeType = getMimeType(imageNameAndPath);
+            jsonStr= imageToText(readImageFile(imageNameAndPath.toURI().toString()),mimeType, "look at this image and populate fieldValue in this json "+jsonStr);
             return utils.populateClassFromJson(jsonStr);
         } catch (Exception e) {
             throw new AIProcessingException(e);
@@ -189,9 +189,9 @@ public class GeminiImageActionProcessor {
     }
     public String imageToText(URL imageURL, String prompt) throws AIProcessingException{
         try {
-            File file = new File(imageURL.toURI());
-            String imageNameAndPath = file.getPath();
-            String mimeType = new MimetypesFileTypeMap().getContentType(imageNameAndPath);
+
+            String imageNameAndPath = imageURL.toURI().toString();
+            String mimeType = getMimeType(imageURL.toURI().toString());
             return imageToText(readImageFile(imageNameAndPath),mimeType, prompt);
         } catch (Exception e) {
             throw new AIProcessingException(e);
@@ -273,6 +273,34 @@ public class GeminiImageActionProcessor {
         }
     }
 
+    public String getMimeType(URL url) throws URISyntaxException, IOException {
+        String scheme = url.toURI().getScheme();
+        String mimeType;
+        if (scheme != null) {
+            if (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https")) {
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                 mimeType = connection.getHeaderField("Content-Type");
+            } else if (scheme.equalsIgnoreCase("file")) {
+                log.debug("URL is a local file");
+                mimeType = MimeType.PNG.getMimeType();
+                File file = new File(url.toURI());
+                mimeType = new MimetypesFileTypeMap().getContentType(file.getPath());
+            } else {
+                log.debug("Unknown URL scheme: " + scheme);
+                mimeType = MimeType.PNG.getMimeType();
+            }
+        } else {
+            log.debug("URL scheme is null");
+            mimeType = MimeType.PNG.getMimeType();
+        }
+        return mimeType;
+    }
+
+    public String getMimeType(String url) throws IOException, URISyntaxException {
+        return getMimeType(URI.create(url).toURL());
+    }
+
     public byte[] readImageFile(String url) throws IOException {
         InputStream inputStream = null;
 
@@ -285,8 +313,8 @@ public class GeminiImageActionProcessor {
             // If not an HTTP URL, assume it's a local file path
             else {
                 // Replace backslashes with forward slashes
-                url = url.replace("\\", "/");
-                inputStream = new FileInputStream(url);
+                File file = new File(new URI(url));
+                inputStream = new FileInputStream(file);
             }
 
             byte[] buffer = new byte[1024];
@@ -298,6 +326,8 @@ public class GeminiImageActionProcessor {
 
 
         return outputStream.toByteArray();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         } finally {
             // Close resources
             if (inputStream != null) {
