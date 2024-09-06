@@ -1,4 +1,7 @@
 
+”
+AY8SEb-VwWCABySxhhGI
+java:S1141ü"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8Ø¥¾ñî1J$92c1cf12-a684-4d7c-ad87-b4d453b03c2b
 ¤
 AY8cf0Z58LtJ9iwZvbR1	java:S112ž"FDefine and throw a dedicated exception instead of using a generic one.(æÍÐ²úÿÿÿÿ8°Ïûãñ1J$bd242606-2322-43f4-801d-f822b234e98d
 Ž
@@ -49,9 +52,6 @@ java:S1192Ö"HDefine a constant instead of duplicating this literal "isArray" 3
 ¡
 AY8SEb-VwWCABySxhhGG
 java:S1192å"GDefine a constant instead of duplicating this literal "prompt" 7 times.(÷ƒ„·8€‹‘éð1J$9eb629f8-6693-4b9d-9c05-01af4da1fd4b
-”
-AY8SEb-VwWCABySxhhGI
-java:S1141ü"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ8Ø¥¾ñî1J$92c1cf12-a684-4d7c-ad87-b4d453b03c2b
 ²
 AY8cf0Z58LtJ9iwZvbR2
 java:S3776­"SRefactor this method to reduce its Cognitive Complexity from 103 to the 15 allowed.(›ÇÆµüÿÿÿÿ8°Ïûãñ1J$8fc35426-10cd-4519-82d4-da1316230412

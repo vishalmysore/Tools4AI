@@ -36,16 +36,16 @@ public class SeleniumScriptProcessor {
         gson = new Gson();
         this.actionProcessor = actionProcessor;
     }
-    public ScriptResult process(String fileName) {
-        return process(fileName,null);
-    }
 
-    public ScriptResult process(String fileName, ScriptCallback callback) {
+    public ScriptResult process(String fileName) {
+        return process(fileName,new LoggingSeleniumCallback());
+    }
+    public ScriptResult process(String fileName, SeleniumCallback callback ) {
         ScriptResult result = new ScriptResult();
         try (InputStream is = SeleniumScriptProcessor.class.getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
              log.debug("Processing script file: " + fileName);
-            processCommands(callback, reader, result);
+            processCommands(reader, result,callback);
         } catch (IOException e) {
             log.error(e.getMessage());
         } catch (NullPointerException e) {
@@ -57,14 +57,15 @@ public class SeleniumScriptProcessor {
         return result;
     }
 
-    public void processCommands(ScriptCallback callback, BufferedReader reader, ScriptResult result) throws IOException, AIProcessingException {
+    public void processCommands( BufferedReader reader, ScriptResult result, SeleniumCallback callback) throws IOException, AIProcessingException {
         SeleniumProcessor processor = getActionProcessor();
         String line;
 
 
         while ((line = reader.readLine()) != null) {
+             callback.beforeWebAction(processor.getDriver());
              processor.processWebAction(line);
-             callback.lineResult("processing ");
+             callback.afterWebAction(processor.getDriver());
              log.debug("{}",result);
         }
     }

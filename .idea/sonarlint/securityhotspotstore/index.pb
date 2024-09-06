@@ -345,3 +345,7 @@ e
 5src/test/java/com/t4a/examples/agriculture/Plant.java,b\6\b654e6d8d903e5b4c3e8c00f77e34c12d4759ca0
 o
 ?src/test/java/com/t4a/examples/agriculture/AgricultureDemo.java,2\9\29d6a1c1e9c8160e6fcbdc5d2f078d85d314c88a
+m
+=src/main/java/com/t4a/processor/scripts/SeleniumCallback.java,0\d\0d12540036cf2e8dd658d318f0f111431c444483
+t
+Dsrc/main/java/com/t4a/processor/scripts/LoggingSeleniumCallback.java,7\0\70cc498c1575c22feb5ef18e5411d538754abb13
