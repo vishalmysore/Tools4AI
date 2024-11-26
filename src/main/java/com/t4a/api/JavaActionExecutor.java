@@ -88,46 +88,41 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
         }
 
     }
-    public  Schema mapClassToFun(String className, String funName, String discription) throws ClassNotFoundException {
-
+    public Schema mapClassToFun(String className, String funName, String description) throws ClassNotFoundException {
         Schema.Builder schemaBuilder = Schema.newBuilder().setType(Type.OBJECT);
+        Class childPojoClass = Class.forName(className);
+        Field[] fields = childPojoClass.getDeclaredFields();
 
-
-        Class childpojoClass = Class.forName(className);;
-
-        // Create a Map to store field names and types
-
-
-        // Get all the declared fields of the POJO class
-        Field[] fields = childpojoClass.getDeclaredFields();
-
-        // Iterate over the fields
         for (Field field : fields) {
-            // Get the name of the field
-            String fieldName = field.getName();
-
-            // Get the type of the field
-            Type fieldType = mapTypeForPojo(field.getType());
-
-            if(fieldType == Type.OBJECT) {
-                schemaBuilder.putProperties(fieldName, mapClassToFun(field.getType().getName(),funName,discription))
-                        .addRequired(fieldName);
-            } else{
-
-                Schema.Builder propertySchemaBuilder = Schema.newBuilder()
-                        .setType(fieldType)
-                        .setDescription(fieldName);
-                schemaBuilder.putProperties(fieldName, propertySchemaBuilder.build())
-                        .addRequired(fieldName);
-              //  if(getProperties() != null) {
-                //    getProperties().put(fieldName, fieldType);
-               // }
-            }
+            addFieldToSchema(field, schemaBuilder, funName, description);
         }
 
-        Schema sc =  schemaBuilder.build();
-        return sc;
+        return schemaBuilder.build();
+    }
 
+    private void addFieldToSchema(Field field, Schema.Builder schemaBuilder, String funName, String description) {
+        String fieldName = field.getName();
+        Type fieldType = mapTypeForPojo(field.getType());
+
+        if (fieldType == Type.OBJECT) {
+            addObjectField(field, schemaBuilder, funName, description, fieldName);
+        } else {
+            addSimpleField(fieldName, fieldType, schemaBuilder);
+        }
+    }
+
+    private void addObjectField(Field field, Schema.Builder schemaBuilder, String funName, String description, String fieldName) {
+        try {
+            Schema nestedSchema = mapClassToFun(field.getType().getName(), funName, description);
+            schemaBuilder.putProperties(fieldName, nestedSchema).addRequired(fieldName);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Failed to map nested class: " + field.getType().getName(), e);
+        }
+    }
+
+    private void addSimpleField(String fieldName, Type fieldType, Schema.Builder schemaBuilder) {
+        Schema propertySchema = Schema.newBuilder().setType(fieldType).setDescription(fieldName).build();
+        schemaBuilder.putProperties(fieldName, propertySchema).addRequired(fieldName);
     }
 
 
@@ -156,8 +151,7 @@ public abstract class JavaActionExecutor implements AIActionExecutor {
                 } else if (value instanceof ArrayList) {
                     ArrayList list = (ArrayList) value;
 
-                    for (Object listVal:list
-                         ) {
+                    for (Object listVal:list) {
 
                         log.debug(getBuildForJson((Map<String, Object>) listVal).toString());
                     }
