@@ -131,74 +131,58 @@ public class JavaMethodExecutor extends JavaActionExecutor {
         } else
             return buildFunction(action.getClass().getName(), action.getActionName(), action.getActionName(), action.getDescription());
     }
-    public void mapMethod(HttpPredictedAction action) {
-        List<InputParameter> inputParameterList =action.getInputObjects();
-        for (InputParameter parameter : inputParameterList) {
-            if(!parameter.hasDefaultValue())
-              properties.put(parameter.getName(), mapType(parameter.getType()));
-        }
-
-    }
-
     public void mapMethod(AIAction action) {
         this.action = action;
         if(action.getActionType().equals(ActionType.SHELL)) {
-            ShellPredictedAction shellAction = (ShellPredictedAction)action;
-            mapMethod(shellAction);
-        } else if(action.getActionType().equals(ActionType.HTTP)) {
-            HttpPredictedAction httpAction = (HttpPredictedAction)action;
-            if(httpAction.isHasJson()) {
-                //covert Json to properties
-                Map<String,Object> map = httpAction.getJsonMap();
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    String key = entry.getKey();
-                    Object value = entry.getValue();
-                    properties.put(key, mapType(value.getClass()));
-                }
-
+            mapShellMethod((ShellPredictedAction)action);
+        }
+        else if(action.getActionType().equals(ActionType.HTTP)) {
+            mapHttpMethod((HttpPredictedAction)action);
+        }
+        else if(action.getActionType().equals(ActionType.EXTEND)) {
+            mapExtendedMethod((ExtendedPredictedAction)action);
+        }
+        else if(action.getActionType().equals(ActionType.JAVAMETHOD)) {
+            if(action instanceof GenericJavaMethodAction) {
+                mapMethod(((GenericJavaMethodAction)action).getActionClassName(), ((GenericJavaMethodAction)action).getActionName());
+            } else {
+                mapMethod(action.getClass().getName(), action.getActionName());
             }
-            else {
-                mapMethod(httpAction);
-            }
-        } else if(action.getActionType().equals(ActionType.EXTEND))  {
-            ExtendedPredictedAction extendedPredictedAction = (ExtendedPredictedAction)action;
-            mapMethod(extendedPredictedAction);
-        } else if(action.getActionType().equals(ActionType.JAVAMETHOD)){
-
-                if(action instanceof GenericJavaMethodAction) {
-                    mapMethod(((GenericJavaMethodAction)action).getActionClassName(), ((GenericJavaMethodAction)action).getActionName());
-                } else {
-                    mapMethod(action.getClass().getName(), action.getActionName());
-                }
-
         }
     }
-    private void mapMethod(ExtendedPredictedAction action) {
-        List<ExtendedInputParameter> inputParameterList =action.getInputParameters();
+
+    private void mapHttpMethod(HttpPredictedAction action) {
+        if(action.isHasJson()) {
+            Map<String,Object> map = action.getJsonMap();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                properties.put(entry.getKey(), mapType(entry.getValue().getClass()));
+            }
+        }
+        else {
+            List<InputParameter> inputParameterList = action.getInputObjects();
+            for (InputParameter parameter : inputParameterList) {
+                if(!parameter.hasDefaultValue())
+                    properties.put(parameter.getName(), mapType(parameter.getType()));
+            }
+        }
+    }
+
+    private void mapExtendedMethod(ExtendedPredictedAction action) {
+        List<ExtendedInputParameter> inputParameterList = action.getInputParameters();
         for (ExtendedInputParameter parameter : inputParameterList) {
             if(!parameter.hasDefaultValue())
                 properties.put(parameter.getName(), mapType(parameter.getType()));
         }
-
     }
-    private void mapMethod(ShellPredictedAction action) {
-        String nameList =action.getParameterNames();
-        String[] names = nameList.split(",");
+
+    private void mapShellMethod(ShellPredictedAction action) {
+        String[] names = action.getParameterNames().split(",");
         for (String name : names) {
-                properties.put(name, mapType("String"));
+            properties.put(name, mapType("String"));
         }
-
     }
-
-    /**
-     * Convert method to map with name and value ( needs --parameter to be set at compiler to work )
-     * @param className
-     * @param methodName
-     */
 
     private void mapMethod(String className, String methodName) {
-
-
         try {
             clazz = Class.forName(className);
             Method[] methods = clazz.getMethods();
@@ -208,20 +192,13 @@ public class JavaMethodExecutor extends JavaActionExecutor {
                     this.method = method;
                     Parameter[] parameters = method.getParameters();
 
-                    for (int i = 0; i < parameters.length; i++) {
-                        Type tp = mapType(parameters[i].getType());
-                        if(tp == Type.OBJECT) {
-                            properties.put(parameters[i].getName(),parameters[i].getType());
-                        } else {
-                            properties.put(parameters[i].getName(), tp);
-                        }
+                    for (Parameter parameter : parameters) {
+                        Type tp = mapType(parameter.getType());
+                        properties.put(parameter.getName(), tp == Type.OBJECT ? parameter.getType() : tp);
                     }
-
-                    log.debug("Method arguments for " + methodName + ": " + properties);
                     return;
                 }
             }
-
             log.error("Method not found: " + methodName);
         } catch (ClassNotFoundException e) {
             log.error("Class not found: " + className);
