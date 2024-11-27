@@ -39,8 +39,8 @@ public class JsonUtils {
     private static final String  FIELDNAME= "fieldName";
     private static final String  FIELDVALUE_JSON = "fieldValue";
     private static final String CLASSNAME_JSON = "className";
-    public static final String IF_YOU_FIND_MORE_THAN_1 = "If you find more than 1 ";
-    public static final String ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE = " add it as another object inside fieldValue";
+    private static final String MULTIPLE_ITEMS = "If you find more than 1 %s add it as another object inside fieldValue";
+
 
     /**
      * Fetches the group name from a JSON string.
@@ -513,7 +513,7 @@ public class JsonUtils {
                 fieldJson.put(FIELDTYPE, "list");
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
                 fieldJson.put(FIELDNAME, field.getName());
-                fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + listType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
+                fieldJson.put("prompt", String.format(MULTIPLE_ITEMS, listType.getSimpleName()));
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
                 // innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
@@ -595,7 +595,7 @@ public class JsonUtils {
                 fieldJson.put(FIELDTYPE, "list");
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
                 fieldJson.put(FIELDNAME, field.getName());
-                fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + listType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
+                fieldJson.put("prompt", String.format(MULTIPLE_ITEMS, listType.getSimpleName()));
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
             } else {
@@ -659,7 +659,7 @@ public class JsonUtils {
                     array.put(componentType);
                 }
                 paramJson.put(FIELDVALUE_JSON, array);
-                paramJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + componentType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
+                paramJson.put("prompt", String.format(MULTIPLE_ITEMS, componentType.getSimpleName()));
             } else if (List.class.isAssignableFrom(parameter.getType())) {
                 addList(parameter, paramJson);
             } else if (Map.class.isAssignableFrom(parameter.getType())) {
@@ -748,7 +748,7 @@ public class JsonUtils {
                 array.put(componentType);
             }
             fieldJson.put(FIELDVALUE_JSON, array);
-            fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + componentType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
+            fieldJson.put("prompt", String.format(MULTIPLE_ITEMS, componentType.getSimpleName()));
         }
         fieldJson.put(FIELDTYPE, fieldType.getSimpleName());
         if (!fieldJson.has(FIELDVALUE_JSON)) {
