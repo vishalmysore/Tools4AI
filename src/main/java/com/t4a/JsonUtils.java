@@ -39,8 +39,8 @@ public class JsonUtils {
     private static final String  FIELDNAME= "fieldName";
     private static final String  FIELDVALUE_JSON = "fieldValue";
     private static final String CLASSNAME_JSON = "className";
-    private static final String MULTIPLE_ITEMS = "If you find more than 1 %s add it as another object inside fieldValue";
-
+    public static final String IF_YOU_FIND_MORE_THAN_1 = "If you find more than 1 ";
+    public static final String ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE = " add it as another object inside fieldValue";
 
     /**
      * Fetches the group name from a JSON string.
@@ -261,7 +261,7 @@ public class JsonUtils {
 
                         }
                     } else if ( ("Integer".equalsIgnoreCase(fieldType)))
-                                    {
+                    {
                         field.set(instance, fieldObj.getInt(FIELDVALUE_JSON));
                     } else if (("Float".equalsIgnoreCase(fieldType))) {
                         field.set(instance, fieldObj.getInt(FIELDVALUE_JSON));
@@ -325,7 +325,7 @@ public class JsonUtils {
 
         } catch (Exception e) {
 
-           log.warn(" could not populate "+jsonObject);
+            log.warn(" could not populate "+jsonObject);
         }
         return instance;
     }
@@ -351,54 +351,59 @@ public class JsonUtils {
         return classJson;
     }
 
-    private JSONObject buildBlankCollectionJsonObject(Field field, String collectionType) {
+    public JSONObject buildBlankListJsonObject(Field field) {
         JSONObject fieldJson = new JSONObject();
-        fieldJson.put(CLASSNAME_JSON, collectionType.equals("map") ? "java.util.Map" : "java.util.List");
-
-        // Create a default key-value or list item
+        fieldJson.put(CLASSNAME_JSON, "java.util.List");
+        fieldJson.put("prompt", "put each value inside fieldValue");
         JSONArray fieldsArray = new JSONArray();
-        JSONObject object = collectionType.equals("map")
-                ? new JSONObject().put("key", "").put("value", "")
-                : new JSONObject().put(FIELDVALUE_JSON, "");
+        JSONObject object = new JSONObject();
+        object.put(FIELDVALUE_JSON, "");
         fieldsArray.put(object);
-
         fieldJson.put(FIELDS, fieldsArray);
-
         if (field != null) {
             fieldJson.put("type", field.getType().getName());
-
-            // Handle key type for Map
-            if (collectionType.equals("map")) {
-                if (field.isAnnotationPresent(MapKeyType.class)) {
-                    Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
-                    fieldJson.put("keyType", keyType.getName());
-                } else {
-                    log.warn("Not able to derive the map Key type for " + field);
-                }
-
-                if (field.isAnnotationPresent(MapValueType.class)) {
-                    Class<?> valueType = field.getAnnotation(MapValueType.class).value();
-                    fieldJson.put("valueType", valueType.getName());
-                } else {
-                    log.warn("Not able to derive the map Value type for " + field);
-                }
+            if (field.isAnnotationPresent(MapKeyType.class)) {
+                Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
+                fieldJson.put("keyType", keyType.getName());
+            } else {
+                log.warn("Not able to derive the map Key type for " + field);
+            }
+            if (field.isAnnotationPresent(MapValueType.class)) {
+                Class<?> valueType = field.getAnnotation(MapValueType.class).value();
+                fieldJson.put("valueType", valueType.getName());
+            } else {
+                log.warn("Not able to derive the map Value type for " + field);
             }
 
-            // Add prompt for different collection types
-            fieldJson.put("prompt", collectionType.equals("map")
-                    ? "create the key value pair and put in fields"
-                    : "put each value inside fieldValue");
         }
-
         return fieldJson;
     }
-
-    public JSONObject buildBlankListJsonObject(Field field) {
-        return buildBlankCollectionJsonObject(field, "list");
-    }
-
     public JSONObject buildBlankMapJsonObject(Field field) {
-        return buildBlankCollectionJsonObject(field, "map");
+        JSONObject fieldJson = new JSONObject();
+        fieldJson.put(CLASSNAME_JSON, "java.util.Map");
+        JSONArray fieldsArray = new JSONArray();
+        JSONObject object = new JSONObject();
+        object.put("key", "");
+        object.put("value", "");
+        fieldsArray.put(object);
+        fieldJson.put(FIELDS, fieldsArray);
+        if (field != null) {
+            fieldJson.put("type", field.getType().getName());
+            if (field.isAnnotationPresent(MapKeyType.class)) {
+                Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
+                fieldJson.put("keyType", keyType.getName());
+            } else {
+                log.warn("Not able to derive the map Key type for " + field);
+            }
+            if (field.isAnnotationPresent(MapValueType.class)) {
+                Class<?> valueType = field.getAnnotation(MapValueType.class).value();
+                fieldJson.put("valueType", valueType.getName());
+            } else {
+                log.warn("Not able to derive the map Value type for " + field);
+            }
+
+        }
+        return fieldJson;
     }
 
     public JSONObject getJsonObjectForList(Class<?> clazz, String fieldName) {
@@ -508,7 +513,7 @@ public class JsonUtils {
                 fieldJson.put(FIELDTYPE, "list");
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
                 fieldJson.put(FIELDNAME, field.getName());
-                fieldJson.put("prompt", String.format(MULTIPLE_ITEMS, listType.getSimpleName()));
+                fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + listType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
                 // innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
@@ -590,7 +595,7 @@ public class JsonUtils {
                 fieldJson.put(FIELDTYPE, "list");
                 fieldJson.put(CLASSNAME_JSON, listType.getName());
                 fieldJson.put(FIELDNAME, field.getName());
-                fieldJson.put("prompt", String.format(MULTIPLE_ITEMS, listType.getSimpleName()));
+                fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + listType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
                 innerFieldsDetails.put(getJsonObjectForList(listType, field.getName()));
 
             } else {
@@ -654,7 +659,7 @@ public class JsonUtils {
                     array.put(componentType);
                 }
                 paramJson.put(FIELDVALUE_JSON, array);
-                paramJson.put("prompt", String.format(MULTIPLE_ITEMS, componentType.getSimpleName()));
+                paramJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + componentType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
             } else if (List.class.isAssignableFrom(parameter.getType())) {
                 addList(parameter, paramJson);
             } else if (Map.class.isAssignableFrom(parameter.getType())) {
@@ -743,7 +748,7 @@ public class JsonUtils {
                 array.put(componentType);
             }
             fieldJson.put(FIELDVALUE_JSON, array);
-            fieldJson.put("prompt", String.format(MULTIPLE_ITEMS, componentType.getSimpleName()));
+            fieldJson.put("prompt", IF_YOU_FIND_MORE_THAN_1 + componentType.getSimpleName() + ADD_IT_AS_ANOTHER_OBJECT_INSIDE_FIELD_VALUE);
         }
         fieldJson.put(FIELDTYPE, fieldType.getSimpleName());
         if (!fieldJson.has(FIELDVALUE_JSON)) {
@@ -800,7 +805,7 @@ public class JsonUtils {
         JsonArray array = new JsonArray();
         rootObject.add(FIELDS,array);
         for (String key:keys
-             ) {
+        ) {
             array.add(createJson(key));
         }
 
