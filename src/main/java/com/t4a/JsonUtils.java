@@ -351,59 +351,54 @@ public class JsonUtils {
         return classJson;
     }
 
-    public JSONObject buildBlankListJsonObject(Field field) {
+    private JSONObject buildBlankCollectionJsonObject(Field field, String collectionType) {
         JSONObject fieldJson = new JSONObject();
-        fieldJson.put(CLASSNAME_JSON, "java.util.List");
-        fieldJson.put("prompt", "put each value inside fieldValue");
+        fieldJson.put(CLASSNAME_JSON, collectionType.equals("map") ? "java.util.Map" : "java.util.List");
+
+        // Create a default key-value or list item
         JSONArray fieldsArray = new JSONArray();
-        JSONObject object = new JSONObject();
-        object.put(FIELDVALUE_JSON, "");
+        JSONObject object = collectionType.equals("map")
+                ? new JSONObject().put("key", "").put("value", "")
+                : new JSONObject().put(FIELDVALUE_JSON, "");
         fieldsArray.put(object);
+
         fieldJson.put(FIELDS, fieldsArray);
+
         if (field != null) {
             fieldJson.put("type", field.getType().getName());
-            if (field.isAnnotationPresent(MapKeyType.class)) {
-                Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
-                fieldJson.put("keyType", keyType.getName());
-            } else {
-                log.warn("Not able to derive the map Key type for " + field);
-            }
-            if (field.isAnnotationPresent(MapValueType.class)) {
-                Class<?> valueType = field.getAnnotation(MapValueType.class).value();
-                fieldJson.put("valueType", valueType.getName());
-            } else {
-                log.warn("Not able to derive the map Value type for " + field);
+
+            // Handle key type for Map
+            if (collectionType.equals("map")) {
+                if (field.isAnnotationPresent(MapKeyType.class)) {
+                    Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
+                    fieldJson.put("keyType", keyType.getName());
+                } else {
+                    log.warn("Not able to derive the map Key type for " + field);
+                }
+
+                if (field.isAnnotationPresent(MapValueType.class)) {
+                    Class<?> valueType = field.getAnnotation(MapValueType.class).value();
+                    fieldJson.put("valueType", valueType.getName());
+                } else {
+                    log.warn("Not able to derive the map Value type for " + field);
+                }
             }
 
+            // Add prompt for different collection types
+            fieldJson.put("prompt", collectionType.equals("map")
+                    ? "create the key value pair and put in fields"
+                    : "put each value inside fieldValue");
         }
+
         return fieldJson;
     }
-    public JSONObject buildBlankMapJsonObject(Field field) {
-        JSONObject fieldJson = new JSONObject();
-        fieldJson.put(CLASSNAME_JSON, "java.util.Map");
-        JSONArray fieldsArray = new JSONArray();
-        JSONObject object = new JSONObject();
-        object.put("key", "");
-        object.put("value", "");
-        fieldsArray.put(object);
-        fieldJson.put(FIELDS, fieldsArray);
-        if (field != null) {
-            fieldJson.put("type", field.getType().getName());
-            if (field.isAnnotationPresent(MapKeyType.class)) {
-                Class<?> keyType = field.getAnnotation(MapKeyType.class).value();
-                fieldJson.put("keyType", keyType.getName());
-            } else {
-                log.warn("Not able to derive the map Key type for " + field);
-            }
-            if (field.isAnnotationPresent(MapValueType.class)) {
-                Class<?> valueType = field.getAnnotation(MapValueType.class).value();
-                fieldJson.put("valueType", valueType.getName());
-            } else {
-                log.warn("Not able to derive the map Value type for " + field);
-            }
 
-        }
-        return fieldJson;
+    public JSONObject buildBlankListJsonObject(Field field) {
+        return buildBlankCollectionJsonObject(field, "list");
+    }
+
+    public JSONObject buildBlankMapJsonObject(Field field) {
+        return buildBlankCollectionJsonObject(field, "map");
     }
 
     public JSONObject getJsonObjectForList(Class<?> clazz, String fieldName) {
