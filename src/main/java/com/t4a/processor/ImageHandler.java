@@ -45,26 +45,5 @@ public class ImageHandler {
         }
     }
 
-    public static String determineMimeType(URL url) throws URISyntaxException, IOException {
-        String scheme = url.toURI().getScheme();
-        if (scheme == null) {
-            log.debug("URL scheme is null");
-            return MimeType.PNG.getMimeType();
-        }
 
-        switch (scheme.toLowerCase()) {
-            case "http":
-            case "https":
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                return connection.getHeaderField("Content-Type");
-            case "file":
-                log.debug("URL is a local file");
-                File file = new File(url.toURI());
-                return new MimetypesFileTypeMap().getContentType(file.getPath());
-            default:
-                log.debug("Unknown URL scheme: " + scheme);
-                return MimeType.PNG.getMimeType();
-        }
-    }
 }
