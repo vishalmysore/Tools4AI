@@ -225,8 +225,6 @@ d
 4src/test/java/com/t4a/test/PredictionLoaderTest.java,7\0\709714fb00f4b1468bd92bdafeb2d4f4b4b82ba9
 L
 .github/workflows/deploy.yml,f\1\f130ad0d1d16d0d70ec30d355f736ae3784b05cf
-Y
-).github/workflows/qodana_code_quality.yml,4\f\4f751ec70a5e7dcf5d05ba8965348b627e7b3e80
 k
 ;src/test/java/com/t4a/test/ExtendedPredictedActionTest.java,9\c\9cbcdebcb5aa8605d70ab6daa8fff3f1aa38dca0
 a
@@ -349,3 +347,25 @@ m
 =src/main/java/com/t4a/processor/scripts/SeleniumCallback.java,0\d\0d12540036cf2e8dd658d318f0f111431c444483
 t
 Dsrc/main/java/com/t4a/processor/scripts/LoggingSeleniumCallback.java,7\0\70cc498c1575c22feb5ef18e5411d538754abb13
+\
+,src/main/java/com/t4a/annotations/Agent.java,5\f\5f2b3240c63e77320af945f3f5f532dcccb2df68
+i
+9src/test/java/com/t4a/examples/actions/MyDiaryAction.java,c\5\c5f1776bf5f76ac82bffb5cb2c3a09928fcd9e10
+_
+/src/test/java/com/t4a/examples/ArrayAction.java,b\f\bf869e1a79eb744d066e99ce1b3c84a6a33ade6a
+l
+<src/test/java/com/t4a/examples/actions/TrafficViolation.java,c\a\ca83153bfb463bda226ab3f05e17b1ed6a0f8515
+e
+5src/test/java/com/t4a/examples/actions/MapAction.java,a\8\a8a71d6666e60dac0574c76ee1f81233182fa546
+h
+8src/test/java/com/t4a/examples/actions/SimpleAction.java,b\f\bf238e2a57c6f0316443863f00ad64ef95caa9df
+s
+Csrc/test/java/com/t4a/examples/actions/CustomerWithQueryAction.java,6\1\61a6ccb49bf38ff0e8f898513102dd64ce0f9777
+o
+?src/test/java/com/t4a/examples/actions/ServerRestartAction.java,d\d\ddaf5ada76f543734658567d3bb5e1d1d8a1cee1
+h
+8src/test/java/com/t4a/examples/actions/SearchAction.java,f\6\f6adc90f4d5ca4c72006ce88a3b5838414c648a8
+o
+?src/test/java/com/t4a/examples/actions/ArrayOfObjectAction.java,d\2\d2bf602edbc81165c4c0cae914f0dab47c7fbb09
+p
+@src/test/java/com/t4a/examples/actions/PlayerWithRestaurant.java,4\b\4bb0248712839df71d59e7faad4c88bfa408046d

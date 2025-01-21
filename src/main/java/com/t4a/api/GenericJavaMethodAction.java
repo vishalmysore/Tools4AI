@@ -1,7 +1,7 @@
 package com.t4a.api;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import com.t4a.processor.AIProcessingException;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +31,7 @@ public class GenericJavaMethodAction implements JavaMethodAction{
         init(actionInstance.getClass(),getAnnotatedMethods(actionInstance.getClass())) ;
     }
     public GenericJavaMethodAction(Class<?> clazz, String actionName) throws AIProcessingException{
-        Predict predict = clazz.getAnnotation(Predict.class);
+        Agent predict = clazz.getAnnotation(Agent.class);
         Method[] methods = clazz.getMethods();
         for (Method m1 : methods
         ) {
@@ -57,7 +57,7 @@ public class GenericJavaMethodAction implements JavaMethodAction{
     }
 
     private void init(Class clazz, Method actionMethod) throws AIProcessingException {
-        Predict predict = (Predict) clazz.getAnnotation(Predict.class);
+        Agent predict = (Agent) clazz.getAnnotation(Agent.class);
                this.clazz = clazz;
         this.actionName = actionMethod.getName();
         this.actionMethod = actionMethod;

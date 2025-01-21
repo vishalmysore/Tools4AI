@@ -1,13 +1,13 @@
 package com.t4a.examples.actions;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import com.t4a.examples.basic.RestaurantPojo;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Predict
+@Agent
 public class PlayerWithRestaurant  {
     @Getter
     private Player player;

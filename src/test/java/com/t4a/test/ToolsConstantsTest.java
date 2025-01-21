@@ -12,7 +12,7 @@ public class ToolsConstantsTest {
         assertEquals("BlankAction", ToolsConstants.BLANK_ACTION);
         assertEquals("SeleniumAction", ToolsConstants.SELENIUM_ACTION);
         assertEquals("AIProcessor", ToolsConstants.AI_PROCESSOR);
-        assertEquals("Predict", ToolsConstants.PREDICT);
+        assertEquals("Agent", ToolsConstants.PREDICT);
         assertEquals("No Group", ToolsConstants.GROUP_NAME);
         assertEquals("tasks which are not categorized", ToolsConstants.GROUP_DESCRIPTION);
     }

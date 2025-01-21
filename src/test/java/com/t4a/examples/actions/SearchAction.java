@@ -1,7 +1,7 @@
 package com.t4a.examples.actions;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import com.t4a.predict.PredictionLoader;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
  * You need to set serperKey in tools4ai.properties or as System property
  */
 @Slf4j
-@Predict(groupName = "Search",groupDescription = "Search the web for the given string")
+@Agent(groupName = "Search",groupDescription = "Search the web for the given string")
 public class SearchAction  {
     public String searchString;
     public boolean isNews;

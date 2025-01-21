@@ -3,7 +3,7 @@ package com.t4a.examples.actions;
 import com.t4a.annotations.Action;
 import com.t4a.annotations.MapKeyType;
 import com.t4a.annotations.MapValueType;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-@Predict
+@Agent
 public class MapAction  {
 
 

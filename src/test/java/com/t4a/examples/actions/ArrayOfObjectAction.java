@@ -1,11 +1,11 @@
 package com.t4a.examples.actions;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import lombok.Getter;
 import lombok.Setter;
 
-@Predict
+@Agent
 @Getter
 @Setter
 public class ArrayOfObjectAction  {

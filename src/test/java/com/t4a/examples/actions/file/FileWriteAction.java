@@ -1,14 +1,14 @@
 package com.t4a.examples.actions.file;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-@Predict(groupName = "File", groupDescription = "File related actions, like saving information to a file, reading information from a file, etc.")
+@Agent(groupName = "File", groupDescription = "File related actions, like saving information to a file, reading information from a file, etc.")
 @Slf4j
 public class FileWriteAction  {
 

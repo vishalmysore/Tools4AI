@@ -1,9 +1,9 @@
 package com.t4a.examples.actions;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 
-@Predict
+@Agent
 public class SimpleAction  {
 
     @Action( description = "what is the food preference of this person")

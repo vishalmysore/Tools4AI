@@ -1,7 +1,7 @@
 package com.t4a.api;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import com.t4a.processor.AIProcessingException;
 
 import java.lang.reflect.Method;
@@ -70,13 +70,13 @@ public interface JavaMethodAction extends AIAction{
 
     @Override
     public default String getActionGroup() {
-        Predict predict = getActionClass().getAnnotation(Predict.class);
+        Agent predict = getActionClass().getAnnotation(Agent.class);
         return predict != null ? predict.groupName(): "No group name available";
     }
 
     @Override
     default String getGroupDescription() {
-        Predict predict = getActionClass().getAnnotation(Predict.class);
+        Agent predict = getActionClass().getAnnotation(Agent.class);
         return predict != null ? predict.groupDescription(): "No group description available";
     }
 

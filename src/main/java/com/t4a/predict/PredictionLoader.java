@@ -16,7 +16,7 @@ import com.t4a.action.ExtendedPredictedAction;
 import com.t4a.action.http.HttpPredictedAction;
 import com.t4a.annotations.Action;
 import com.t4a.annotations.ActivateLoader;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import com.t4a.api.*;
 import com.t4a.processor.AIProcessingException;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
@@ -525,7 +525,7 @@ public class PredictionLoader {
         Reflections reflections = new Reflections("",
                 new SubTypesScanner(),
                 new TypeAnnotationsScanner());
-        Set<Class<?>> predict = reflections.getTypesAnnotatedWith(Predict.class);
+        Set<Class<?>> predict = reflections.getTypesAnnotatedWith(Agent.class);
         Set<Class<?>> activateLoader = reflections.getTypesAnnotatedWith(ActivateLoader.class);
         loaderPredict(predict);
         loaderExtended(activateLoader);

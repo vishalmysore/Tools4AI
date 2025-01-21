@@ -1,7 +1,7 @@
 package com.t4a.examples.actions;
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,7 +17,7 @@ import java.net.URL;
  * if you are planning to ue it for commercial purpose please visit https://open-meteo.com/en/pricing/
  */
 
-@Predict
+@Agent
 @Slf4j
 public class CustomHttpGetAction  {
     @Action(description = "Get the temperature of a city")

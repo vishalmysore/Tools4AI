@@ -9,11 +9,11 @@ import java.lang.annotation.Target;
 
 
 /**
- * This annotation is used to mark the class as a Predict group
+ * This annotation is used to mark the class as a Agent group
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Predict {
+public @interface Agent {
     String groupName() default ToolsConstants.GROUP_NAME;
     String groupDescription() default ToolsConstants.GROUP_DESCRIPTION;
 }

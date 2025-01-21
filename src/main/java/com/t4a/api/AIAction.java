@@ -7,7 +7,7 @@ package com.t4a.api;
  * should be descriptive to match the action that function can perform for example
  *
  *
- *  {@code @Predict}
+ *  {@code @Agent}
  * public class SimpleAction implements AIAction {
  *
  *     public String whatFoodDoesThisPersonLike(String name) {
@@ -32,10 +32,10 @@ package com.t4a.api;
  *
  * Now lets look at above implementation of AIAction step by step
  *
- * 1) @Predict - This annotation makes sure that AIAction object is our prediction list if you do not mark it with predict
+ * 1) @Agent - This annotation makes sure that AIAction object is our prediction list if you do not mark it with predict
  * annotation then you have to add this action in programmatic way, usually its best to add predict in all the actions
  * which you want to execute automatically, except for some really custom actions which you want AI not to execute automatically
- * for example (delete record, cancel reservation). Even though all the actions have Human in Loop valdation (Predict or Non Predict) still
+ * for example (delete record, cancel reservation). Even though all the actions have Human in Loop valdation (Agent or Non Agent) still
  * in some cases there might be a need to create action but not to add that to prediction list
  *
  * 2) getActionName - this returns the name of the main function of this class , this has to be very descriptive as AI

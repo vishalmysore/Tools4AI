@@ -2,14 +2,14 @@ package com.t4a.examples;
 
 
 import com.t4a.annotations.Action;
-import com.t4a.annotations.Predict;
+import com.t4a.annotations.Agent;
 import com.t4a.examples.actions.Customer;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Predict
+@Agent
 public class ArrayAction  {
 
 

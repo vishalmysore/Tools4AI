@@ -12,8 +12,7 @@
     <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=sqale_rating"/></a>
     <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=security_rating"/></a>
     <a target="_blank" href="https://sonarcloud.io/summary/new_code?id=vishalmysore_Tools4AI"><img src="https://sonarcloud.io/api/project_badges/measure?project=vishalmysore_Tools4AI&metric=reliability_rating"/></a>
-    <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/maven.yml"><img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/maven.yml/badge.svg"/></a>
-    <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/qodana_code_quality.yml"> <img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/qodana_code_quality.yml/badge.svg"/></a>
+    <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/maven.yml"><img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/maven.yml/badge.svg"/></a>   
     <a target="_blank" href="https://github.com/vishalmysore/Tools4AI/actions/workflows/codecov.yml"> <img src="https://github.com/vishalmysore/Tools4AI/actions/workflows/codecov.yml/badge.svg"/></a>
     <a href="https://codecov.io/gh/vishalmysore/Tools4AI" > <img src="https://codecov.io/gh/vishalmysore/Tools4AI/graph/badge.svg?token=9KLDLKUBW1"/> </a>
     <a href="https://snyk.io/test/github/vishalmysore/tools4ai"><img src="https://snyk.io/test/github/vishalmysore/tools4ai/badge.svg"/> </a>
@@ -146,9 +145,8 @@ annotation.
 **Java Actions:** These are Java classes that have methods with ```@Action``` annotation . They are designed to 
 perform specific actions based on prompts processed through Tools4AI.  
 
-**@Predict Annotation:** This is a <u>class level</U> annotation. This annotation is used to add the action to the prediciton list, doing this will make sure
-the action is called automatically when the prompt is processed and if the prompt matches with the action (action name or method name). All the methods 
-in this class annotated with @Action will be added to the prediction list.
+**@Agent Annotation:** This is a <u>class level</U> annotation. It means this class is **an AI agent**. Methods in this class annotated with @Action will be added to the prediction list of actions. Methods which are not annoated with @Action will not be added to the prediction list.
+(@Agent is the new name for @Predict since version 1.0.5)
 
 **@Action Annotation:** This is a <u>method level</u> annotation. The action method within the Java class is annotated with @Action to specify the action's behaviour
 this is the actual method which will be triggered if the prompt matches by AI. You can have as many methods as you want with @Action
