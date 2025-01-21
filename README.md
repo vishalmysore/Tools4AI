@@ -156,7 +156,7 @@ annotation in the class.
 is processed, the ```whatFoodDoesThisPersonLike``` method is automatically called with "Vishal" as the argument, 
 and it returns "Paneer Butter Masala" as Vishal's preference. 
 ``` 
-@Predict
+@Agent
 public class SimpleAction  {
 
     @Action( description = "what is the food preference of this person")
@@ -234,7 +234,7 @@ As you can notice we are not passing any action with the prompt the AI will figu
 A simple Java action can be written like this 
 
 ```
-@Predict(groupName = "buildMyDiary" , groupDescription = "This is my diary details")
+@Agent(groupName = "buildMyDiary" , groupDescription = "This is my diary details")
 public class MyDiaryAction implements JavaMethodAction {
     @Action  
     public MyDiary buildMyDiary(MyDiary diary) {
@@ -248,9 +248,9 @@ Here the actionName is ```buildMyDiary```, MyDiary pojo will be created automati
 **Action groups**
 
 ```
-@Predict(groupName = "personal", groupDescription = "all personal actions are here") 
+@Agent(groupName = "personal", groupDescription = "all personal actions are here") 
 ```
-Actions have to be annontated with @Predict to be added to prediction list , they can be grouped together with
+Actions have to be annontated with @Agent to be added to prediction list , they can be grouped together with
 the groupName.
 
 **Custom Pojo**
@@ -268,7 +268,7 @@ There are different annontations which be used for special Pojo mapping
 
 **Mapping Maps in objects**
 ``` 
-@Predict(actionName = "addSports",description = "add new Sports into the map")
+@Agent(actionName = "addSports",description = "add new Sports into the map")
 public class MapAction implements JavaMethodAction {
 
     public Map<Integer,String> addSports(@MapKeyType(Integer.class)  @MapValueType(String.class) Map<Integer,String> mapOfSportsName) {
@@ -335,7 +335,7 @@ There might be some actions which you do not want to be triggered automatically 
 such actions can be annotated with HighRisk
 
 ```
-@Predict(actionName = "restartTheECOMServer",description = "will be used to restart the server" , 
+@Agent(actionName = "restartTheECOMServer",description = "will be used to restart the server" , 
 riskLevel = ActionRisk.HIGH, groupName = "customer support", 
 groupDescription = "actions related to customer support")
 public class ServerRestartAction implements JavaMethodAction {
@@ -544,7 +544,7 @@ police officer is present at the scene. An ambulance has been called and is seen
 Direct Action from Visual Cues: Whether it's a surveillance image of a car accident or a live feed of a residential fire, Tools4AI can immediately recognize critical situations and initiate appropriate emergency protocols without human input.
 A sample action is written and the code is available [here](https://github.com/vishalmysore/sam/blob/main/src/main/java/org/example/image/action/EmergencyAction.java)
 ``` 
-@Predict(actionName = "callEmergencyServices", description = "This action will be called in case of emergency", groupName = "emergency")
+@Agent(actionName = "callEmergencyServices", description = "This action will be called in case of emergency", groupName = "emergency")
 public class EmergencyAction implements JavaMethodAction {
     public String callEmergencyServices(@Prompt(describe = "Ambulance, Fire or Police") String typeOfEmergency) {
         return typeOfEmergency+" has been called";
@@ -672,14 +672,14 @@ Look at the java docs here - https://javadoc.io/doc/io.github.vishalmysore/tools
 
 ### 🔑 Java Prediction Loaders
 
-All the classes implementing ```JavaMethodAction``` interfaces and having annotation ```@Predict``` are added to prediction list
+All the classes implementing ```JavaMethodAction``` interfaces and having annotation ```@Agent``` are added to prediction list
 ```JavaMethodAction``` is integral to creating all AI-related actions, with each action implemented as a function adhering to the principles of functional programming. The function's name should be descriptive, aligning closely with the action it performs
-```@Predict``` Annotation: This annotation ensures that the AIAction object is included in our prediction list. While not mandatory, it's advisable to mark all actions with @Predict for automatic execution. However, for highly customized actions like deleting records or canceling reservations, omitting this annotation might be preferable to prevent automatic execution.
+```@Agent``` Annotation: This annotation ensures that the AIAction object is included in our prediction list. While not mandatory, it's advisable to mark all actions with @Agent for automatic execution. However, for highly customized actions like deleting records or canceling reservations, omitting this annotation might be preferable to prevent automatic execution.
 
 ```actionName``` the descriptive name of the primary function within the class. It's crucial to name this function accurately, as AI utilizes semantic mapping at runtime to correlate the function.
 
 ```
-@Predict(actionName = "whatFoodDoesThisPersonLike", description = "what is the food preference of this person ")
+@Agent(actionName = "whatFoodDoesThisPersonLike", description = "what is the food preference of this person ")
 public class SimpleAction implements JavaMethodAction {
 
     public String whatFoodDoesThisPersonLike(String name) {
