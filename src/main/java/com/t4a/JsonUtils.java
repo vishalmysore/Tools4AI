@@ -261,7 +261,7 @@ public class JsonUtils {
 
                         }
                     } else if ( ("Integer".equalsIgnoreCase(fieldType)))
-                                    {
+                    {
                         field.set(instance, fieldObj.getInt(FIELDVALUE_JSON));
                     } else if (("Float".equalsIgnoreCase(fieldType))) {
                         field.set(instance, fieldObj.getInt(FIELDVALUE_JSON));
@@ -325,7 +325,7 @@ public class JsonUtils {
 
         } catch (Exception e) {
 
-           log.warn(" could not populate "+jsonObject);
+            log.warn(" could not populate "+jsonObject);
         }
         return instance;
     }
@@ -805,7 +805,7 @@ public class JsonUtils {
         JsonArray array = new JsonArray();
         rootObject.add(FIELDS,array);
         for (String key:keys
-             ) {
+        ) {
             array.add(createJson(key));
         }
 
