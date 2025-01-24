@@ -20,6 +20,7 @@ import java.util.List;
 @Slf4j
 public class OpenAiActionProcessor implements AIProcessor{
     private Gson gson ;
+
     public OpenAiActionProcessor(Gson gson) {
 
         this.gson = gson;
@@ -76,7 +77,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             }
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
-                jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
+                jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " "+PredictionLoader.getInstance().METHODTOJSONOI);
             }
             catch(Exception e) {
              throw new AIProcessingException(" Make sure openAiKey is set either in tools4Ai.properties or as runtime parameter -DopenAiKey=");

@@ -60,10 +60,17 @@ public class PredictionLoader {
     private static PredictionLoader predictionLoader =null;
 
     private final String PREACTIONCMD = "here is my prompt - ";
+    private String PREACTIONCMDOI = "here is my prompt - ";
+    private String ACTIONCMDOI = "- what action do you think we should take out of these  - {  ";
+
+    private   String POSTACTIONCMDOI = " } - reply back with ";
+
+    public  String METHODTOJSONOI = "- if you find the field named fieldValue, populate the field else and return the json as is";
     private final  String ACTIONCMD = "- what action do you think we should take out of these  - {  ";
 
     private final  String POSTACTIONCMD = " } - reply back with ";
     private final  String NUMACTION = " action only. Make sure Action matches exactly from this list";
+    private   String NUMACTIONOI = " action only. Make sure Action matches exactly from this list";
 
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     @Getter
@@ -150,6 +157,41 @@ public class PredictionLoader {
     }
 
     private void initProp() {
+        try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("prompt.properties")) {
+            if(inputStream == null) {
+                log.error(" prompt properties not found ");
+                return;
+            }
+            Properties prop = new Properties();
+            prop.load(inputStream);
+            PREACTIONCMDOI = prop.getProperty("openai.pre_action");
+            if(PREACTIONCMDOI == null) {
+                PREACTIONCMDOI= "here is my prompt - ";
+            }
+            ACTIONCMDOI = prop.getProperty("openai.action");
+            if(ACTIONCMDOI == null) {
+                ACTIONCMDOI = "- what action do you think we should take out of these  - {  ";
+            }
+            POSTACTIONCMDOI = prop.getProperty("openai.post_action");
+            if(POSTACTIONCMDOI == null) {
+                POSTACTIONCMDOI = " } - reply back with ";
+            }
+
+            NUMACTIONOI = prop.getProperty("openai.num_action");
+            if(NUMACTIONOI == null) {
+                NUMACTIONOI = " action only. Make sure Action matches exactly from this list";
+            }
+
+            METHODTOJSONOI = prop.getProperty("openai.method_to_json");
+            if(METHODTOJSONOI == null) {
+                METHODTOJSONOI = "- if you find the field named fieldValue, populate the field else and return the json as is";
+            }
+
+
+
+        }catch (IOException e) {
+            log.warn(e.getMessage());
+        }
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
             if(inputStream == null) {
                 log.error(" tools4ai properties not found ");
@@ -304,7 +346,8 @@ public class PredictionLoader {
             if(AIPlatform.GEMINI == aiProvider) {
                 JsonUtils utils = new JsonUtils();
                 
-                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(PRMPT +prompt+ GRP +actionGroupJson+"} - which group does this prompt belong to? response back in this format {'groupName':'','explanation':''}"));                
+                String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(PRMPT +prompt+ GRP +actionGroupJson+"} - which group does this prompt belong to? response back in this format with only one set {'groupName':'','explanation':''}"));
+                log.info(groupName);
                 groupName= utils.fetchGroupName(groupName);
                 log.info(LOOK_FOR_ACTION_IN_THE_GROUP +groupName+ OUT_OF +actionGroupJson);
                 String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName.trim())).getGroupInfo()).trim();
@@ -684,10 +727,10 @@ public class PredictionLoader {
         return modifiedString.toString();
     }
     private String buildPromptForOpenAI(String prompt, int number, StringBuilder actionNameList) {
-        String append = NUMACTION;
+        String append = NUMACTIONOI;
         if(number > 1)
             append = NUMACTION_MULTIPROMPT;
-        String query = PREACTIONCMD+prompt+ACTIONCMD+getModifiedActionName(actionNameList)+POSTACTIONCMD+number +append;
+        String query = PREACTIONCMDOI+prompt+ACTIONCMDOI+getModifiedActionName(actionNameList)+" "+POSTACTIONCMDOI+number +" "+append;
         log.debug(query);
         return query;
     }

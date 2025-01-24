@@ -11,9 +11,11 @@ import com.t4a.annotations.Agent;
 public class MongoAction  {
 
     @Action(description = "Inserts a customer complaint into the database")
-    public Object insertCustomerComplaint(String customerName, String complaint) {
+    public Object createTable() {
 
-        return null;
+        return "creatre table";
     }
+
+
 
 }
