@@ -1,5 +1,6 @@
 package com.t4a;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.JsonArray;
@@ -839,5 +840,14 @@ public class JsonUtils {
         }
         log.debug(fieldName+" is the fieldName");
         return fieldValue;
+    }
+    public static String convertObjectToJson(Object obj) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            return mapper.writeValueAsString(obj);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

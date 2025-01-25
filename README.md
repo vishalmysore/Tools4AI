@@ -63,30 +63,25 @@
 # 💡 Tools4AI
 Tools4AI is 100% Java based Agentic Framework which can be used to build Java based AI agents for integration with enterprise 
 Java applications.
-This project illustrates the integration of AI with enterprise tools or external tools, converting natural language prompts
-into <span style="font-size: larger;">**actiona ble behaviors**.</span> These prompts can be called <span style="font-size: larger;">**"action prompts"**</span>
-or <span style="font-size: larger;">**"actionable prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
+This project illustrates the integration of AI Agents with enterprise tools or external tools, converting natural language prompts
+into <span style="font-size: larger;">**agent actions**.</span> These prompts can be called <span style="font-size: larger;">**"actionble prompts"**</span>
+or <span style="font-size: larger;">**"agent prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
 with complex systems, enhancing productivity and innovation across diverse applications.<br>
 
-For example , we can integrate AI with a customer service application. Users can interact with the AI system by asking<br> 
-questions or making requests in natural language. For example, a user might ask,**"Schedule a maintenance <br>
-appointment for my car."** The AI system interprets the request, extracts relevant information such as the <br>
-service required and preferred date, and then triggers the appropriate action in the customer service<br>
-application to schedule the appointment. This seamless integration streamlines the process for users and<br>
-enhances the efficiency of the customer service workflow.
+For example , we can integrate AI Agent with a customer service application. Users can interact with the AI agent by asking questions or making requests in natural language. For example, a user might ask,**"Schedule a maintenance appointment for my car."** The AI agent interprets the request, extracts relevant information such as the service required and preferred date, and then triggers the appropriate agent action in the customer service application to schedule the appointment. This seamless integration streamlines the process for users and enhances the efficiency of the customer service workflow through agentic ai automation.
 <br>
 | Prompt                                                                                                              | Action                                                                                                                                                |
 |---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Create a <span style="color:blue">**new task**</span> for the marketing campaign.                                                                                                     | The AI system interprets the request and generates a new task entry within the project management tool dedicated to the marketing campaign, assigning it relevant details such as priority level, due date, and task description. |
-| Generate a <span style="color:blue">**sales report**</span> for the previous <span style="color:blue">**quarter**</span>.                                                                 | The AI system accesses data from the company's sales database, analyzes the information for the previous quarter, and generates a comprehensive sales report, which is then delivered to the user or stored in the appropriate location for access. |
-| Check the <span style="color:blue">**inventory status**</span> of <span style="color:blue">**product X.**</span>                                                                           | The AI system retrieves real-time inventory data for product X from the inventory management system and provides the user with information regarding current stock levels, including quantities available, locations, and any pending orders. |
-| Schedule a <span style="color:blue">**video conference**</span> with the engineering team for next Monday at 10 AM.                                      | The AI system interfaces with the calendar and scheduling tool, creates a new event titled "Engineering Team Video Conference" for the specified date and time, and sends out meeting invitations to all members of the engineering team. |
-| Submit a reimbursement request for the <span style="color:blue">**business**</span> trip <span style="color:blue">**expenses.**</span>                                                     | The AI system guides the user through the reimbursement request process, collecting necessary details such as expense receipts, dates, amounts, and purpose of expenditure. Once compiled, the system submits the reimbursement request to the appropriate department for processing. |
+| Create a <span style="color:blue">**new task**</span> for the marketing campaign.                                                                                                     | The AI agent interprets the request and generates a new task entry within the project management tool dedicated to the marketing campaign, assigning it relevant details such as priority level, due date, and task description. |
+| Generate a <span style="color:blue">**sales report**</span> for the previous <span style="color:blue">**quarter**</span>.                                                                 | The AI agent accesses data from the company's sales database, analyzes the information for the previous quarter, and generates a comprehensive sales report, which is then delivered to the user or stored in the appropriate location for access. |
+| Check the <span style="color:blue">**inventory status**</span> of <span style="color:blue">**product X.**</span>                                                                           | The AI agent retrieves real-time inventory data for product X from the inventory management system and provides the user with information regarding current stock levels, including quantities available, locations, and any pending orders. |
+| Schedule a <span style="color:blue">**video conference**</span> with the engineering team for next Monday at 10 AM.                                      | The AI agent interfaces with the calendar and scheduling tool, creates a new event titled "Engineering Team Video Conference" for the specified date and time, and sends out meeting invitations to all members of the engineering team. |
+| Submit a reimbursement request for the <span style="color:blue">**business**</span> trip <span style="color:blue">**expenses.**</span>                                                     | The AI agent guides the user through the reimbursement request process, collecting necessary details such as expense receipts, dates, amounts, and purpose of expenditure. Once compiled, the system submits the reimbursement request to the appropriate department for processing. |
 
 
 
 Prompt prediction is a technique used to anticipate user actions based on their input prompts. For instance,
-if a user's prompt is "my car broke down," in addition to the action "bookTaxi," the AI system can predict a
+if a user's prompt is "my car broke down," in addition to the action "bookTaxi," the AI agent can predict a
 set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinner time). This predictive
 capability enhances the user experience by proactively suggesting relevant actions or services based on the
 context provided in the prompt.
@@ -97,7 +92,9 @@ Download source and build from scratch
 
 ```mvn clean install``` <br>
 
-if you are using Intellij or eclipse make sure you set -parameters option for compiler
+if you are using Intellij or eclipse make sure you set -parameters option for compiler <br>
+
+<img src="compiler.PNG"  width="500" height="500">
 
 Or use as maven dependency 
 ```
@@ -139,13 +136,11 @@ If you plan to use Anthropic you will need anthropic api key https://docs.anthro
 
 ## Java Actions
 
-Fastest way to create action is by writing a java class  and  annotate its method with ```@Action```
+Fastest way to create agent action is by writing a java class with ```@Agent``` annotation and  annotate its method with ```@Action```
 annotation.
+  
 
-**Java Actions:** These are Java classes that have methods with ```@Action``` annotation . They are designed to 
-perform specific actions based on prompts processed through Tools4AI.  
-
-**@Agent Annotation:** This is a <u>class level</U> annotation. It means this class is **an AI agent**. Methods in this class annotated with @Action will be added to the prediction list of actions. Methods which are not annoated with @Action will not be added to the prediction list.
+**@Agent Annotation:** This is a <u>class level</U> annotation. It means this class is **an AI agent**. Methods in this class annotated with ```@Action``` will be added to the prediction list of actions. Methods which are not annoated with @Action will not be added to the prediction list.
 (@Agent is the new name for @Predict since version 1.0.5)
 
 **@Action Annotation:** This is a <u>method level</u> annotation. The action method within the Java class is annotated with @Action to specify the action's behaviour
