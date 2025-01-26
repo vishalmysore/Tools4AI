@@ -109,7 +109,8 @@ public class PredictionLoader {
     private ApplicationContext springContext;
 
     private PredictionLoader() {
-        initProp();
+        initPromptProp();
+        initModelProp();
         if((modelName!=null)&&(projectId!=null)&&(location!=null)) {
             try (VertexAI vertexAI = new VertexAI(projectId, location)) {
 
@@ -156,7 +157,7 @@ public class PredictionLoader {
         }
     }
 
-    private void initProp() {
+    private void initPromptProp(){
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("prompt.properties")) {
             if(inputStream == null) {
                 log.error(" prompt properties not found ");
@@ -192,6 +193,9 @@ public class PredictionLoader {
         }catch (IOException e) {
             log.warn(e.getMessage());
         }
+    }
+    private void initModelProp() {
+
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
             if(inputStream == null) {
                 log.error(" tools4ai properties not found ");
