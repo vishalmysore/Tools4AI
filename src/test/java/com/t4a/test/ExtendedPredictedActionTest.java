@@ -18,6 +18,10 @@ public class ExtendedPredictedActionTest {
         // Create a mock of ExtendedPredictedAction
         ExtendedPredictedAction actionMock = new ExtendedPredictedAction() {
             @Override
+            public String getActionParameters() {
+                return "";
+            }
+            @Override
             public List<ExtendedInputParameter> getInputParameters() {
                 ArrayList<ExtendedInputParameter> inputParameters = new ArrayList<>();
                 inputParameters.add(new ExtendedInputParameter("param1", "String"));

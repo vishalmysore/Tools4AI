@@ -3,16 +3,35 @@ package com.t4a.api;
 import com.t4a.annotations.Action;
 import com.t4a.annotations.Agent;
 import com.t4a.processor.AIProcessingException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 
 public interface JavaMethodAction extends AIAction{
+
+
     public default ActionType getActionType (){
         return ActionType.JAVAMETHOD;
     }
 
+    default String getJsonRPC() {
+        JSONObject json = new JSONObject();
+        json.put("actionName", getActionName());
+        json.put("description", getDescription());
+        json.put("actionType", getActionType());
+        json.put("actionGroup", getActionGroup());
+        json.put("actionClass", getActionClassName());
+        try {
+            String paramsJson = getActionParameters();
+            JSONObject actionParams = new JSONObject(paramsJson);  // Convert to JSONObject
+            json.put("actionParameters", actionParams);  // Add as nested object
+        } catch (Exception e) {
+            json.put("actionParameters", getActionParameters());  // Fallback to string
+        }
+
+        return json.toString();};
     @Override
     public default String getActionName()  {
         Method firstAnnotatedMethod = null;

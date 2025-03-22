@@ -25,6 +25,11 @@ public class AIActionTest {
             public String getDescription() {
                 return "Test description";
             }
+
+            @Override
+            public String getActionParameters() {
+                return "";
+            }
         };
 
         assertEquals(ActionRisk.LOW, action.getActionRisk());

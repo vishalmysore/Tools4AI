@@ -1,5 +1,6 @@
 package com.t4a.api;
 
+import com.t4a.JsonUtils;
 import com.t4a.annotations.Action;
 import com.t4a.annotations.Agent;
 import com.t4a.processor.AIProcessingException;
@@ -17,11 +18,22 @@ public class GenericJavaMethodAction implements JavaMethodAction{
     private String groupDescription = ToolsConstants.GROUP_DESCRIPTION;
     private Class clazz;
 
+    private String jsonStr = null;
+
+
+    private JsonUtils jsonUtils = new JsonUtils();
+
     @Setter
     @Getter
     private Object actionInstance = null;
     @Getter
    private Method actionMethod = null;
+
+    @Override
+    public String getActionParameters() {
+        return jsonStr;
+    }
+
     public GenericJavaMethodAction(Object actionInstance, String actionName) throws AIProcessingException {
         this(actionInstance.getClass(),actionName);
         this.actionInstance = actionInstance;
@@ -84,7 +96,9 @@ public class GenericJavaMethodAction implements JavaMethodAction{
     }
 
     private void initAction(Method actionMethod){
+        jsonStr = jsonUtils.convertMethodTOJsonString(actionMethod);
         Action action = (Action)actionMethod.getAnnotation(Action.class);
+
         this.riskLevel = action.riskLevel();
         this.description = action.description();
         if(this.description == null || this.description.isEmpty()) {

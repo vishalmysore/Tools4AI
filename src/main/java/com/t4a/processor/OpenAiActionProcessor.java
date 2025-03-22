@@ -53,6 +53,9 @@ public class OpenAiActionProcessor implements AIProcessor{
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         if (action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
+            if(action == null) {
+              return  "no action found for the prompt "+prompt;
+            }
             if(action.getActionRisk() == ActionRisk.HIGH) {
                 log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI "+action.getActionName());
                 return "This is a high risk action will not proceed "+action.getActionName();
@@ -96,7 +99,11 @@ public class OpenAiActionProcessor implements AIProcessor{
 
             Object result;
             try {
-                result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
+                if(humanVerification!=null && humanVerification.allow(prompt, action.getActionName(), jsonStr).isAIResponseValid()) {
+                    result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
+                } else {
+                    return "Human verification failed";
+                }
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new AIProcessingException(e);
             }

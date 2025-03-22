@@ -1,5 +1,7 @@
 package com.t4a.api;
 
+import org.json.JSONObject;
+
 /**
  * <pre>
  * This is the key class in creating all the AI related action. All the actions are implementation of this class
@@ -83,6 +85,16 @@ package com.t4a.api;
  */
 public interface AIAction {
     String getActionName() ;
+
+   default String getActionParameters() {return "";};
+    default String getJsonRPC() {
+        JSONObject json = new JSONObject();
+        json.put("actionName", getActionName());
+        json.put("description", getDescription());
+        json.put("actionType", getActionType());
+        json.put("actionGroup", getActionGroup());
+        json.put("actionParameters", getActionParameters());
+        return json.toString();};
 
     /**
      *
