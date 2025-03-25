@@ -20,6 +20,8 @@ public class GenericJavaMethodAction implements JavaMethodAction{
 
     private String jsonStr = null;
 
+    private MethodFinder methodFinder = new DefaultMethodFinder();
+
 
     private JsonUtils jsonUtils = new JsonUtils();
 
@@ -42,27 +44,18 @@ public class GenericJavaMethodAction implements JavaMethodAction{
         this.actionInstance= actionInstance;
         init(actionInstance.getClass(),getAnnotatedMethods(actionInstance.getClass())) ;
     }
-    public GenericJavaMethodAction(Class<?> clazz, String actionName) throws AIProcessingException{
-        Agent predict = clazz.getAnnotation(Agent.class);
-        Method[] methods = clazz.getMethods();
-        for (Method m1 : methods
-        ) {
-            if (m1.getName().equals(actionName)) {
-                actionMethod = m1;
-                break;
-            }
-        }
-        if(actionMethod== null) {
-            throw new AIProcessingException(actionName+" method not found in class "+clazz.getName());
-        }
+    public GenericJavaMethodAction(Class<?> clazz, String actionName) throws AIProcessingException {
         this.clazz = clazz;
         this.actionName = actionName;
-        if(predict != null) {
+        this.actionMethod = methodFinder.findMethod(clazz, actionName); // use internal MethodFinder
+
+        Agent predict = clazz.getAnnotation(Agent.class);
+        if (predict != null) {
             this.groupDescription = predict.groupDescription();
             this.groupName = predict.groupName();
         }
         this.actionClassName = clazz.getName();
-        initAction(actionMethod);
+        initAction(this.actionMethod);
     }
     public GenericJavaMethodAction(Class clazz, Method actionMethod) throws AIProcessingException{
         init(clazz, actionMethod);
