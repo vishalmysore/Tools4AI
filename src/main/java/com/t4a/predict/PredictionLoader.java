@@ -109,6 +109,7 @@ public class PredictionLoader {
     private ApplicationContext springContext;
 
     private PredictionLoader() {
+        final int MAX_TOKENS = 4000; // Maximum tokens for Anthropic model
         initPromptProp();
         initModelProp();
         if((modelName!=null)&&(projectId!=null)&&(location!=null)) {
@@ -152,7 +153,7 @@ public class PredictionLoader {
                     .modelName(anthropicModelName)
                     .logRequests(anthropicLogReqFlag)
                     .logResponses(anthropicLogResFlag)
-                     .maxTokens(4000)
+                     .maxTokens(MAX_TOKENS)
                     .build();
         }
     }

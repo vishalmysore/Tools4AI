@@ -85,7 +85,11 @@ public class JsonUtils {
         // Find the index of the last closing bracket
         int endIndex = jsonString.lastIndexOf('}');
 
-        if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
+        boolean hasValidStart = startIndex != -1;
+        boolean hasValidEnd = endIndex != -1;
+        boolean isEndAfterStart = endIndex > startIndex;
+
+        if (hasValidStart && hasValidEnd && isEndAfterStart) {
             // Extract the substring between the first '{' and the last '}'
             return jsonString.substring(startIndex, endIndex + 1);
         }

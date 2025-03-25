@@ -15,6 +15,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.net.URL;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -71,12 +72,17 @@ public class GeminiImageActionProcessorTest {
         try (MockedStatic<ResponseHandler> geminiMock = Mockito.mockStatic(ResponseHandler.class)) {
             geminiMock.when(() -> ResponseHandler.getText(any(GenerateContentResponse.class))).thenReturn(mockGRPSTR);
             geminiImageActionProcessor.setModel(mockGRP);
-            String text =  geminiImageActionProcessor.imageToJson(this.getClass().getClassLoader().getResource("fitness.PNG"), Employee.class);
+            String text = geminiImageActionProcessor.imageToJson(getResource("fitness.PNG"), Employee.class);
             Assertions.assertEquals(mockGRPSTR, text);
         } catch (AIProcessingException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private URL getResource(String resourceName) {
+        return this.getClass().getClassLoader().getResource(resourceName);
+    }
+
     void testResponseClassCompare() throws IOException {
         String mockGRPSTR = "{'groupName':'No Group','explanation':'mock'}";
         GenerativeModel mockGRP = Mockito.mock(GenerativeModel.class);
