@@ -102,6 +102,9 @@ public class PredictionLoader {
     @Getter
     private ChatLanguageModel openAiChatModel;
     private String openAiKey;
+    private String openAiBaseURL;
+
+    private String openAiModelName;
     private String claudeKey;
     @Getter
     private String serperKey;
@@ -143,7 +146,13 @@ public class PredictionLoader {
             }
         }
         if(openAiKey!=null) {
-            openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
+            if(openAiBaseURL!=null) {
+                log.info("baseurl "+openAiBaseURL);
+                openAiChatModel = OpenAiChatModel.builder().apiKey(openAiKey).baseUrl(openAiBaseURL).modelName(openAiModelName).build();
+            } else {
+                openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
+            }
+
         }
 
         if(claudeKey!=null) {
@@ -227,6 +236,22 @@ public class PredictionLoader {
             if(openAiKey == null || openAiKey.trim().isEmpty()) {
                 openAiKey = System.getProperty("openAiKey");
             }
+
+            openAiBaseURL = prop.getProperty("openAiBaseURL");
+            if(openAiBaseURL != null)
+                openAiBaseURL = openAiBaseURL.trim();
+            if(openAiBaseURL == null || openAiBaseURL.trim().isEmpty()) {
+                openAiBaseURL = System.getProperty("openAiBaseURL");
+            }
+
+            openAiModelName = prop.getProperty("openAiModelName");
+            if(openAiModelName != null)
+                openAiModelName = openAiModelName.trim();
+            if(openAiModelName == null || openAiModelName.trim().isEmpty()) {
+                openAiModelName = System.getProperty("openAiModelName");
+            }
+
+
             if(claudeKey == null || claudeKey.trim().isEmpty()) {
                 claudeKey = System.getProperty("claudeKey");
             }

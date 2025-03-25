@@ -83,7 +83,7 @@ public class OpenAiActionProcessor implements AIProcessor{
                 jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " "+PredictionLoader.getInstance().METHODTOJSONOI);
             }
             catch(Exception e) {
-             throw new AIProcessingException(" Make sure openAiKey is set either in tools4Ai.properties or as runtime parameter -DopenAiKey=");
+             throw new AIProcessingException(" Make sure openAiKey is set either in tools4Ai.properties or as runtime parameter -DopenAiKey=  "+e.getMessage());
             }
             log.info(jsonStr);
             JavaMethodInvoker invoke = new JavaMethodInvoker();
