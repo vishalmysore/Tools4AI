@@ -30,7 +30,27 @@ public class AgricultureDemo {
 
     }
     public static void plantAnalsis(GeminiImageActionProcessor processor, URL url) throws AIProcessingException {
-        String plantDetails = (String) processor.imageToJson(url, "cropType", "plantName", "healthPercentage", "waterPercentage", "soilPercentage", "sunlightPercentage", "temperature", "hasPest", "hasDisease", "hasNutrientDeficiency", "hasWaterDeficiency", "hasSunlightDeficiency", "hasSoilDeficiency", "hasTemperatureDeficiency", "hasFrost", "hasHeatWave", "hasDrought", "hasFlood", "typeOfDisease");
+        String plantDetails = (String) processor.imageToJson(url,
+                "cropType",
+                "plantName",
+                "healthStatus.healthPercentage",
+                "environmentConditions.waterPercentage",
+                "environmentConditions.soilPercentage",
+                "environmentConditions.sunlightPercentage",
+                "environmentConditions.temperature",
+                "healthStatus.hasPest",
+                "healthStatus.hasDisease",
+                "healthStatus.hasNutrientDeficiency",
+                "hasWaterDeficiency",
+                "hasSunlightDeficiency",
+                "hasSoilDeficiency",
+                "hasTemperatureDeficiency",
+                "environmentConditions.hasFrost",
+                "environmentConditions.hasHeatWave",
+                "environmentConditions.hasDrought",
+                "environmentConditions.hasFlood",
+                "healthStatus.typeOfDisease"
+        );
         log.info(plantDetails.toString());
         log.info(processor.imageToText(url, "based on image what action should i take on this plant?"));
     }
