@@ -111,7 +111,10 @@ public class PredictionLoader {
     private String actionGroupJson;
     private ApplicationContext springContext;
 
+    private final ConfigManager configManager = new ConfigManager();
+
     private PredictionLoader() {
+        final int MAX_TOKENS = 4000; // Maximum tokens for Anthropic model
         initPromptProp();
         initModelProp();
         if((modelName!=null)&&(projectId!=null)&&(location!=null)) {
@@ -161,48 +164,19 @@ public class PredictionLoader {
                     .modelName(anthropicModelName)
                     .logRequests(anthropicLogReqFlag)
                     .logResponses(anthropicLogResFlag)
-                     .maxTokens(4000)
+                     .maxTokens(MAX_TOKENS)
                     .build();
         }
     }
 
-    private void initPromptProp(){
-        try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("prompt.properties")) {
-            if(inputStream == null) {
-                log.error(" prompt properties not found ");
-                return;
-            }
-            Properties prop = new Properties();
-            prop.load(inputStream);
-            PREACTIONCMDOI = prop.getProperty("openai.pre_action");
-            if(PREACTIONCMDOI == null) {
-                PREACTIONCMDOI= "here is my prompt - ";
-            }
-            ACTIONCMDOI = prop.getProperty("openai.action");
-            if(ACTIONCMDOI == null) {
-                ACTIONCMDOI = "- what action do you think we should take out of these  - {  ";
-            }
-            POSTACTIONCMDOI = prop.getProperty("openai.post_action");
-            if(POSTACTIONCMDOI == null) {
-                POSTACTIONCMDOI = " } - reply back with ";
-            }
-
-            NUMACTIONOI = prop.getProperty("openai.num_action");
-            if(NUMACTIONOI == null) {
-                NUMACTIONOI = " action only. Make sure Action matches exactly from this list";
-            }
-
-            METHODTOJSONOI = prop.getProperty("openai.method_to_json");
-            if(METHODTOJSONOI == null) {
-                METHODTOJSONOI = "- if you find the field named fieldValue, populate the field else and return the json as is";
-            }
-
-
-
-        }catch (IOException e) {
-            log.warn(e.getMessage());
-        }
+    private void initPromptProp() {
+        PREACTIONCMDOI = configManager.getProperty("openai.pre_action", "here is my prompt - ");
+        ACTIONCMDOI = configManager.getProperty("openai.action", "- what action do you think we should take out of these  - {  ");
+        POSTACTIONCMDOI = configManager.getProperty("openai.post_action", " } - reply back with ");
+        NUMACTIONOI = configManager.getProperty("openai.num_action", " action only. Make sure Action matches exactly from this list");
+        METHODTOJSONOI = configManager.getProperty("openai.method_to_json", "- if you find the field named fieldValue, populate the field else and return the json as is");
     }
+
     private void initModelProp() {
 
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
