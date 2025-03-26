@@ -64,6 +64,11 @@
 How to include Spring Boot Chat is here [Neurocaster-Server](https://github.com/vishalmysore/neurocaster-server)   
 Spring Boot Client via Angular is here [Neurocaster-Client](https://github.com/vishalmysore/neurocaster-client)
 
+With the Neurocaster client you can connect to any spring application and convert into a chat application with integrated tools.
+
+![Connect](screen.png)  
+
+
 # 💡 Tools4AI
 Tools4AI is 100% Java based Agentic Framework which can be used to build Java based AI agents for integration with enterprise 
 Java applications.
