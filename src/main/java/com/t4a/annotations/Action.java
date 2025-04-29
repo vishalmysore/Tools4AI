@@ -16,4 +16,5 @@ public @interface Action {
     String description() default "";
     ActionRisk riskLevel() default ActionRisk.LOW;
 
+
 }

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.t4a.api.AIAction;
 import com.t4a.api.ActionRisk;
 import com.t4a.api.JavaMethodExecutor;
+import com.t4a.detect.ActionCallback;
 import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.FeedbackLoop;
 import com.t4a.detect.HumanInLoop;
@@ -59,6 +60,11 @@ public class GeminiActionProcessor implements AIProcessor {
             throw new RuntimeException(e);
         }
         return  ResponseHandler.getText(response);
+    }
+
+    @Override
+    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) throws AIProcessingException {
+        return null;
     }
 
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException  {
@@ -172,6 +178,11 @@ public class GeminiActionProcessor implements AIProcessor {
     @Override
     public Object processSingleAction(String promptText)  throws AIProcessingException {
         return processSingleAction(promptText, null, new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
+
+    @Override
+    public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
+        return null;
     }
 
     /**

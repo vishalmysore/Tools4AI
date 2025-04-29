@@ -2,6 +2,7 @@ package com.t4a.test;
 
 import com.t4a.api.AIAction;
 import com.t4a.api.GenericJavaMethodAction;
+import com.t4a.detect.ActionCallback;
 import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.HumanInLoop;
 import com.t4a.examples.actions.CookingAction;
@@ -28,8 +29,18 @@ public class AIProcessorTest {
         }
 
         @Override
+        public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
+            return null;
+        }
+
+        @Override
         public String query(String promptText) throws AIProcessingException {
             return promptText;
+        }
+
+        @Override
+        public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) throws AIProcessingException {
+            return null;
         }
     };
 

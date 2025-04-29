@@ -13,4 +13,11 @@ import java.util.Map;
 public interface HumanInLoop {
     public FeedbackLoop allow(String promptText, String methodName, Map<String, Object> params) ;
     public FeedbackLoop allow(String promptText, String methodName, String params) ;
+
+    default void setCallback(ActionCallback callback) {
+
+    }
+    default ActionCallback getCallback() {
+        return null;
+    }
 }

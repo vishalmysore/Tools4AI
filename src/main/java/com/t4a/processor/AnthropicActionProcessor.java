@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.t4a.JsonUtils;
 import com.t4a.api.*;
 import com.t4a.api.AIPlatform;
+import com.t4a.detect.ActionCallback;
 import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.HumanInLoop;
 import com.t4a.predict.PredictionLoader;
@@ -26,6 +27,11 @@ public class AnthropicActionProcessor implements AIProcessor {
     @Override
     public String query(String promptText) throws AIProcessingException {
         return PredictionLoader.getInstance().getAnthropicChatModel().generate(promptText);
+    }
+
+    @Override
+    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) {
+        return null;
     }
 
     public AnthropicActionProcessor() {
@@ -125,5 +131,10 @@ public class AnthropicActionProcessor implements AIProcessor {
 
     public Object processSingleAction(String prompt) throws AIProcessingException {
         return processSingleAction(prompt, new LoggingHumanDecision(), new LogginggExplainDecision());
+    }
+
+    @Override
+    public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
+        return null;
     }
 }

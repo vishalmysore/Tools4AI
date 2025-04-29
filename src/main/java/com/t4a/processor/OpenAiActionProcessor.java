@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.t4a.JsonUtils;
 import com.t4a.api.*;
 import com.t4a.api.AIPlatform;
+import com.t4a.detect.ActionCallback;
 import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.HumanInLoop;
 import com.t4a.predict.PredictionLoader;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -36,6 +38,11 @@ public class OpenAiActionProcessor implements AIProcessor{
     }
 
     @Override
+    public Object processSingleAction(String promptText, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
+        return processSingleAction(promptText, action, humanVerification, explain, null);
+    }
+
+    @Override
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         return processSingleAction(promptText,null,humanVerification,explain);
     }
@@ -50,7 +57,10 @@ public class OpenAiActionProcessor implements AIProcessor{
         }
         return processSingleAction(promptText, action, null,null);
     }
-    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
+
+
+
+    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) throws AIProcessingException {
         if (action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
             if(action == null) {
@@ -66,6 +76,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             JsonUtils utils = new JsonUtils();
             Method m = null;
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
+            setCallBack(callback,javaMethodAction);
             Class<?> clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods
@@ -162,5 +173,10 @@ public class OpenAiActionProcessor implements AIProcessor{
     }
     public Object processSingleAction(String prompt) throws AIProcessingException{
         return processSingleAction(prompt, new LoggingHumanDecision(),new LogginggExplainDecision());
+    }
+
+    @Override
+    public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
+        return processSingleAction(promptText,null, null,null,callback);
     }
 }

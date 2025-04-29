@@ -1,5 +1,6 @@
 package com.t4a.api;
 
+import com.t4a.detect.ActionCallback;
 import org.json.JSONObject;
 
 /**
@@ -121,4 +122,6 @@ public interface AIAction {
     default String getGroupDescription() {
         return "default";
     }
+
+
 }
