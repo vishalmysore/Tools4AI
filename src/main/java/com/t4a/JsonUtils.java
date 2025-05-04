@@ -246,6 +246,7 @@ public class JsonUtils {
                                     Array.set(array, j, format.parse(jsonArray.optString(j)));
                                 }
                             } else {
+                                log.warn(componentType+ " is not supported for array type consider changing it to a list");
                                 // Handle other component types or custom objects
                                 array = null; // Placeholder, adjust as necessary
                             }
