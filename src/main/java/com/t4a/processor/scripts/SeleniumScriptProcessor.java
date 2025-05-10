@@ -7,10 +7,7 @@ import com.t4a.processor.selenium.SeleniumProcessor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 @Slf4j
 public class SeleniumScriptProcessor {
@@ -40,19 +37,23 @@ public class SeleniumScriptProcessor {
     public ScriptResult process(String fileName) {
         return process(fileName,new LoggingSeleniumCallback());
     }
-    public ScriptResult process(String fileName, SeleniumCallback callback ) {
+    public ScriptResult process(String fileName, SeleniumCallback callback) {
         ScriptResult result = new ScriptResult();
-        try (InputStream is = SeleniumScriptProcessor.class.getClassLoader().getResourceAsStream(fileName);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-             log.debug("Processing script file: " + fileName);
-            processCommands(reader, result,callback);
+        try {
+            // Try classpath first
+            InputStream is = SeleniumScriptProcessor.class.getClassLoader().getResourceAsStream(fileName);
+            if (is == null) {
+                // If not found in classpath, try filesystem
+                is = new FileInputStream(fileName);
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+                log.debug("Processing script file: " + fileName);
+                processCommands(reader, result, callback);
+            }
         } catch (IOException e) {
-            log.error(e.getMessage());
-        } catch (NullPointerException e) {
-
-            log.info("Resource file not found. Make sure the file path is correct.");
+            log.error("Error processing file: " + e.getMessage());
         } catch (AIProcessingException e) {
-            log.error(e.getMessage());
+            log.error("AI Processing error: " + e.getMessage());
         }
         return result;
     }
