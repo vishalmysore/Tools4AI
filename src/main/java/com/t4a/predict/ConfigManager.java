@@ -20,7 +20,7 @@ public class ConfigManager {
             if (inputStream != null) {
                 properties.load(inputStream);
             } else {
-                log.error(fileName + " properties not found");
+                log.warn(fileName + " properties not found will use default values");
             }
         } catch (IOException e) {
             log.warn("Failed to load properties: " + e.getMessage());
