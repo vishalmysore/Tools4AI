@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
@@ -651,8 +652,13 @@ public class PredictionLoader {
     private void addGenericJavaMethodAction(GenericJavaMethodAction action) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Object instance = null;
         if(springContext != null) {
-            instance = springContext.getBean(action.getActionClass());
-            log.debug(" instance from Spring " + instance);
+            try {
+                instance = springContext.getBean(action.getActionClass());
+                log.debug(" instance from Spring " + instance);
+            } catch (NoSuchBeanDefinitionException e) {
+                instance = null;
+            }
+
         } 
         if(instance == null) {
             instance =  action.getActionClass().getDeclaredConstructor().newInstance();

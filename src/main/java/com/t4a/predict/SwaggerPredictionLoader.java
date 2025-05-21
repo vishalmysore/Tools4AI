@@ -57,7 +57,7 @@ public class SwaggerPredictionLoader {
             resourceUrl = SwaggerPredictionLoader.class.getClassLoader().getResource(yamlFile);
 
         if (resourceUrl == null) {
-            log.warn("File not found: " + yamlFile);
+            log.info("File not found: " + yamlFile);
             return;
         }
         Gson gson = new Gson();

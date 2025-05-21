@@ -53,7 +53,7 @@ public class ShellPredictionLoader {
             resourceUrl = ShellPredictionLoader.class.getClassLoader().getResource(yamlFile);
         }
         if (resourceUrl == null) {
-            log.warning("File not found: " + yamlFile);
+            log.info("File not found: " + yamlFile);
             return;
         }
 
