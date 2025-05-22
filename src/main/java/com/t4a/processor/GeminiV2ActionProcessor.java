@@ -111,7 +111,8 @@ public class GeminiV2ActionProcessor implements AIProcessor{
 
             Object result ;
             try {
-                result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
+
+                result = invokeReflection(method, javaMethodAction, parameterValues);
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new AIProcessingException(e);
             }

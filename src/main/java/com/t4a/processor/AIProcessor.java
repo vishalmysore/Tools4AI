@@ -9,6 +9,9 @@ import com.t4a.detect.ExplainDecision;
 import com.t4a.detect.HumanInLoop;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public interface AIProcessor {
     public Object processSingleAction(String promptText, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException;
@@ -42,7 +45,11 @@ public interface AIProcessor {
         return processSingleAction(promptText, action, new LoggingHumanDecision(), new LogginggExplainDecision(), callback);
     }
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) throws AIProcessingException ;
-
+    public default Object invokeReflection(Method method, JavaMethodAction javaMethodAction, List<Object> parameterValues) throws IllegalAccessException, InvocationTargetException {
+        Object result;
+        result = method.invoke(javaMethodAction.getActionInstance(), parameterValues.toArray());
+        return result;
+    }
     default void setCallBack(ActionCallback callback, JavaMethodAction javaMethodAction) {
         if (callback != null) {
             Object obj = javaMethodAction.getActionInstance();
