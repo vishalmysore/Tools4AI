@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.*;
 
 @Slf4j
-public class SeleniumScriptProcessor {
+public class SeleniumScriptProcessor extends ScriptProcessor{
     @Getter
     private Gson gson;
     @Getter

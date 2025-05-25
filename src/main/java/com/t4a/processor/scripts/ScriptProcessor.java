@@ -16,7 +16,7 @@ import java.io.InputStreamReader;
  * Processes action script line by line , previous result is validated
  */
 @Slf4j
-public  class ScriptProcessor {
+public  class ScriptProcessor implements BaseScriptProcessor {
 
     @Getter
     private Gson gson;
