@@ -77,6 +77,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             Method m = null;
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
             setCallBack(callback,javaMethodAction);
+            setProcessor(javaMethodAction);
             Class<?> clazz = javaMethodAction.getActionClass();
             Method[] methods = clazz.getMethods();
             for (Method m1 : methods

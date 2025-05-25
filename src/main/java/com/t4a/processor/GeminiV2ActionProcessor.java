@@ -72,6 +72,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
             log.debug( "found action name {}",action );
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
             setCallBack(callback,javaMethodAction);
+            setProcessor(javaMethodAction);
             JsonUtils utils = new JsonUtils();
             Method m = null;
             Class<?> clazz = javaMethodAction.getActionClass();

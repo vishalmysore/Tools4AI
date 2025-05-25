@@ -70,4 +70,25 @@ public interface AIProcessor {
             }
         }
     }
+
+    default void setProcessor(JavaMethodAction javaMethodAction) {
+        if (javaMethodAction != null) {
+            Object obj = javaMethodAction.getActionInstance();
+            if (obj != null) {
+                Class<?> clazz = obj.getClass();
+                for (Field field : clazz.getDeclaredFields()) {
+                    if (field.getType().equals(AIProcessor.class)) {
+                        field.setAccessible(true); // Make the field accessible
+                        try {
+                            field.set(obj, this); // Set the field to the callback instance
+
+                        } catch (IllegalAccessException e) {
+
+                        }
+                        break; // Exit the loop after setting the field
+                    }
+                }
+            }
+        }
+    }
 }
