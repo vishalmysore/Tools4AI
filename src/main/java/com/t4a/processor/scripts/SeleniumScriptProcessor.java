@@ -16,24 +16,24 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
     @Getter
     private Gson gson;
     @Getter
-    private SeleniumProcessor actionProcessor;
+    private SeleniumProcessor seleniumProcessor;
 
     public SeleniumScriptProcessor() {
         gson = new Gson();
-        actionProcessor = new SeleniumGeminiProcessor();
+        seleniumProcessor = new SeleniumGeminiProcessor();
     }
     public SeleniumScriptProcessor(Gson gson) {
         this.gson = gson;
     }
 
-    public SeleniumScriptProcessor(Gson gson, SeleniumProcessor actionProcessor) {
+    public SeleniumScriptProcessor(Gson gson, SeleniumProcessor seleniumProcessor) {
         this.gson = gson;
-        this.actionProcessor = actionProcessor;
+        this.seleniumProcessor = seleniumProcessor;
     }
 
-    public SeleniumScriptProcessor(SeleniumProcessor actionProcessor) {
+    public SeleniumScriptProcessor(SeleniumProcessor seleniumProcessor) {
         gson = new Gson();
-        this.actionProcessor = actionProcessor;
+        this.seleniumProcessor = seleniumProcessor;
     }
 
     public ScriptResult process(String fileName) {
@@ -75,7 +75,7 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
     }
 
     public void processCommands( BufferedReader reader, ScriptResult result, SeleniumCallback callback) throws IOException, AIProcessingException {
-        SeleniumProcessor processor = getActionProcessor();
+        SeleniumProcessor processor = getSeleniumProcessor();
         String line;
 
 
@@ -88,7 +88,7 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
     }
 
     public void processCommands( BufferedReader reader, ScriptResult result, ActionCallback callback) throws IOException, AIProcessingException {
-        SeleniumProcessor processor = getActionProcessor();
+        SeleniumProcessor processor = getSeleniumProcessor();
         String line;
 
 
