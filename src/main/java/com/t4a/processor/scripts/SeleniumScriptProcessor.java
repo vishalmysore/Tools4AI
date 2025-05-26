@@ -60,6 +60,20 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
         return result;
     }
 
+    public ScriptResult process(StringBuffer content, SeleniumCallback callback) {
+        ScriptResult result = new ScriptResult();
+        try {
+            BufferedReader reader = new BufferedReader(new StringReader(content.toString()));
+            log.debug("Processing content from StringBuffer");
+            processCommands(reader, result, callback);
+        } catch (IOException e) {
+            log.error("Error processing content: " + e.getMessage());
+        } catch (AIProcessingException e) {
+            log.error("AI Processing error: " + e.getMessage());
+        }
+        return result;
+    }
+
     public ScriptResult process(String content, ActionCallback callback) {
         ScriptResult result = new ScriptResult();
         try {
@@ -75,15 +89,27 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
     }
 
     public void processCommands( BufferedReader reader, ScriptResult result, SeleniumCallback callback) throws IOException, AIProcessingException {
-        SeleniumProcessor processor = getSeleniumProcessor();
+
         String line;
 
 
         while ((line = reader.readLine()) != null) {
-             callback.beforeWebAction(processor.getDriver());
-             processor.processWebAction(line);
-             callback.afterWebAction(processor.getDriver());
+             boolean process= callback.beforeWebAction(line,getSeleniumProcessor().getDriver());
+             if(process) {
+                 processWebAction(line,callback);
+                 callback.afterWebAction(line,getSeleniumProcessor().getDriver());
+             }
              log.debug("{}",result);
+        }
+    }
+
+    @Override
+    public void processWebAction(String line,SeleniumCallback callback) {
+        try {
+            getSeleniumProcessor().processWebAction(line);
+        } catch (AIProcessingException e) {
+            log.warn(e.getMessage());
+            callback.handleError(line, e.getMessage(), getSeleniumProcessor().getDriver());
         }
     }
 

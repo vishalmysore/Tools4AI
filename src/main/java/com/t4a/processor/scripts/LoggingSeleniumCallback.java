@@ -6,12 +6,20 @@ import org.openqa.selenium.WebDriver;
 @Slf4j
 public class LoggingSeleniumCallback implements SeleniumCallback{
     @Override
-    public void beforeWebAction(WebDriver driver) {
+    public boolean beforeWebAction(String lineToBeProcessed,WebDriver driver) {
         log.info("Before Web Action: " + driver.getCurrentUrl());
+        return true; // Return true to continue processing the line
     }
 
     @Override
-    public void afterWebAction(WebDriver driver) {
+    public void afterWebAction(String lineProcssed,WebDriver driver) {
         log.info("After Web Action: " + driver.getCurrentUrl());
     }
+
+    @Override
+    public void handleError(String line, String errorMessage, WebDriver driver) {
+        log.info("Error during web action: " + errorMessage);
+    }
+
+
 }
