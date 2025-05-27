@@ -96,7 +96,7 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
         while ((line = reader.readLine()) != null) {
              boolean process= callback.beforeWebAction(line,getSeleniumProcessor().getDriver());
              if(process) {
-                 processWebAction(line,callback);
+                 processWebAction(line,callback, 0);
                  callback.afterWebAction(line,getSeleniumProcessor().getDriver());
              }
              log.debug("{}",result);
@@ -104,12 +104,16 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
     }
 
     @Override
-    public void processWebAction(String line,SeleniumCallback callback) {
+    public void processWebAction(String line,SeleniumCallback callback, int retryCount) {
         try {
             getSeleniumProcessor().processWebAction(line);
-        } catch (AIProcessingException e) {
+        } catch (Exception e) {
             log.warn(e.getMessage());
-            callback.handleError(line, e.getMessage(), getSeleniumProcessor().getDriver());
+            String newLine = callback.handleError(line, e.getMessage(), getSeleniumProcessor().getDriver(), retryCount);
+            if(newLine !=null) {
+                retryCount = retryCount+1;
+                processWebAction(newLine, callback, retryCount);
+            }
         }
     }
 

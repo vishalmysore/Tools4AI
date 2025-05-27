@@ -17,8 +17,9 @@ public class LoggingSeleniumCallback implements SeleniumCallback{
     }
 
     @Override
-    public void handleError(String line, String errorMessage, WebDriver driver) {
+    public String handleError(String line, String errorMessage, WebDriver driver, int retryCount) {
         log.info("Error during web action: " + errorMessage);
+        return null;
     }
 
 

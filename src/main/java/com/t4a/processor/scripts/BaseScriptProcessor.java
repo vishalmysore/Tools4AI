@@ -6,5 +6,5 @@ public interface BaseScriptProcessor {
 
     public ScriptResult process(String fileName, ScriptCallback callback);
 
-    default void processWebAction(String line,SeleniumCallback callback){};
+    default void processWebAction(String line,SeleniumCallback callback,int retryCount){};
 }
