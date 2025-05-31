@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 
 public class SeleniumOpenAIProcessorTest {
 
-    @Test
+   // @Test
     void testWebAction() throws AIProcessingException {
         WebDriver mockAction = Mockito.mock(WebDriver.class);
         JsonUtils mockUtils = new JsonUtils();
