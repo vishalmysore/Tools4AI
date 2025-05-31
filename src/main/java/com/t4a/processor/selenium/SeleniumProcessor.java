@@ -20,6 +20,14 @@ public interface SeleniumProcessor {
         WebDriverAction action = WebDriverAction.valueOf(act.toUpperCase());
         if (WebDriverAction.GET.equals(action)|| WebDriverAction.NAVIGATE.equals(action)) {
             String urlOfTheWebPage = getStringFromPrompt(prompt, "urlToClick");
+            if (urlOfTheWebPage == null || urlOfTheWebPage.isEmpty()) {
+                throw new AIProcessingException("URL to open cannot be null or empty");
+            } else {
+                URLSafety safe = (URLSafety)getTransformer().transformIntoPojo("is this url safe "+urlOfTheWebPage,URLSafety.class);
+                if (!safe.isThisURLSafe()) {
+                    throw new AIProcessingException("The URL is not safe to open: " + urlOfTheWebPage);
+                }
+            }
             LOGGER.debug("Opening the web page: {}", urlOfTheWebPage);
             getDriver().get(urlOfTheWebPage);
         }
