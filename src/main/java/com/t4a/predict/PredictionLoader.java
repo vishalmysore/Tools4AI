@@ -18,7 +18,11 @@ import com.t4a.annotations.Action;
 import com.t4a.annotations.ActivateLoader;
 import com.t4a.annotations.Agent;
 import com.t4a.api.*;
-import com.t4a.processor.AIProcessingException;
+import com.t4a.processor.*;
+import com.t4a.transform.AnthropicTransformer;
+import com.t4a.transform.GeminiV2PromptTransformer;
+import com.t4a.transform.OpenAIPromptTransformer;
+import com.t4a.transform.PromptTransformer;
 import dev.langchain4j.model.anthropic.AnthropicChatModel;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
@@ -114,6 +118,15 @@ public class PredictionLoader {
 
     private final ConfigManager configManager = new ConfigManager();
 
+
+    private PromptTransformer promptTransformer;
+
+    private AIProcessor aiProcessor;
+
+    @Getter
+    private String actionPackagesToScan ="";
+
+
     private PredictionLoader() {
         final int MAX_TOKENS = 4000; // Maximum tokens for Anthropic model
         initPromptProp();
@@ -147,6 +160,7 @@ public class PredictionLoader {
                 chatExplain = modelExplain.startChat();
                 chatMulti = multiCommand.startChat();
                 chatGroupFinder = chatGroupFinderCommand.startChat();
+
             }
         }
         if(openAiKey!=null) {
@@ -157,17 +171,44 @@ public class PredictionLoader {
                 openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
             }
 
+
         }
 
         if(claudeKey!=null) {
-             anthropicChatModel = AnthropicChatModel.builder()
+            anthropicChatModel = AnthropicChatModel.builder()
                     .apiKey(claudeKey)
                     .modelName(anthropicModelName)
                     .logRequests(anthropicLogReqFlag)
                     .logResponses(anthropicLogResFlag)
-                     .maxTokens(MAX_TOKENS)
+                    .maxTokens(MAX_TOKENS)
                     .build();
+
         }
+    }
+
+    public AIProcessor createOrGetAIProcessor() {
+        if(this.aiProcessor == null) {
+            if(openAiChatModel != null) {
+                this.aiProcessor = new OpenAiActionProcessor();
+            } else if(anthropicChatModel != null) {
+                this.aiProcessor = new AnthropicActionProcessor();
+            } else {
+                this.aiProcessor = new GeminiV2ActionProcessor();
+            }
+        }
+        return this.aiProcessor;
+    }
+    public PromptTransformer createOrGetPromptTransformer() {
+        if(promptTransformer == null) {
+            if(openAiChatModel != null) {
+                this.promptTransformer = new OpenAIPromptTransformer();
+            } else if(anthropicChatModel != null) {
+                this.promptTransformer = new AnthropicTransformer();
+            } else {
+                this.promptTransformer = new GeminiV2PromptTransformer();
+            }
+        }
+        return this.promptTransformer;
     }
 
     private void initPromptProp() {
@@ -179,14 +220,23 @@ public class PredictionLoader {
     }
 
     private void initModelProp() {
-
-        try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream("tools4ai.properties")) {
+        String propertiesPath = System.getProperty("tools4ai.properties.path", "tools4ai.properties");
+        try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream(propertiesPath)) {
             if(inputStream == null) {
                 log.error(" tools4ai properties not found ");
                 return;
             }
             Properties prop = new Properties();
             prop.load(inputStream);
+            String packagesToScan = prop.getProperty("action.packages.to.scan");
+            if(packagesToScan != null) {
+                actionPackagesToScan = packagesToScan.trim();
+                log.info(" will scan these packages for actions "+actionPackagesToScan );
+            } else {
+                actionPackagesToScan = "";
+                log.info(" will scan all packages for actions " );
+            }
+
             // Read properties
             projectId = prop.getProperty("gemini.projectId");
             if(projectId != null)
@@ -196,7 +246,7 @@ public class PredictionLoader {
                 location = location.trim();
             modelName = prop.getProperty("gemini.modelName");
             if(modelName != null)
-                    modelName = modelName.trim();
+                modelName = modelName.trim();
             geminiVisionModelName =   prop.getProperty("gemini.vision.modelName");
             if(geminiVisionModelName != null)
                 geminiVisionModelName = geminiVisionModelName.trim();
@@ -310,16 +360,16 @@ public class PredictionLoader {
         Object[] paramsRet = new Object[params.keySet().size()];
         int i  = 0 ;
         for (String key: params.keySet()
-             ) {
+        ) {
             String json;
             try {
                 Object value = params.get(key);
                 json = classToJson((Class<?>)value);
 
-            String response = openAiChatModel.generate(" here is you prompt { "+prompt+"} and here is your json "+json+" - fill the json with values and return");
-            Object ret = gson.fromJson(response,((Class<?>)value) )   ;
-            paramsRet[i] = ret;
-            i++;
+                String response = openAiChatModel.generate(" here is you prompt { "+prompt+"} and here is your json "+json+" - fill the json with values and return");
+                Object ret = gson.fromJson(response,((Class<?>)value) )   ;
+                paramsRet[i] = ret;
+                i++;
 
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -349,7 +399,7 @@ public class PredictionLoader {
         try {
             if(AIPlatform.GEMINI == aiProvider) {
                 JsonUtils utils = new JsonUtils();
-                
+
                 String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(PRMPT +prompt+ GRP +actionGroupJson+"} - which group does this prompt belong to? response back in this format with only one set {'groupName':'','explanation':''}"));
                 log.info(groupName);
                 groupName= utils.fetchGroupName(groupName);
@@ -445,17 +495,17 @@ public class PredictionLoader {
         String[] namesArray = actionNameList.toString().split(",");
         String realName = null;
         for (String name:namesArray
-             ) {
+        ) {
             if(name.equalsIgnoreCase(actionName))
             {
-                 realName = name;
+                realName = name;
             }
         }
         return realName;
     }
 
     public AIAction getPredictedAction(String prompt)  {
-       return getPredictedAction(prompt,AIPlatform.GEMINI);
+        return getPredictedAction(prompt,AIPlatform.GEMINI);
     }
 
     public String getMultiStepResult(String json) throws AIProcessingException {
@@ -513,7 +563,7 @@ public class PredictionLoader {
                 }
             }
         }
-            return action;
+        return action;
 
     }
 
@@ -569,7 +619,7 @@ public class PredictionLoader {
     }
 
     public void processCP() {
-        Reflections reflections = new Reflections("",
+        Reflections reflections = new Reflections(actionPackagesToScan,
                 new SubTypesScanner(),
                 new TypeAnnotationsScanner());
         Set<Class<?>> predict = reflections.getTypesAnnotatedWith(Agent.class);
@@ -659,7 +709,7 @@ public class PredictionLoader {
                 instance = null;
             }
 
-        } 
+        }
         if(instance == null) {
             instance =  action.getActionClass().getDeclaredConstructor().newInstance();
         }

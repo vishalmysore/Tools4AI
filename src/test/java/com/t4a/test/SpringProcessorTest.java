@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+
 public class SpringProcessorTest {
 
     String json = "{\n" +
