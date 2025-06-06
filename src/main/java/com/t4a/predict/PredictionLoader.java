@@ -35,6 +35,7 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -221,6 +222,7 @@ public class PredictionLoader {
 
     private void initModelProp() {
         String propertiesPath = System.getProperty("tools4ai.properties.path", "tools4ai.properties");
+        log.info("Loading properties from path: " + propertiesPath);
         try (InputStream inputStream = PredictionLoader.class.getClassLoader().getResourceAsStream(propertiesPath)) {
             if(inputStream == null) {
                 log.error(" tools4ai properties not found ");
@@ -237,6 +239,7 @@ public class PredictionLoader {
                 log.info(" will scan all packages for actions " );
             }
 
+            log.info("will scan for actions in packages: " + actionPackagesToScan);
             // Read properties
             projectId = prop.getProperty("gemini.projectId");
             if(projectId != null)
@@ -571,6 +574,17 @@ public class PredictionLoader {
         return getInstance(null);
     }
     public static PredictionLoader getInstance(ApplicationContext springContext) {
+        if (springContext!=null) {
+            Environment env = springContext.getEnvironment();
+            String tools4aiPath = env.getProperty("tools4ai.properties.path");
+
+            if (tools4aiPath != null && !tools4aiPath.isEmpty()) {
+                System.setProperty("tools4ai.properties.path", tools4aiPath);
+                log.info("Loaded tools4ai path from Spring env: " + tools4aiPath);
+            } else {
+                log.info("tools4ai.properties.path not defined in Spring environment; will load default tools4ai.properties");
+            }
+        }
         if(predictionLoader == null) {
             predictionLoader = new PredictionLoader();
             predictionLoader.setSpringContext(springContext);

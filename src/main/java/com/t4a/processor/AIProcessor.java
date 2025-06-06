@@ -53,7 +53,7 @@ public interface AIProcessor {
         return result;
     }
 
-    default void cleanUpThreadLocal(JavaMethodAction javaMethodAction) {
+    default void cleanUpThreadLocal(JavaMethodAction javaMethodAction) throws IllegalAccessException {
         if (javaMethodAction == null) return;
 
         Object obj = javaMethodAction.getActionInstance();
@@ -62,7 +62,7 @@ public interface AIProcessor {
         Class<?> clazz = obj.getClass();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
-            try {
+
                 if (field.getType().equals(ThreadLocal.class)) {
                     // Ensure this is ThreadLocal<ActionCallback>
                     if (field.getGenericType() instanceof ParameterizedType) {
@@ -75,14 +75,12 @@ public interface AIProcessor {
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace(); // Optional: log the error
-            }
+
         }
     }
 
 
-    default void setCallBack(ActionCallback callback, JavaMethodAction javaMethodAction) {
+    default void setCallBack(ActionCallback callback, JavaMethodAction javaMethodAction) throws IllegalAccessException {
         if (callback == null || javaMethodAction == null) return;
 
         Object obj = javaMethodAction.getActionInstance();
@@ -93,7 +91,7 @@ public interface AIProcessor {
 
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
-            try {
+
                 if (field.getType().equals(ActionCallback.class)) {
                     // Direct ActionCallback field
                     field.set(obj, callback);
@@ -115,9 +113,7 @@ public interface AIProcessor {
                         }
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace(); // You might want to log this instead
-            }
+
         }
     }
 
@@ -132,7 +128,7 @@ public interface AIProcessor {
             return obj.getClass();
         } catch (Exception e) {
             // Something else went wrong, fall back
-            e.printStackTrace();
+
             return obj.getClass();
         }
     }

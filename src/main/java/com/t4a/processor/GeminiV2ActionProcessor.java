@@ -71,7 +71,11 @@ public class GeminiV2ActionProcessor implements AIProcessor{
         if(action.getActionType() == ActionType.JAVAMETHOD) {
             log.debug( "found action name {}",action );
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
-            setCallBack(callback,javaMethodAction);
+            try {
+                setCallBack(callback,javaMethodAction);
+            } catch (IllegalAccessException e) {
+                throw new AIProcessingException(e);
+            }
             setProcessor(javaMethodAction);
             JsonUtils utils = new JsonUtils();
             Method m = null;

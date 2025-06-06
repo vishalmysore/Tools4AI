@@ -846,6 +846,33 @@ public class JsonUtils {
         log.debug(fieldName+" is the fieldName");
         return fieldValue;
     }
+
+    public String getFieldValueFromMultipleFields(String jsonStr, String fieldName) {
+        try {
+            jsonStr = extractJson(jsonStr);
+            JSONObject obj = new JSONObject(jsonStr);
+
+            // Check if "fields" exists and is a JSONArray
+            if (obj.has("fields") && obj.get("fields") instanceof JSONArray) {
+                JSONArray fields = obj.getJSONArray("fields");
+
+                for (int i = 0; i < fields.length(); i++) {
+                    JSONObject field = fields.getJSONObject(i);
+                    if (fieldName.equals(field.optString("fieldName"))) {
+                        return field.optString("fieldValue", null);
+                    }
+                }
+
+                return null; // Field not found in array
+            }
+        } catch (Exception e) {
+            // If the JSON is malformed or not as expected, we fall back
+            log.warn("Error parsing fields array, falling back to flat field extraction: " + e.getMessage());
+        }
+
+        // Fallback to flat structure
+        return getFieldValue(jsonStr, fieldName);
+    }
     public static String convertObjectToJson(Object obj) {
         ObjectMapper mapper = new ObjectMapper();
 
