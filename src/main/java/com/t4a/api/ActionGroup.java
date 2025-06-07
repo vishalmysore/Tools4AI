@@ -19,21 +19,19 @@ public class ActionGroup {
 
     public ActionGroup(String groupName) {
         groupInfo.setGroupName(groupName);
+        groupInfo.setGroupDescription("");  // Initialize with empty string
     }
 
     public ActionGroup(String groupName, String groupDescription) {
         groupInfo.setGroupName(groupName);
         groupInfo.setGroupDescription(groupDescription);
-    }
-
-    public void addAction(ActionKey key) {
+    }    public void addAction(ActionKey key) {
         actions.add(key);
     }
+    
     public void addAction(AIAction action) {
         actions.add(new ActionKey(action));
-    }
-
-    @Override
+    }@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -15,9 +15,13 @@ import com.t4a.api.JavaMethodAction;
 
 public final class BlankAction implements JavaMethodAction {
     @Action
-    public String askAdditionalQuestion(String additionalQuestion){
-        return "provide answer for this query : "+additionalQuestion;
+    public String askAdditionalQuestion(String additionalQuestion) {
+        if (additionalQuestion == null) {
+            return null;
+        }
+        if (additionalQuestion.isEmpty()) {
+            return "";
+        }
+        return "provide answer for this query : " + additionalQuestion;
     }
-
-
 }

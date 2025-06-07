@@ -86,33 +86,47 @@ public class SeleniumScriptProcessor extends ScriptProcessor{
             log.error("AI Processing error: " + e.getMessage());
         }
         return result;
-    }
-
-    public void processCommands( BufferedReader reader, ScriptResult result, SeleniumCallback callback) throws IOException, AIProcessingException {
-
+    }    public void processCommands(BufferedReader reader, ScriptResult result, SeleniumCallback callback) throws IOException, AIProcessingException {
         String line;
-
-
         while ((line = reader.readLine()) != null) {
-             boolean process= callback.beforeWebAction(line,getSeleniumProcessor().getDriver());
-             if(process) {
-                 processWebAction(line,callback, 0);
-                 callback.afterWebAction(line,getSeleniumProcessor().getDriver());
-             }
-             log.debug("{}",result);
+            try {
+                boolean process = callback.beforeWebAction(line, getSeleniumProcessor().getDriver());
+                if (process) {
+                    try {
+                        processWebAction(line, callback, 0);
+                        result.addResult(line, "success");
+                        callback.afterWebAction(line, getSeleniumProcessor().getDriver());
+                    } catch (Exception e) {
+                        result.addResult(line, "error: " + e.getMessage());
+                        log.error("Failed to process web action: {}", e.getMessage());
+                    }
+                } else {
+                    result.addResult(line, "skipped by callback");
+                }
+            } catch (Exception e) {
+                log.error("Error in web action processing: {}", e.getMessage());
+                result.addResult(line, "error: " + e.getMessage());
+                throw new AIProcessingException(e.getMessage());
+            }
+            log.debug("{}", result);
         }
-    }
-
-    @Override
-    public void processWebAction(String line,SeleniumCallback callback, int retryCount) {
+    }@Override
+    public void processWebAction(String line, SeleniumCallback callback, int retryCount) {
         try {
-            getSeleniumProcessor().processWebAction(line);
+            getSeleniumProcessor().processWebAction(line); 
         } catch (Exception e) {
-            log.warn(e.getMessage());
+            log.warn("Error executing web action: {} - {}", line, e.getMessage());
             String newLine = callback.handleError(line, e.getMessage(), getSeleniumProcessor().getDriver(), retryCount);
-            if(newLine !=null) {
-                retryCount = retryCount+1;
+            
+            // If callback provided a retry command and we haven't exceeded retry limit, attempt it
+            if (newLine != null && retryCount < 3) { // Limit to 3 retries
+                retryCount = retryCount + 1;
+                log.info("Retrying with modified command: {}", newLine);
                 processWebAction(newLine, callback, retryCount);
+            }
+            // Error wasn't handled by retry, log it
+            else {
+                log.error("Failed to execute web action after {} retries", retryCount);
             }
         }
     }

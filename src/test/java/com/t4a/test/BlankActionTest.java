@@ -1,11 +1,12 @@
 package com.t4a.test;
 
 import com.t4a.action.BlankAction;
+import com.t4a.api.ActionRisk;
 import com.t4a.api.ActionType;
 import com.t4a.processor.AIProcessingException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BlankActionTest {
 
@@ -19,6 +20,20 @@ class BlankActionTest {
 
         // Assert statements to verify the return value of the method call
         assertEquals("provide answer for this query : What's the weather?", result);
+    }
+
+    @Test
+    void testAskAdditionalQuestionWithNull() {
+        BlankAction blankAction = new BlankAction();
+        String result = blankAction.askAdditionalQuestion(null);
+        assertNull(result);
+    }
+
+    @Test
+    void testAskAdditionalQuestionWithEmptyString() {
+        BlankAction blankAction = new BlankAction();
+        String result = blankAction.askAdditionalQuestion("");
+        assertEquals("", result);
     }
 
     @Test
@@ -55,5 +70,40 @@ class BlankActionTest {
 
         // Assert statements to verify the return value of the method call
         assertEquals("askAdditionalQuestion", result);
+    }
+
+    @Test
+    void testGetActionRisk() {
+        BlankAction blankAction = new BlankAction();
+        assertEquals(ActionRisk.LOW, blankAction.getActionRisk());
+    }
+
+    @Test
+    void testGetActionGroup() {
+        BlankAction blankAction = new BlankAction();
+        assertEquals("No group name available", blankAction.getActionGroup());
+    }
+
+    @Test
+    void testGetGroupDescription() {
+        BlankAction blankAction = new BlankAction();
+        assertEquals("No group description available", blankAction.getGroupDescription());
+    }
+
+    @Test
+    void testGetActionParameters() {
+        BlankAction blankAction = new BlankAction();
+        assertEquals("", blankAction.getActionParameters());
+    }
+
+    @Test
+    void testGetJsonRPC() {
+        BlankAction blankAction = new BlankAction();
+        String jsonRpc = blankAction.getJsonRPC();
+        assertTrue(jsonRpc.contains("\"actionName\":\"askAdditionalQuestion\""));
+        assertTrue(jsonRpc.contains("\"description\":\"askAdditionalQuestion\""));
+        assertTrue(jsonRpc.contains("\"actionType\":\"JAVAMETHOD\""));
+        assertTrue(jsonRpc.contains("\"actionGroup\":\"No group name available\""));
+        assertTrue(jsonRpc.contains("\"actionParameters\":\"\""));
     }
 }

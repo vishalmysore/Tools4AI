@@ -14,6 +14,11 @@ public class SeleniumAction  {
 
     @Action(description = "Perform action on web page")
     public DriverActions webPageAction(DriverActions webDriverActions) {
-        return webDriverActions;
+        if (webDriverActions == null) {
+            return null;
+        }
+        DriverActions copy = new DriverActions();
+        copy.setTypeOfActionToTakeOnWebDriver(webDriverActions.getTypeOfActionToTakeOnWebDriver());
+        return copy;
     }
 }

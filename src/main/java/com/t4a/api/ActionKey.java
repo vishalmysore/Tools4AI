@@ -16,27 +16,24 @@ import java.util.UUID;
 public class ActionKey {
     private String actionName;
     private String actionDescription;
-    private long uniqueKey ;
-    public ActionKey(AIAction action) {
+    private long uniqueKey ;    public ActionKey(AIAction action) {
         generateUniqueKey();
-
+        if (action != null) {
             actionName = action.getActionName();
-
-        actionDescription = action.getDescription();
+            actionDescription = action.getDescription();
+        }
     }
 
     private void generateUniqueKey() {
         UUID uuid = UUID.randomUUID();
         uniqueKey = uuid.getMostSignificantBits() & Long.MAX_VALUE;
 
-    }
-
-    @Override
+    }    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ActionKey actionKey = (ActionKey) o;
-        return Objects.equals(uniqueKey, actionKey.uniqueKey);
+        return uniqueKey == actionKey.uniqueKey;
     }
 
     @Override
