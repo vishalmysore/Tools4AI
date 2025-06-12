@@ -77,7 +77,8 @@ public class PredictionLoader {
     private final  String POSTACTIONCMD = " } - reply back with ";
     private final  String NUMACTION = " action only. Make sure Action matches exactly from this list";
     private   String NUMACTIONOI = " action only. Make sure Action matches exactly from this list";
-
+    private Map<Object, Object> tools4AIPropertiesImmutable;
+    private Properties tools4AIProperties = new Properties();
     private final  String NUMACTION_MULTIPROMPT = " actions only, in comma seperated list without any additional special characters";
     @Getter
     @Setter
@@ -187,6 +188,10 @@ public class PredictionLoader {
         }
     }
 
+    public Map<Object, Object> getTools4AIProperties() {
+        return tools4AIPropertiesImmutable;
+    }
+
     public AIProcessor createOrGetAIProcessor() {
         if(this.aiProcessor == null) {
             if(openAiChatModel != null) {
@@ -228,9 +233,10 @@ public class PredictionLoader {
                 log.error(" tools4ai properties not found ");
                 return;
             }
-            Properties prop = new Properties();
-            prop.load(inputStream);
-            String packagesToScan = prop.getProperty("action.packages.to.scan");
+
+            tools4AIProperties.load(inputStream);
+            tools4AIPropertiesImmutable = Collections.unmodifiableMap(new HashMap<>(tools4AIProperties));
+            String packagesToScan = tools4AIProperties.getProperty("action.packages.to.scan");
             if(packagesToScan != null) {
                 actionPackagesToScan = packagesToScan.trim();
                 log.info(" will scan these packages for actions "+actionPackagesToScan );
@@ -241,38 +247,38 @@ public class PredictionLoader {
 
             log.info("will scan for actions in packages: " + actionPackagesToScan);
             // Read properties
-            projectId = prop.getProperty("gemini.projectId");
+            projectId = tools4AIProperties.getProperty("gemini.projectId");
             if(projectId != null)
                 projectId = projectId.trim();
-            location = prop.getProperty("gemini.location");
+            location = tools4AIProperties.getProperty("gemini.location");
             if(location != null)
                 location = location.trim();
-            modelName = prop.getProperty("gemini.modelName");
+            modelName = tools4AIProperties.getProperty("gemini.modelName");
             if(modelName != null)
                 modelName = modelName.trim();
-            geminiVisionModelName =   prop.getProperty("gemini.vision.modelName");
+            geminiVisionModelName =   tools4AIProperties.getProperty("gemini.vision.modelName");
             if(geminiVisionModelName != null)
                 geminiVisionModelName = geminiVisionModelName.trim();
-            anthropicModelName = prop.getProperty("anthropic.modelName");
-            anthropicLogReqFlag = Boolean.parseBoolean(prop.getProperty("anthropic.logRequests", "false"));
-            anthropicLogResFlag = Boolean.parseBoolean(prop.getProperty("anthropic.logResponse", "false"));
+            anthropicModelName = tools4AIProperties.getProperty("anthropic.modelName");
+            anthropicLogReqFlag = Boolean.parseBoolean(tools4AIProperties.getProperty("anthropic.logRequests", "false"));
+            anthropicLogResFlag = Boolean.parseBoolean(tools4AIProperties.getProperty("anthropic.logResponse", "false"));
             if(anthropicModelName != null)
                 anthropicModelName = anthropicModelName.trim();
-            openAiKey = prop.getProperty("openAiKey");
+            openAiKey = tools4AIProperties.getProperty("openAiKey");
             if(openAiKey != null)
                 openAiKey = openAiKey.trim();
             if(openAiKey == null || openAiKey.trim().isEmpty()) {
                 openAiKey = System.getProperty("openAiKey");
             }
 
-            openAiBaseURL = prop.getProperty("openAiBaseURL");
+            openAiBaseURL = tools4AIProperties.getProperty("openAiBaseURL");
             if(openAiBaseURL != null)
                 openAiBaseURL = openAiBaseURL.trim();
             if(openAiBaseURL == null || openAiBaseURL.trim().isEmpty()) {
                 openAiBaseURL = System.getProperty("openAiBaseURL");
             }
 
-            openAiModelName = prop.getProperty("openAiModelName");
+            openAiModelName = tools4AIProperties.getProperty("openAiModelName");
             if(openAiModelName != null)
                 openAiModelName = openAiModelName.trim();
             if(openAiModelName == null || openAiModelName.trim().isEmpty()) {
@@ -283,7 +289,7 @@ public class PredictionLoader {
             if(claudeKey == null || claudeKey.trim().isEmpty()) {
                 claudeKey = System.getProperty("claudeKey");
             }
-            serperKey = prop.getProperty("serperKey");
+            serperKey = tools4AIProperties.getProperty("serperKey");
             if(serperKey == null || serperKey.trim().isEmpty()) {
                 serperKey = System.getProperty("serperKey");
             }
