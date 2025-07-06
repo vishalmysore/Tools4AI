@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.*;
 /**
  * The {@code PredictionLoader} class is responsible for managing the prediction process
@@ -115,6 +116,7 @@ public class PredictionLoader {
     private String claudeKey;
     @Getter
     private String serperKey;
+    private int maxTimeOutForOpenAI = 1; // 10 seconds
     private String actionGroupJson;
     private ApplicationContext springContext;
 
@@ -166,9 +168,12 @@ public class PredictionLoader {
             }
         }
         if(openAiKey!=null) {
+            Duration timeout = Duration.ofMinutes(maxTimeOutForOpenAI);
             if(openAiBaseURL!=null) {
-                log.info("baseurl "+openAiBaseURL);
-                openAiChatModel = OpenAiChatModel.builder().apiKey(openAiKey).baseUrl(openAiBaseURL).modelName(openAiModelName).build();
+                log.info("baseurl "+openAiBaseURL+" timeout "+timeout+" minutes");
+
+                openAiChatModel = OpenAiChatModel.builder().apiKey(openAiKey).baseUrl(openAiBaseURL).modelName(openAiModelName).timeout(timeout).build();
+
             } else {
                 openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
             }
@@ -264,6 +269,7 @@ public class PredictionLoader {
             anthropicLogResFlag = Boolean.parseBoolean(tools4AIProperties.getProperty("anthropic.logResponse", "false"));
             if(anthropicModelName != null)
                 anthropicModelName = anthropicModelName.trim();
+            maxTimeOutForOpenAI =Integer.parseInt(tools4AIProperties.getProperty("maxTimeOutForOpenAI", "1"));
             openAiKey = tools4AIProperties.getProperty("openAiKey");
             if(openAiKey != null)
                 openAiKey = openAiKey.trim();
