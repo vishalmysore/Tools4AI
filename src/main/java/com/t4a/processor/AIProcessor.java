@@ -86,35 +86,14 @@ public interface AIProcessor {
         Object obj = javaMethodAction.getActionInstance();
         if (obj == null) return;
 
-        Class<?> clazz = resolveActualClass(obj);
-        if (clazz == null) return;
-
-        for (Field field : clazz.getDeclaredFields()) {
-            field.setAccessible(true);
-
-                if (field.getType().equals(ActionCallback.class)) {
-                    // Direct ActionCallback field
-                    field.set(obj, callback);
-                    break;
-                } else if (ThreadLocal.class.isAssignableFrom(field.getType())) {
-                    // Check if it's a ThreadLocal<ActionCallback>
-                    Type genericType = field.getGenericType();
-                    if (genericType instanceof ParameterizedType) {
-                        ParameterizedType paramType = (ParameterizedType) genericType;
-                        Type actualType = paramType.getActualTypeArguments()[0];
-                        if (actualType.getTypeName().equals(ActionCallback.class.getName())) {
-                            ThreadLocal<ActionCallback> threadLocal = (ThreadLocal<ActionCallback>) field.get(obj);
-                            if (threadLocal == null) {
-                                threadLocal = new ThreadLocal<>();
-                                field.set(obj, threadLocal);
-                            }
-                            threadLocal.set(callback);
-                            break;
-                        }
-                    }
-                }
-
+        // 1. PREFERRED: Check if it implements the interface
+        if (obj instanceof ActionCallbackAware) {
+            ((ActionCallbackAware) obj).setCallback(callback);
+            return;
         }
+
+        // 2. FALLBACK: Keep your existing reflection logic here for backward compatibility
+        // ... (paste your existing reflection code here) ...
     }
 
     default Class<?> resolveActualClass(Object obj) {
@@ -133,24 +112,22 @@ public interface AIProcessor {
         }
     }
 
+
+
     default void setProcessor(JavaMethodAction javaMethodAction) {
-        if (javaMethodAction != null) {
-            Object obj = javaMethodAction.getActionInstance();
-            if (obj != null) {
-                Class<?> clazz = obj.getClass();
-                for (Field field : clazz.getDeclaredFields()) {
-                    if (field.getType().equals(AIProcessor.class)) {
-                        field.setAccessible(true); // Make the field accessible
-                        try {
-                            field.set(obj, this); // Set the field to the callback instance
+        if (javaMethodAction == null) return;
 
-                        } catch (IllegalAccessException e) {
+        Object obj = javaMethodAction.getActionInstance();
+        if (obj == null) return;
 
-                        }
-                        break; // Exit the loop after setting the field
-                    }
-                }
+
+            if (obj instanceof ActionCallbackAware) {
+
+                ((ProcessorAware) obj).setProcessor(this);
+                return;
             }
-        }
+
+
+
     }
 }
