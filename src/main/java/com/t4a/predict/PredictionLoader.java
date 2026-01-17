@@ -193,7 +193,7 @@ public class PredictionLoader {
         }
     }
 
-    public Map<Object, Object> getTools4AIProperties() {
+    public Map<Object, Object> fetchTools4AIPropDetails() {
         return tools4AIPropertiesImmutable;
     }
 
