@@ -24,4 +24,14 @@ public final class BlankAction implements JavaMethodAction {
         }
         return "provide answer for this query : " + additionalQuestion;
     }
+
+    @Override
+    public String getPrompt() {
+        return "";
+    }
+
+    @Override
+    public String getSubprompt() {
+        return "";
+    }
 }

@@ -13,6 +13,8 @@ public class GenericJavaMethodAction implements JavaMethodAction{
     private String actionClassName;
     private String actionName;
     private String description;
+    private String prompt;
+    private String subprompt;
     private ActionRisk riskLevel = ActionRisk.LOW;
     private String groupName = ToolsConstants.GROUP_NAME;
     private String groupDescription = ToolsConstants.GROUP_DESCRIPTION;
@@ -34,6 +36,14 @@ public class GenericJavaMethodAction implements JavaMethodAction{
     @Override
     public String getActionParameters() {
         return jsonStr;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public String getSubprompt() {
+        return subprompt;
     }
 
     public GenericJavaMethodAction(Object actionInstance, String actionName) throws AIProcessingException {
@@ -69,6 +79,7 @@ public class GenericJavaMethodAction implements JavaMethodAction{
         if(predict != null) {
             this.groupDescription = predict.groupDescription();
             this.groupName = predict.groupName();
+            this.prompt = predict.prompt();
         }
         this.actionClassName = clazz.getName();
         initAction(actionMethod);
@@ -94,6 +105,7 @@ public class GenericJavaMethodAction implements JavaMethodAction{
 
         this.riskLevel = action.riskLevel();
         this.description = action.description();
+        this.subprompt = action.prompt();
         if(this.description == null || this.description.isEmpty()) {
             this.description = actionMethod.getName();
         }

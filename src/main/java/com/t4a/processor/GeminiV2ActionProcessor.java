@@ -93,7 +93,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
             }
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
-                jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json"));
+                jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json ,here are you additional instructions  "+javaMethodAction.getPrompt()+" : "+javaMethodAction.getSubprompt()) );
             }
             catch(Exception e) {
 

@@ -16,4 +16,5 @@ import java.lang.annotation.Target;
 public @interface Agent {
     String groupName() default ToolsConstants.GROUP_NAME;
     String groupDescription() default ToolsConstants.GROUP_DESCRIPTION;
+    String prompt() default "";
 }

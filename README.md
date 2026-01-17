@@ -239,9 +239,9 @@ As you can notice we are not passing any action with the prompt the AI will figu
 A simple Java action can be written like this 
 
 ```
-@Agent(groupName = "buildMyDiary" , groupDescription = "This is my diary details")
+@Agent(groupName = "buildMyDiary" , groupDescription = "This is my diary details" prompt="Create my diary with all the details")
 public class MyDiaryAction implements JavaMethodAction {
-    @Action  
+    @Action (prompt="build my diary with all the details additonal info if any")
     public MyDiary buildMyDiary(MyDiary diary) {
         //take whatever action you want to take
         return diary;
@@ -257,6 +257,22 @@ Here the actionName is ```buildMyDiary```, MyDiary pojo will be created automati
 ```
 Actions have to be annontated with @Agent to be added to prediction list , they can be grouped together with
 the groupName.
+
+**Additional Prompts to agent**
+```
+@Action(prompt="build my diary with all the details additonal info if any")
+```
+You can add additional prompt to the action to make it more descriptive for the AI to understand
+
+
+**additional prompts to action**
+```
+@Action(prompt="Create my diary with all the details")
+``` 
+You can add additional prompt to the action to make it more descriptive for the AI to understand
+
+
+
 
 **Custom Pojo**
 

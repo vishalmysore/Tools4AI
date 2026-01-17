@@ -99,6 +99,8 @@ public interface JavaMethodAction extends AIAction{
         return predict != null ? predict.groupDescription(): "No group description available";
     }
 
+    public String getPrompt();
+    public String getSubprompt() ;
     public default Object getActionInstance(){
         return this;
     }

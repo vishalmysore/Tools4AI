@@ -24,7 +24,15 @@ public class MockAction implements JavaMethodAction {
         return "mockActionDescription";
     }
 
+    @Override
+    public String getPrompt() {
+        return "";
+    }
 
+    @Override
+    public String getSubprompt() {
+        return "";
+    }
 
 
 }

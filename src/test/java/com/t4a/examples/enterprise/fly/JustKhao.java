@@ -89,6 +89,16 @@ public class JustKhao implements JavaMethodAction {
     }
 
     @Override
+    public String getPrompt() {
+        return "";
+    }
+
+    @Override
+    public String getSubprompt() {
+        return "";
+    }
+
+    @Override
     public ActionType getActionType() {
         return ActionType.JAVAMETHOD;
     }

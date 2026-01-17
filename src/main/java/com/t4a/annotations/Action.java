@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 public @interface Action {
     String description() default "";
     ActionRisk riskLevel() default ActionRisk.LOW;
+    String prompt() default "";
 
 
 }

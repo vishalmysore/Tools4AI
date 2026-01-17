@@ -96,7 +96,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             }
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
-                jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " "+PredictionLoader.getInstance().METHODTOJSONOI);
+                jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " "+PredictionLoader.getInstance().METHODTOJSONOI+ " Do not add any additional comments to JSON and here are additional instructions "+(javaMethodAction).getPrompt()+" and "+javaMethodAction.getSubprompt());
             }
             catch(Exception e) {
              throw new AIProcessingException(" Make sure openAiKey is set either in tools4Ai.properties or as runtime parameter -DopenAiKey=  "+e.getMessage());
