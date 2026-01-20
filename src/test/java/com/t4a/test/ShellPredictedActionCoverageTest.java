@@ -9,13 +9,15 @@ public class ShellPredictedActionCoverageTest {
 
     @Test
     public void testDetectPathTypeAbsolute() {
-        String result = ShellPredictedAction.detectPathType("C:\\Users\\test\\script.cmd");
+        String absolutePath = new java.io.File("script.cmd").getAbsolutePath();
+        String result = ShellPredictedAction.detectPathType(absolutePath);
         Assertions.assertEquals("Absolute path", result);
     }
 
     @Test
     public void testDetectPathTypeRelative() {
-        String result = ShellPredictedAction.detectPathType("scripts/test.cmd");
+        String relativePath = "scripts" + java.io.File.separator + "test.cmd";
+        String result = ShellPredictedAction.detectPathType(relativePath);
         Assertions.assertEquals("Relative path", result);
     }
 
@@ -28,7 +30,8 @@ public class ShellPredictedActionCoverageTest {
     @Test
     public void testLoadFromAbsolutePath() {
         ShellPredictedAction action = new ShellPredictedAction();
-        String result = action.loadFromAbsolutePath("C:\\test\\script.cmd");
+        String absolutePath = new java.io.File("script.cmd").getAbsolutePath();
+        String result = action.loadFromAbsolutePath(absolutePath);
         Assertions.assertTrue(result.contains("script.cmd"));
     }
 
