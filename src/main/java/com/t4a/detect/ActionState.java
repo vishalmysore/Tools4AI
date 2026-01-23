@@ -2,7 +2,7 @@ package com.t4a.detect;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.github.dockerjava.api.model.TaskState;
+
 
 public enum ActionState {
     SUBMITTED("submitted"),
