@@ -6,7 +6,7 @@
 
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>1.1.9.2</version>
+    <version>1.1.9.3</version>
 
     <name>Tools For Artificial Intelligence</name>
     <description>
@@ -227,7 +227,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.3</version>
+            <version>1.5.13</version>
             <scope>test</scope>
         </dependency>
         <dependency>
