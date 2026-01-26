@@ -115,7 +115,7 @@ public class OpenAiActionProcessor implements AIProcessor{
 
             Object result;
             try {
-                if(humanVerification!=null && humanVerification.allow(prompt, action.getActionName(), jsonStr).isAIResponseValid()) {
+                if(humanVerification==null || humanVerification.allow(prompt, action.getActionName(), jsonStr).isAIResponseValid()) {
                     result = invokeReflection(method, javaMethodAction, parameterValues);
                 } else {
                     return "Human verification failed";
@@ -184,6 +184,6 @@ public class OpenAiActionProcessor implements AIProcessor{
 
     @Override
     public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
-        return processSingleAction(promptText,null, null,null,callback);
+        return processSingleAction(promptText,null, new LoggingHumanDecision(),null,callback);
     }
 }

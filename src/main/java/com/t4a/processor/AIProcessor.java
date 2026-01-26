@@ -121,7 +121,7 @@ public interface AIProcessor {
         if (obj == null) return;
 
 
-            if (obj instanceof ActionCallbackAware) {
+            if (obj instanceof ProcessorAware) {
 
                 ((ProcessorAware) obj).setProcessor(this);
                 return;

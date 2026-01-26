@@ -130,9 +130,12 @@ public class GeminiV2ActionProcessor implements AIProcessor{
             String params = PredictionLoader.getInstance().getActionParams(action,prompt,AIPlatform.GEMINI,methodExecutor.getProperties());
             Object obj = null;
             try {
-                if(humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
+                if(humanVerification ==null || humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
                     obj = methodExecutor.action(params, action);
                     log.debug(" the action returned "+obj);
+                } else {
+                    log.info(" Human in loop verification failed for action {} with prompt {} and params {} ",action.getActionName(),prompt,params);
+                    return " Human in loop verification failed for action " + action.getActionName();
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new AIProcessingException(e);
@@ -149,7 +152,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
 
     @Override
     public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
-         return processSingleAction(promptText,null, null,null,callback);
+         return processSingleAction(promptText,null, new LoggingHumanDecision(),null,callback);
     }
 
 
