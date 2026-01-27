@@ -16,6 +16,10 @@ public interface AIProcessor {
     public Object processSingleAction(String promptText, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException;
     public Object processSingleAction(String promptText)  throws AIProcessingException;
 
+    public default Object processSingleAction(String promptText, HumanInLoop humanVeification) throws AIProcessingException{
+        return processSingleAction(promptText, null,humanVeification,null);
+    }
+
     public Object processSingleAction(String promptText, ActionCallback callback)  throws AIProcessingException;
     public String query(String promptText)  throws AIProcessingException;
     public default String query(String question, String answer) throws AIProcessingException {

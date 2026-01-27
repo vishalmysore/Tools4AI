@@ -38,3 +38,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/test_output.txt
+/compile_error.txt
+/test_output_action_executor.txt
