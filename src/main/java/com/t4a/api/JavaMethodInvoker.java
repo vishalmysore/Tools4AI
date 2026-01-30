@@ -188,7 +188,16 @@ public class JavaMethodInvoker {
             parameterType = java.util.Date.class;
         } else if (type.equalsIgnoreCase("list")) {
             parameterType = Class.forName("java.util.List");
-        } else {
+        }  else if (type.equalsIgnoreCase("java.lang.Double")) {
+            parameterType = Class.forName("java.lang.Double");
+        }
+        else if (type.equalsIgnoreCase("java.lang.Long")) {
+            parameterType = Class.forName("java.lang.Long");
+        } else if (type.equalsIgnoreCase("java.lang.Boolean")) {
+            parameterType = Class.forName("java.lang.Boolean");
+        } else if (type.equalsIgnoreCase("java.lang.Integer")) {
+            parameterType = Class.forName("java.lang.Integer");
+        }else {
             parameterType = Class.forName(type);
         }
         return parameterType;

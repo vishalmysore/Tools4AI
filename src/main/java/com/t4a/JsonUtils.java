@@ -638,7 +638,8 @@ public class JsonUtils {
             paramJson.put("name", parameter.getName());
 
             // Handle custom object types by inspecting their structure
-            if (!parameter.getType().isPrimitive() && !parameter.getType().equals(String.class)
+            if (!parameter.getType().isPrimitive() && !parameter.getType().equals(String.class)&& !parameter.getType().equals(Double.class) && !parameter.getType().equals(Boolean.class) && !parameter.getType().equals(Integer.class)
+                    && !parameter.getType().equals(Long.class)
                     && !parameter.getType().equals(Date.class) && !parameter.getType().isArray() && !List.class.isAssignableFrom(parameter.getType()) &&
                     !Map.class.isAssignableFrom(parameter.getType())) {
                 JSONArray fieldDetails = new JSONArray();
@@ -670,6 +671,18 @@ public class JsonUtils {
                 addList(parameter, paramJson);
             } else if (Map.class.isAssignableFrom(parameter.getType())) {
                 addMap(parameter, paramJson);
+            }  else if (Double.class.isAssignableFrom(parameter.getType())) {
+                paramJson.put("type", "java.lang.Double");
+                paramJson.put(FIELDVALUE_JSON, "");
+            } else if (Boolean.class.isAssignableFrom(parameter.getType())) {
+                paramJson.put("type", "java.lang.Boolean");
+                paramJson.put(FIELDVALUE_JSON, "");
+            }  else if (Integer.class.isAssignableFrom(parameter.getType())) {
+                paramJson.put("type", "java.lang.Integer");
+                paramJson.put(FIELDVALUE_JSON, "");
+            } else if (Long.class.isAssignableFrom(parameter.getType())) {
+                paramJson.put("type", "java.lang.Long");
+                paramJson.put(FIELDVALUE_JSON, "");
             } else {
                 paramJson.put("type", parameter.getType().getSimpleName());
 
@@ -724,7 +737,7 @@ public class JsonUtils {
         }
         fieldJson.put(FIELDNAME, field.getName());
         Class<?> fieldType = field.getType();
-        if (!fieldType.isPrimitive() && !fieldType.equals(String.class)
+        if (!fieldType.isPrimitive() && !fieldType.equals(String.class)  && !fieldType.equals(Double.class)
                 && !fieldType.equals(Date.class) && !fieldType.isArray() && !List.class.isAssignableFrom(fieldType)) {
             JSONArray fieldDetails = new JSONArray();
             for (Field childfield : field.getType().getDeclaredFields()) {
