@@ -1,3 +1,29 @@
+# 💡 Tools4AI
+Tools4AI is 100% Java based Agentic AI Framework and light weight ADK library which can be used to build Java based AI agents for integration with enterprise 
+Java applications. It can be used to build AI agents in A2A , MCP, A2UI, UCP and other protocols. 
+This project illustrates the integration of AI Agents with enterprise tools or external tools, converting natural language prompts
+into <span style="font-size: larger;">**agent actions**.</span> These prompts can be called <span style="font-size: larger;">**"actionble prompts"**</span>
+or <span style="font-size: larger;">**"agent prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
+with complex systems, enhancing productivity and innovation across diverse applications.<br>
+
+For example , we can integrate AI Agent with a customer service application. Users can interact with the AI agent by asking questions or making requests in natural language. For example, a user might ask,**"Schedule a maintenance appointment for my car."** The AI agent interprets the request, extracts relevant information such as the service required and preferred date, and then triggers the appropriate agent action in the customer service application to schedule the appointment. This seamless integration streamlines the process for users and enhances the efficiency of the customer service workflow through agentic ai automation.
+<br>
+| Prompt                                                                                                              | Action                                                                                                                                                |
+|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Create a <span style="color:blue">**new task**</span> for the marketing campaign.                                                                                                     | The AI agent interprets the request and generates a new task entry within the project management tool dedicated to the marketing campaign, assigning it relevant details such as priority level, due date, and task description. |
+| Generate a <span style="color:blue">**sales report**</span> for the previous <span style="color:blue">**quarter**</span>.                                                                 | The AI agent accesses data from the company's sales database, analyzes the information for the previous quarter, and generates a comprehensive sales report, which is then delivered to the user or stored in the appropriate location for access. |
+| Check the <span style="color:blue">**inventory status**</span> of <span style="color:blue">**product X.**</span>                                                                           | The AI agent retrieves real-time inventory data for product X from the inventory management system and provides the user with information regarding current stock levels, including quantities available, locations, and any pending orders. |
+| Schedule a <span style="color:blue">**video conference**</span> with the engineering team for next Monday at 10 AM.                                      | The AI agent interfaces with the calendar and scheduling tool, creates a new event titled "Engineering Team Video Conference" for the specified date and time, and sends out meeting invitations to all members of the engineering team. |
+| Submit a reimbursement request for the <span style="color:blue">**business**</span> trip <span style="color:blue">**expenses.**</span>                                                     | The AI agent guides the user through the reimbursement request process, collecting necessary details such as expense receipts, dates, amounts, and purpose of expenditure. Once compiled, the system submits the reimbursement request to the appropriate department for processing. |
+
+
+
+Prompt prediction is a technique used to anticipate user actions based on their input prompts. For instance,
+if a user's prompt is "my car broke down," in addition to the action "bookTaxi," the AI agent can predict a
+set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinner time). This predictive
+capability enhances the user experience by proactively suggesting relevant actions or services based on the
+context provided in the prompt.
+
 <div align="center">
   <a href="https://www.linkedin.com/posts/vishalrow_ai-appdevelopment-actions-activity-7171302152101900288-64qg?utm_source=share&utm_medium=member_desktop">
     <img src="tools4ai.png"  width="200" height="200">
@@ -21,18 +47,14 @@
    <a href="https://deepwiki.com/vishalmysore/Tools4AI"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
-
-
-
-
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
-- [SetUp](#setup)  
+- [SetUp](#setup)
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
-  - [Anthropic](#anthropic)  
-- [Reference Examples](#%EF%B8%8F-reference-examples)  
+  - [Anthropic](#anthropic)
+- [Reference Examples](#%EF%B8%8F-reference-examples)
   - [Java Actions](#java-actions)
   - [HTTP REST Actions](#http-actions-swagger)
   - [Shell Actions](#shell-actions)
@@ -42,50 +64,21 @@
   - [Automated UI validation](#automated-ui-validations)
   - [Spring Integration](#spring-integration)
   - [JavaDocs](#-javadocs)
-- [Prediction Loaders](#-prediction-loaders)  
+- [Prediction Loaders](#-prediction-loaders)
   - [Java Prediction Loader](#-java-prediction-loaders)
   - [Swagger Prediction Loader](#%EF%B8%8F-swagger-prediction-loader)
   - [Shell Prediction Loader](#%EF%B8%8F-shell-prediction-loader)
-  - [Extended Prediction Loader](#%EF%B8%8F-extended-prediction-loader)  
+  - [Extended Prediction Loader](#%EF%B8%8F-extended-prediction-loader)
 - [Response Validation](#response-validation)
-  - [Hallucination](#hallucination)   
-- [Autonomous Agent](#autonomous-agent)  
+  - [Hallucination](#hallucination)
+- [Autonomous Agent](#autonomous-agent)
   - [Action Scripts](#action-script)
 
 
 # 📌 Rapid Start
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/agenticjava
 
-🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
-
-
-
-
-# 💡 Tools4AI
-Tools4AI is 100% Java based Agentic Framework which can be used to build Java based AI agents for integration with enterprise 
-Java applications.
-This project illustrates the integration of AI Agents with enterprise tools or external tools, converting natural language prompts
-into <span style="font-size: larger;">**agent actions**.</span> These prompts can be called <span style="font-size: larger;">**"actionble prompts"**</span>
-or <span style="font-size: larger;">**"agent prompts"**</span>  By leveraging AI capabilities, it streamlines user interactions
-with complex systems, enhancing productivity and innovation across diverse applications.<br>
-
-For example , we can integrate AI Agent with a customer service application. Users can interact with the AI agent by asking questions or making requests in natural language. For example, a user might ask,**"Schedule a maintenance appointment for my car."** The AI agent interprets the request, extracts relevant information such as the service required and preferred date, and then triggers the appropriate agent action in the customer service application to schedule the appointment. This seamless integration streamlines the process for users and enhances the efficiency of the customer service workflow through agentic ai automation.
-<br>
-| Prompt                                                                                                              | Action                                                                                                                                                |
-|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Create a <span style="color:blue">**new task**</span> for the marketing campaign.                                                                                                     | The AI agent interprets the request and generates a new task entry within the project management tool dedicated to the marketing campaign, assigning it relevant details such as priority level, due date, and task description. |
-| Generate a <span style="color:blue">**sales report**</span> for the previous <span style="color:blue">**quarter**</span>.                                                                 | The AI agent accesses data from the company's sales database, analyzes the information for the previous quarter, and generates a comprehensive sales report, which is then delivered to the user or stored in the appropriate location for access. |
-| Check the <span style="color:blue">**inventory status**</span> of <span style="color:blue">**product X.**</span>                                                                           | The AI agent retrieves real-time inventory data for product X from the inventory management system and provides the user with information regarding current stock levels, including quantities available, locations, and any pending orders. |
-| Schedule a <span style="color:blue">**video conference**</span> with the engineering team for next Monday at 10 AM.                                      | The AI agent interfaces with the calendar and scheduling tool, creates a new event titled "Engineering Team Video Conference" for the specified date and time, and sends out meeting invitations to all members of the engineering team. |
-| Submit a reimbursement request for the <span style="color:blue">**business**</span> trip <span style="color:blue">**expenses.**</span>                                                     | The AI agent guides the user through the reimbursement request process, collecting necessary details such as expense receipts, dates, amounts, and purpose of expenditure. Once compiled, the system submits the reimbursement request to the appropriate department for processing. |
-
-
-
-Prompt prediction is a technique used to anticipate user actions based on their input prompts. For instance,
-if a user's prompt is "my car broke down," in addition to the action "bookTaxi," the AI agent can predict a
-set of subsequent actions such as "bookCarService" and "orderFood" (if it's dinner time). This predictive
-capability enhances the user experience by proactively suggesting relevant actions or services based on the
-context provided in the prompt.
+🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions
 
 # SetUp
 
