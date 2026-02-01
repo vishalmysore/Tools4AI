@@ -21,6 +21,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -640,6 +641,8 @@ public class JsonUtils {
             // Handle custom object types by inspecting their structure
             if (!parameter.getType().isPrimitive() && !parameter.getType().equals(String.class)&& !parameter.getType().equals(Double.class) && !parameter.getType().equals(Boolean.class) && !parameter.getType().equals(Integer.class)
                     && !parameter.getType().equals(Long.class)
+                    && !parameter.getType().equals(Float.class)
+                    && !parameter.getType().equals(BigDecimal.class)
                     && !parameter.getType().equals(Date.class) && !parameter.getType().isArray() && !List.class.isAssignableFrom(parameter.getType()) &&
                     !Map.class.isAssignableFrom(parameter.getType())) {
                 JSONArray fieldDetails = new JSONArray();
@@ -682,6 +685,12 @@ public class JsonUtils {
                 paramJson.put(FIELDVALUE_JSON, "");
             } else if (Long.class.isAssignableFrom(parameter.getType())) {
                 paramJson.put("type", "java.lang.Long");
+                paramJson.put(FIELDVALUE_JSON, "");
+            } else if (Float.class.isAssignableFrom(parameter.getType())) {
+                paramJson.put("type", "java.lang.Float");
+                paramJson.put(FIELDVALUE_JSON, "");
+            } else if (BigDecimal.class.isAssignableFrom(parameter.getType())) {
+                paramJson.put("type", "java.math.BigDecimal");
                 paramJson.put(FIELDVALUE_JSON, "");
             } else {
                 paramJson.put("type", parameter.getType().getSimpleName());
