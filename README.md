@@ -54,20 +54,11 @@
 
 
 # 📌 Rapid Start
-🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/simplelam  
+🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/agenticjava
 
 🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions  
 
-👉 Live Demo - https://huggingface.co/spaces/VishalMysore/EnterpriseAIHub
 
-## Model Integration Protocol 
-  
-How to include Spring Boot Chat is here [Neurocaster-Server](https://github.com/vishalmysore/neurocaster-server)   
-Spring Boot Client via Angular is here [Neurocaster-Client](https://github.com/vishalmysore/neurocaster-client)
-
-With the Neurocaster client you can connect to any spring application and convert into a chat application with integrated tools.
-
-![Connect](screen.png)  
 
 
 # 💡 Tools4AI
@@ -893,3 +884,14 @@ Guard Rails with Spring security
 ## 🧾 Advanced prompt function calling
 ``` Can you check if my movie booking system can handle 50 reservations in 1 min ``` <br>
 ``` what happens if my cookgpt is giving only vegetarian recipes``` <br>
+
+👉 Live Demo - https://huggingface.co/spaces/VishalMysore/EnterpriseAIHub
+
+## Model Integration Protocol
+
+How to include Spring Boot Chat is here [Neurocaster-Server](https://github.com/vishalmysore/neurocaster-server)   
+Spring Boot Client via Angular is here [Neurocaster-Client](https://github.com/vishalmysore/neurocaster-client)
+
+With the Neurocaster client you can connect to any spring application and convert into a chat application with integrated tools.
+
+![Connect](screen.png)  
