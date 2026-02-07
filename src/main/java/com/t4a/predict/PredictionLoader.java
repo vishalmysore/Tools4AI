@@ -487,7 +487,7 @@ public class PredictionLoader {
     @NotNull
     private String getOpenAiActionName(String prompt) {
         String actionName;
-        String groupName = openAiChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else");
+        String groupName = openAiChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else, do not add extra space or new line and make sure group name matches exactly from the list");
         log.info(LOOK_FOR_ACTION_IN_THE_GROUP +groupName+ OUT_OF +actionGroupJson);
         String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
         actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuilder(actionNameListTemp)));
@@ -498,7 +498,7 @@ public class PredictionLoader {
     @NotNull
     private String getAnthrpicActionName(String prompt) {
         String actionName;
-        String groupName = anthropicChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else");
+        String groupName = anthropicChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else, do not add extra space or new line and make sure group name matches exactly from the list");
         log.info(LOOK_FOR_ACTION_IN_THE_GROUP+groupName+ OUT_OF+actionGroupJson);
         String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
         actionName = anthropicChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuilder(actionNameList)));

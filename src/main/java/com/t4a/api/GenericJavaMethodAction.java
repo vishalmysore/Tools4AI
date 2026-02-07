@@ -57,6 +57,7 @@ public class GenericJavaMethodAction implements JavaMethodAction{
     public GenericJavaMethodAction(Class<?> clazz, String actionName) throws AIProcessingException {
         this.clazz = clazz;
         this.actionName = actionName;
+
         this.actionMethod = methodFinder.findMethod(clazz, actionName); // use internal MethodFinder
 
         Agent predict = clazz.getAnnotation(Agent.class);

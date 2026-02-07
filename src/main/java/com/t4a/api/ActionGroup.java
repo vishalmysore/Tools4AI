@@ -18,7 +18,11 @@ public class ActionGroup {
     private GroupInfo groupInfo = new GroupInfo();
 
     public ActionGroup(String groupName) {
-        groupInfo.setGroupName(groupName);
+        String cleanName = groupName == null
+                ? null
+                : groupName.replaceAll("\\r?\\n", "").trim();
+
+        groupInfo.setGroupName(cleanName);
         groupInfo.setGroupDescription("");  // Initialize with empty string
     }
 
