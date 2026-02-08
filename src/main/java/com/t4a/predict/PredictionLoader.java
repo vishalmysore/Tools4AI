@@ -561,8 +561,12 @@ public class PredictionLoader {
 
     }
 
-    public AIAction getAiAction(String actionName) {
-        log.debug(" Trying to load "+actionName);
+    public AIAction getAiAction(String actionNameOriginal) {
+        log.debug(" Trying to load will trim this and load "+actionNameOriginal);
+        String actionName = actionNameOriginal == null
+                ? null
+                : actionNameOriginal.replaceAll("\\r?\\n", "").trim();
+
         AIAction action = predictions.get(actionName);
         if(action != null) {
 
