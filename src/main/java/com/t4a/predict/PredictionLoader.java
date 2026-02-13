@@ -276,6 +276,10 @@ public class PredictionLoader {
             if(openAiKey == null || openAiKey.trim().isEmpty()) {
                 openAiKey = System.getProperty("openAiKey");
             }
+            if(openAiKey == null || openAiKey.trim().isEmpty()) {
+                openAiKey = System.getenv("openAiKey");
+            }
+
 
             openAiBaseURL = tools4AIProperties.getProperty("openAiBaseURL");
             if(openAiBaseURL != null)
@@ -305,12 +309,21 @@ public class PredictionLoader {
             log.debug("projectId: " + projectId);
             log.debug("location: " + location);
             log.debug("modelName: " + modelName);
-            log.debug("serperKey: " + serperKey);
-            log.debug("openAiKey: " + openAiKey);
-            log.debug("claudeKey: " + claudeKey);
+            log.debug("serperKey: {}", maskKey(serperKey));
+            log.debug("openAiKey: {}", maskKey(openAiKey));
+            log.debug("claudeKey: {}", maskKey(claudeKey));
         } catch (IOException e) {
             log.warn(e.getMessage());
         }
+    }
+
+    private static boolean isBlank(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+    private static String maskKey(String key) {
+        if (isBlank(key)) return "<not-set>";
+        int visible = Math.min(4, key.length());
+        return key.substring(0, visible) + "****";
     }
 
     public List<AIAction> getPredictedAction(String prompt, int num) throws AIProcessingException {
