@@ -41,6 +41,7 @@ public class Tools4AITest {
         when(predictionLoaderMock.getPredictions()).thenReturn(predictions);
 
         String json = Tools4AI.getActionListAsJSONRPC();
+        assertNotNull(json, "JSON result should not be null");
         assertTrue(json.contains("testAction"));
     }
 

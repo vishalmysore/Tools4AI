@@ -38,10 +38,14 @@ public class GeminiImageActionProcessorTest {
         responseHandlerStatic = mockStatic(ResponseHandler.class);
         generativeModelMock = mock(GenerativeModel.class);
 
-        try (MockedConstruction<VertexAI> vertexAiMock = mockConstruction(VertexAI.class)) {
-            processor = new GeminiImageActionProcessor();
-            processor.setModel(generativeModelMock);
-        }
+        // Create processor with overridden initModel to avoid constructor calling PredictionLoader
+        processor = new GeminiImageActionProcessor() {
+            @Override
+            protected void initModel() {
+                // Skip initialization - we'll set the model manually
+            }
+        };
+        processor.setModel(generativeModelMock);
     }
 
     @AfterEach
