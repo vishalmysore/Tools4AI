@@ -33,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
@@ -661,15 +663,31 @@ public class PredictionLoader {
         }
     }
 
+
     public void processCP() {
-        Reflections reflections = new Reflections(actionPackagesToScan,
-                new SubTypesScanner(),
-                new TypeAnnotationsScanner());
-        Set<Class<?>> predict = reflections.getTypesAnnotatedWith(Agent.class);
-        Set<Class<?>> activateLoader = reflections.getTypesAnnotatedWith(ActivateLoader.class);
-        loaderPredict(predict);
-        loaderExtended(activateLoader);
+
+        ConfigurationBuilder config = new ConfigurationBuilder()
+                .addScanners(new SubTypesScanner(false), new TypeAnnotationsScanner());
+
+        if (actionPackagesToScan == null || actionPackagesToScan.trim().isEmpty()) {
+            log.warn("No actionPackagesToScan configured — scanning full classpath");
+            config.addUrls(ClasspathHelper.forJavaClassPath());
+        } else {
+            for (String pkg : actionPackagesToScan.split(",")) {
+                String trimmed = pkg.trim();
+                if (!trimmed.isEmpty()) {
+                    config.addUrls(ClasspathHelper.forPackage(trimmed));
+                }
+            }
+        }
+
+        Reflections reflections = new Reflections(config);
+
+        loaderPredict(reflections.getTypesAnnotatedWith(Agent.class));
+        loaderExtended(reflections.getTypesAnnotatedWith(ActivateLoader.class));
     }
+
+
 
     private void loaderExtended(Set<Class<?>> loaderClasses) {
         loaderClasses.forEach(actionCLAZZ->{
