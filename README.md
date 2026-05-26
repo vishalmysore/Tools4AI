@@ -50,6 +50,7 @@ context provided in the prompt.
 ### Table of Contents
 - [Rapid Start](#-Rapid-Start)
 - [Tools4AI](#-Tools4AI)
+- [Architecture & Comparison with Spring AI](#-architecture--comparison-with-spring-ai)
 - [SetUp](#setup)
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
@@ -79,6 +80,24 @@ context provided in the prompt.
 🧱 Do you want to start building ASAP , Look at Rapid start here https://github.com/vishalmysore/agenticjava
 
 🌱 Integration of Spring Controller and AI Actions - https://github.com/vishalmysore/SpringActions
+
+# 🧭 Architecture & Comparison with Spring AI
+
+Tools4AI is a **retrofit layer** — it makes any existing Java system AI-controllable with minimal code change.  
+Spring AI is a **platform** for building AI-first apps from scratch on Spring Boot.
+
+| Dimension | **Tools4AI** | **Spring AI** |
+|---|---|---|
+| **Core purpose** | Agentic action routing — maps prompts to pre-existing Java methods/REST/shell | AI primitives — chat, embeddings, RAG, vector stores for Spring apps |
+| **Entry point** | Annotate *any* existing Java class/method — works without Spring | Built on Spring Boot — Spring context is required |
+| **Action discovery** | Annotation-driven classpath scan + YAML/JSON config for REST/shell | Manual `@Tool` registration, function callbacks |
+| **Parameter mapping** | Fully automatic — POJOs, Lists, Maps, arrays populated from prompt | Manual — you define function schemas explicitly |
+| **Non-Java actions** | First-class shell scripts, Swagger/OpenAPI, HTTP REST — no code needed | Not supported natively |
+| **Safety layer** | `GuardRails`, `HumanInLoop`, hallucination/bias/fact detectors | Not built in |
+| **RAG / Embeddings** | Not present | Core feature |
+| **Weight** | Lightweight, single JAR | Full Spring ecosystem |
+
+📄 Full architecture deep-dive, capability breakdown, and improvement roadmap → **[ARCHITECTURE.md](ARCHITECTURE.md)**
 
 # SetUp
 
