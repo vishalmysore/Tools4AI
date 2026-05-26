@@ -120,7 +120,9 @@ public class PersistentFileAgentMemory implements AgentMemory {
             if (!tmp.renameTo(storageFile)) {
                 // rename failed (e.g. cross-device) — fall back to direct write
                 mapper.writeValue(storageFile, turns);
-                tmp.delete();
+                if (!tmp.delete()) {
+                    log.warn("Could not delete temporary file '{}'", tmp.getAbsolutePath());
+                }
             }
         } catch (IOException e) {
             log.error("Failed to persist memory to '{}': {}", storageFile, e.getMessage());
