@@ -81,12 +81,55 @@ The items below are forward-looking ideas. **No existing code is changed** — e
 - **Classpath scanning is unbounded** — scanning the entire classpath by default is slow and fragile. Opt-in package scanning (`actionPackagesToScan`) is there but not the default.
 - **No async/reactive support** — all `processSingleAction` calls are blocking. Modern agentic workloads need streaming and async execution.
 
-### 2. 🤖 Agent Capabilities
+### 2. 🤖 Agent Capabilities ✅ Implemented
 
-- **No memory / conversation history** — each prompt is stateless. Real agents need short-term (turn) and long-term (session/persistent) memory.
-- **No multi-agent orchestration** — `MultiBot` exists in examples but there is no first-class framework for agent-to-agent delegation with result aggregation.
-- **No planning loop** — there is no ReAct (Reason+Act) or chain-of-thought loop. The AI picks one action and executes it. More complex tasks need iterative planning.
-- **No tool result feedback** — after a Java method executes, the result is not fed back to the LLM for a follow-up reasoning step.
+The following four capabilities have been added as pure extensions under the `com.t4a.agent` package.
+No existing source files were changed.
+
+| Capability | Package | Key classes |
+|---|---|---|
+| **Memory / conversation history** | `com.t4a.agent.memory` | `AgentMemory`, `InMemoryAgentMemory` (bounded sliding window), `PersistentFileAgentMemory` (JSON file, survives restarts) |
+| **Multi-agent orchestration** | `com.t4a.agent.orchestration` | `AgentOrchestrator` (LLM-driven routing + result aggregation), `AgentDefinition`, `OrchestrationResult` |
+| **ReAct planning loop** | `com.t4a.agent.planning` | `ReActPlanner` (Reason→Act→Observe loop, configurable max iterations), `ExecutionPlan`, `PlanStep` |
+| **Tool result feedback** | `com.t4a.agent.feedback` | `ToolResultFeedbackProcessor` (decorator — feeds raw tool result back to LLM for natural-language synthesis) |
+
+#### Memory — quick start
+```java
+AgentMemory memory = new InMemoryAgentMemory(20);          // short-term, 20-turn window
+AgentMemory memory = new PersistentFileAgentMemory("/var/agent/session.json"); // long-term
+
+memory.addTurn("What is the weather?", "25°C");
+String prompt = memory.getHistoryAsContext() + "\nNow: what should I wear?";
+```
+
+#### Multi-agent orchestration — quick start
+```java
+AgentOrchestrator orch = new AgentOrchestrator(new OpenAiActionProcessor());
+orch.register(new AgentDefinition("flights", "handles flight booking", flightProcessor));
+orch.register(new AgentDefinition("hotels",  "handles hotel reservations", hotelProcessor));
+
+OrchestrationResult result = orch.execute(
+    "Book a flight to Bangalore on Aug 15 and a hotel for 3 nights");
+System.out.println(result.getSummary()); // LLM-synthesised answer
+```
+
+#### ReAct planning loop — quick start
+```java
+ReActPlanner planner = new ReActPlanner(new OpenAiActionProcessor()); // default 10 iterations
+ExecutionPlan plan = planner.plan("Research the best route and book the cheapest flight to Tokyo");
+plan.getSteps().forEach(step ->
+    System.out.printf("Step %d | %s → %s%n",
+        step.getStepNumber(), step.getThought(), step.getObservation()));
+System.out.println(plan.getFinalAnswer());
+```
+
+#### Tool result feedback — quick start
+```java
+// Without decorator:  processSingleAction returns the raw Java return value ("25")
+// With decorator:     processSingleAction returns "The temperature in Toronto is 25°C today."
+AIProcessor enriched = new ToolResultFeedbackProcessor(new OpenAiActionProcessor());
+String answer = (String) enriched.processSingleAction("What is the temperature in Toronto?");
+```
 
 ### 3. 🔒 Safety & Observability
 
