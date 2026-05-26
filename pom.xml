@@ -304,6 +304,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
+                <configuration>
+                    <!-- Suppress doclint errors from HTML in Javadoc comments when
+                         built with Java 9+ strict doclet (plugin predates Java 9). -->
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
