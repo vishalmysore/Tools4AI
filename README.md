@@ -70,6 +70,13 @@ context provided in the prompt.
   - [Swagger Prediction Loader](#%EF%B8%8F-swagger-prediction-loader)
   - [Shell Prediction Loader](#%EF%B8%8F-shell-prediction-loader)
   - [Extended Prediction Loader](#%EF%B8%8F-extended-prediction-loader)
+- [Agent Toolkit](#-agent-toolkit)
+  - [Memory](#memory--conversation-history)
+  - [Multi-Agent Orchestration](#multi-agent-orchestration)
+  - [ReAct Planning](#react-planning-loop)
+  - [Tool Result Feedback](#tool-result-feedback)
+  - [Retry & Fallback](#retry--fallback)
+  - [Audit Trail](#audit-trail)
 - [Response Validation](#response-validation)
   - [Hallucination](#hallucination)
 - [Autonomous Agent](#autonomous-agent)
@@ -98,6 +105,96 @@ Spring AI is a **platform** for building AI-first apps from scratch on Spring Bo
 | **Weight** | Lightweight, single JAR | Full Spring ecosystem |
 
 📄 Full architecture deep-dive, capability breakdown, and improvement roadmap → **[ARCHITECTURE.md](ARCHITECTURE.md)**
+
+# 🤖 Agent Toolkit
+
+The `com.t4a.agent` package adds composable agentic building blocks on top of any `AIProcessor`
+(OpenAI, Gemini, Anthropic, LocalAI). Everything is a plain decorator or helper — no existing
+code changes, no Spring required, and the pieces compose freely.
+
+## Memory / Conversation History
+
+Give your agent short-term (sliding window) or long-term (file-backed, survives restarts) memory:
+
+```java
+AgentMemory memory = new InMemoryAgentMemory(20);                               // last 20 turns
+AgentMemory memory = new PersistentFileAgentMemory("/var/agent/session.json");  // durable
+
+memory.addTurn("What is the weather?", "25°C");
+String prompt = memory.getHistoryAsContext() + "\nNow: what should I wear?";
+```
+
+## Multi-Agent Orchestration
+
+Register multiple specialised agents and let the LLM route each part of a compound prompt
+to the right one, then synthesise a combined answer:
+
+```java
+AgentOrchestrator orch = new AgentOrchestrator(new OpenAiActionProcessor());
+orch.register(new AgentDefinition("flights", "handles flight booking", flightProcessor));
+orch.register(new AgentDefinition("hotels",  "handles hotel reservations", hotelProcessor));
+
+OrchestrationResult result = orch.execute(
+    "Book a flight to Bangalore on Aug 15 and a hotel for 3 nights");
+System.out.println(result.getSummary());
+```
+
+## ReAct Planning Loop
+
+Multi-step Reason → Act → Observe planning for goals that need several tool calls:
+
+```java
+ReActPlanner planner = new ReActPlanner(new OpenAiActionProcessor());
+ExecutionPlan plan = planner.plan("Research the best route and book the cheapest flight to Tokyo");
+System.out.println(plan.getFinalAnswer());
+```
+
+## Tool Result Feedback
+
+By default `processSingleAction` returns the raw Java return value. Wrap the processor to have
+the LLM turn that raw result into a natural-language answer:
+
+```java
+AIProcessor enriched = new ToolResultFeedbackProcessor(new OpenAiActionProcessor());
+String answer = (String) enriched.processSingleAction("What is the temperature in Toronto?");
+// "The temperature in Toronto is 25°C today." instead of "25"
+```
+
+## Retry & Fallback
+
+LLM calls fail transiently — rate limits, network blips, model overload. `RetryActionProcessor`
+retries with exponential backoff and can fall back to a different provider when retries run out:
+
+```java
+AIProcessor resilient = new RetryActionProcessor(
+        new OpenAiActionProcessor(),
+        3,                               // max attempts
+        500,                             // initial backoff ms (doubles each retry)
+        new GeminiV2ActionProcessor());  // optional fallback provider
+
+Object result = resilient.processSingleAction("Book a flight to Bangalore");
+```
+
+## Audit Trail
+
+Record every action execution — prompt, result, success/failure, duration — for compliance and
+debugging. `JsonFileAuditTrail` appends JSON-lines to disk; `InMemoryAuditTrail` keeps a bounded
+recent-activity window:
+
+```java
+AuditTrail trail = new JsonFileAuditTrail("/var/agent/audit.jsonl");
+AIProcessor audited = new AuditedActionProcessor(new OpenAiActionProcessor(), trail);
+
+audited.processSingleAction("Restart the payment server");
+// audit.jsonl: {"timestampMs":...,"prompt":"Restart the payment server","success":true,...}
+```
+
+Decorators compose — e.g. audit the final outcome after retries:
+
+```java
+AIProcessor agent = new AuditedActionProcessor(
+        new RetryActionProcessor(new OpenAiActionProcessor()), trail);
+```
 
 # SetUp
 

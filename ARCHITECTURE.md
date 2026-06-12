@@ -92,6 +92,8 @@ No existing source files were changed.
 | **Multi-agent orchestration** | `com.t4a.agent.orchestration` | `AgentOrchestrator` (LLM-driven routing + result aggregation), `AgentDefinition`, `OrchestrationResult` |
 | **ReAct planning loop** | `com.t4a.agent.planning` | `ReActPlanner` (Reason→Act→Observe loop, configurable max iterations), `ExecutionPlan`, `PlanStep` |
 | **Tool result feedback** | `com.t4a.agent.feedback` | `ToolResultFeedbackProcessor` (decorator — feeds raw tool result back to LLM for natural-language synthesis) |
+| **Retry / fallback** | `com.t4a.agent.resilience` | `RetryActionProcessor` (decorator — exponential backoff retries, optional fallback processor e.g. a different LLM provider) |
+| **Audit trail** | `com.t4a.agent.audit` | `AuditedActionProcessor` (decorator — records every execution), `AuditTrail`, `InMemoryAuditTrail` (bounded), `JsonFileAuditTrail` (append-only JSON-lines) |
 
 #### Memory — quick start
 ```java
@@ -131,11 +133,31 @@ AIProcessor enriched = new ToolResultFeedbackProcessor(new OpenAiActionProcessor
 String answer = (String) enriched.processSingleAction("What is the temperature in Toronto?");
 ```
 
+#### Retry & fallback — quick start
+```java
+AIProcessor resilient = new RetryActionProcessor(
+        new OpenAiActionProcessor(),
+        3,                               // max attempts (including the first)
+        500,                             // initial backoff ms, doubles each retry
+        new GeminiV2ActionProcessor());  // optional fallback after retries exhaust (may be null)
+Object result = resilient.processSingleAction("Book a flight to Bangalore");
+```
+
+#### Audit trail — quick start
+```java
+AuditTrail trail = new JsonFileAuditTrail("/var/agent/audit.jsonl"); // or new InMemoryAuditTrail(100)
+AIProcessor audited = new AuditedActionProcessor(new OpenAiActionProcessor(), trail);
+
+audited.processSingleAction("Restart the payment server");
+// audit.jsonl: {"timestampMs":...,"prompt":"Restart the payment server","success":true,"durationMs":...}
+// Failures are recorded too (success=false, errorMessage) and rethrown unchanged.
+```
+
 ### 3. 🔒 Safety & Observability
 
 - **`HumanInLoop` is an interface with no built-in UI** — there is no out-of-box approval UI/webhook, just the interface contract.
 - **`ActionRisk` gates are not enforced by the framework** — MEDIUM/HIGH risk actions do not automatically pause for approval unless the caller explicitly checks.
-- **No audit trail / action log** — no persistent record of what was executed, by whom, with what parameters.
+- **Audit trail / action log** ✅ Implemented — `com.t4a.agent.audit` (`AuditedActionProcessor` + `JsonFileAuditTrail`) gives a persistent record of every execution: prompt, result, success/failure, duration.
 - **`GuardRails` is Gemini-only** (`GeminiGuardRails`) — OpenAI/Anthropic actions have no guard-rail implementation.
 
 ### 4. 🧪 Testing & Quality
@@ -146,7 +168,7 @@ String answer = (String) enriched.processSingleAction("What is the temperature i
 ### 5. 🔌 Extensibility
 
 - **`ExtendedPredictionLoader` + `@ActivateLoader` are very powerful but underdocumented** — custom action loaders auto-discovered by annotation is a great pattern that needs more examples.
-- **No built-in retry / fallback** — if the LLM picks the wrong action or parameter extraction fails, there is no retry strategy.
+- **Retry / fallback** ✅ Implemented — `com.t4a.agent.resilience.RetryActionProcessor` retries transient `AIProcessingException` failures with exponential backoff and optionally falls back to a second processor (e.g. another LLM provider).
 - **`SwaggerPredictionLoader` silently swallows parse errors** — many `catch (Exception e) { log.warn(...) }` blocks do not surface which endpoints failed to load.
 
 ### 6. 🌐 Ecosystem
