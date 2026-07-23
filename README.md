@@ -76,7 +76,12 @@ context provided in the prompt.
   - [ReAct Planning](#react-planning-loop)
   - [Tool Result Feedback](#tool-result-feedback)
   - [Retry & Fallback](#retry--fallback)
+  - [Rate Limiting](#rate-limiting)
+  - [Risk Gating & Approvals](#risk-gating--approvals)
   - [Audit Trail](#audit-trail)
+  - [Metrics & Observability](#metrics--observability)
+  - [Async Execution](#async-execution)
+  - [Composing the Stack](#composing-the-stack)
 - [Response Validation](#response-validation)
   - [Hallucination](#hallucination)
 - [Autonomous Agent](#autonomous-agent)
@@ -111,6 +116,24 @@ Spring AI is a **platform** for building AI-first apps from scratch on Spring Bo
 The `com.t4a.agent` package adds composable agentic building blocks on top of any `AIProcessor`
 (OpenAI, Gemini, Anthropic, LocalAI). Everything is a plain decorator or helper — no existing
 code changes, no Spring required, and the pieces compose freely.
+
+| Capability | Package | Wrap it when you need |
+|---|---|---|
+| [Memory](#memory--conversation-history) | `com.t4a.agent.memory` | conversation context across turns or restarts |
+| [Orchestration](#multi-agent-orchestration) | `com.t4a.agent.orchestration` | one prompt routed across several specialist agents |
+| [ReAct planning](#react-planning-loop) | `com.t4a.agent.planning` | goals that take several dependent tool calls |
+| [Tool result feedback](#tool-result-feedback) | `com.t4a.agent.feedback` | a natural-language answer instead of a raw return value |
+| [Retry & fallback](#retry--fallback) | `com.t4a.agent.resilience` | transient provider failures, or a backup provider |
+| [Rate limiting](#rate-limiting) | `com.t4a.agent.resilience` | to stay inside a provider's requests-per-second quota |
+| [Risk gating](#risk-gating--approvals) | `com.t4a.agent.safety` | human approval enforced before destructive actions |
+| [Audit trail](#audit-trail) | `com.t4a.agent.audit` | a persistent record of what ran and what came back |
+| [Metrics](#metrics--observability) | `com.t4a.agent.metrics` | latency and error rates per operation |
+| [Async execution](#async-execution) | `com.t4a.agent.async` | independent calls to overlap instead of queue |
+
+Runnable examples: [AgentCapabilitiesExample](src/test/java/com/t4a/examples/AgentCapabilitiesExample.java)
+covers memory, orchestration, planning and feedback;
+[ProductionAgentExample](src/test/java/com/t4a/examples/ProductionAgentExample.java)
+covers risk gating, rate limiting, metrics, async, and the full composed stack.
 
 ## Memory / Conversation History
 
@@ -175,6 +198,55 @@ AIProcessor resilient = new RetryActionProcessor(
 Object result = resilient.processSingleAction("Book a flight to Bangalore");
 ```
 
+## Rate Limiting
+
+Retrying after a 429 is the reactive half of quota management; shaping traffic so the 429 never
+happens is the proactive half. `RateLimitedActionProcessor` is a token bucket — a sustained rate
+plus a burst allowance for idle periods:
+
+```java
+AIProcessor throttled = new RateLimitedActionProcessor(
+        new OpenAiActionProcessor(),
+        5.0,     // 5 calls/second sustained
+        10,      // burst of 10 may accumulate while idle
+        2000);   // wait up to 2s for a permit, then fail fast
+
+throttled.processSingleAction("Book a flight to Bangalore");
+```
+
+Callers over the rate block until a permit frees up. If the wait would exceed `maxWaitMillis`
+the call throws `RateLimitExceededException` instead, so a request-serving thread can shed load
+rather than queue behind it. Set `maxWaitMillis` to `0` to never wait at all.
+
+## Risk Gating & Approvals
+
+`AIAction.getActionRisk()` has always declared the intent — LOW runs freely, MEDIUM needs one
+human verification, HIGH needs two — but nothing held the action back; the caller had to
+remember to check. `RiskGatedActionProcessor` makes that gate mandatory:
+
+```java
+AIProcessor gated = new RiskGatedActionProcessor(
+        new OpenAiActionProcessor(),
+        onCallEngineerApprover,     // first approval
+        securityOfficerApprover);   // second approval, HIGH risk only
+
+gated.processSingleAction("Delete the customer database", dropDbAction, approver, explain);
+// → ActionBlockedException if either approver declines; the delegate never runs
+```
+
+`ActionBlockedException` extends `AIProcessingException`, so existing `catch` blocks keep
+working while callers that care can tell "a human said no" apart from "the LLM failed".
+
+Calls that pass only a prompt have no `AIAction` to read the risk from. That case is governed by
+a fourth constructor argument which defaults to `LOW`, so wrapping a processor never silently
+changes behaviour — set it to `HIGH` for a fail-closed posture where every free-text prompt is
+reviewed:
+
+```java
+AIProcessor paranoid = new RiskGatedActionProcessor(
+        processor, approver, null, ActionRisk.HIGH);
+```
+
 ## Audit Trail
 
 Record every action execution — prompt, result, success/failure, duration — for compliance and
@@ -189,12 +261,77 @@ audited.processSingleAction("Restart the payment server");
 // audit.jsonl: {"timestampMs":...,"prompt":"Restart the payment server","success":true,...}
 ```
 
-Decorators compose — e.g. audit the final outcome after retries:
+## Metrics & Observability
+
+Agentic systems fail in ways that only show up in aggregate — a provider that got slower, an
+action that started throwing after a deploy. `MeteredActionProcessor` times every call and
+records the outcome:
 
 ```java
-AIProcessor agent = new AuditedActionProcessor(
-        new RetryActionProcessor(new OpenAiActionProcessor()), trail);
+InMemoryActionMetrics metrics = new InMemoryActionMetrics();
+AIProcessor metered = new MeteredActionProcessor(new OpenAiActionProcessor(), metrics);
+
+metered.processSingleAction("Book a flight to Bangalore");
+metered.query("Summarise today's bookings");
+
+System.out.println(metrics.report());
+// processSingleAction{count=1, success=1, failure=0, avgMs=812.0, minMs=812, maxMs=812}
+// query{count=1, success=1, failure=0, avgMs=430.0, minMs=430, maxMs=430}
 ```
+
+`InMemoryActionMetrics` needs no dependencies and is bounded by the number of distinct operation
+names rather than by traffic, so it is safe to leave on in production. Implement `ActionMetrics`
+yourself to forward the same measurements to Micrometer, Prometheus, or OpenTelemetry. Pass a
+`namePrefix` (`"openai."`, `"gemini."`) when several processors share one sink.
+
+## Async Execution
+
+Every `processSingleAction` call is blocking, so a request that fans out to several actions pays
+the sum of their latencies. `AsyncActionProcessor` runs them on an executor instead:
+
+```java
+try (AsyncActionProcessor async = new AsyncActionProcessor(new OpenAiActionProcessor(), 4)) {
+
+    CompletableFuture<Object> flight = async.processSingleActionAsync("Book a flight to Tokyo");
+    CompletableFuture<Object> hotel  = async.processSingleActionAsync("Reserve a hotel in Tokyo");
+
+    CompletableFuture.allOf(flight, hotel).join();   // both ran concurrently
+}
+```
+
+Or hand over a batch and get the results back in prompt order:
+
+```java
+List<Object> results = async.processAllAsync(List.of(
+        "Book a flight to Tokyo",
+        "Reserve a hotel in Tokyo",
+        "Arrange airport pickup")).join();
+```
+
+The thread-count constructors create a pool the wrapper owns and `close()` shuts down; pass your
+own `ExecutorService` and it is left running instead.
+
+## Composing the Stack
+
+Every decorator wraps the `AIProcessor` interface, so they nest in any order — and the order is
+what gives each layer its meaning. Reading from the outside in:
+
+```java
+AIProcessor agent =
+    new AuditedActionProcessor(              // records the final outcome, after retries
+        new MeteredActionProcessor(          // measures total user-visible latency
+            new RiskGatedActionProcessor(    // approvals happen once, not once per retry
+                new RetryActionProcessor(    // retries transient provider failures
+                    new RateLimitedActionProcessor(new OpenAiActionProcessor(), 5.0),
+                    3, 500, null),
+                approver),
+            metrics),
+        auditTrail);
+```
+
+Moving the metrics layer inside the retry decorator measures each attempt separately rather than
+the whole call; moving the risk gate inside it re-prompts the human on every retry. Neither is
+wrong — but the difference is worth choosing deliberately.
 
 # SetUp
 

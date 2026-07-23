@@ -43,6 +43,7 @@ new OpenAiActionProcessor().processSingleAction("I don't know what to cook for V
 | **Protocol support** | A2A, MCP, A2UI, UCP protocols |
 | **Image actions** | `GeminiImageActionProcessor` — image-to-text, image-to-POJO, image comparison |
 | **Script actions** | Scripted multi-step action chains via `.action` files |
+| **Agent toolkit** | Composable `AIProcessor` decorators for memory, planning, orchestration, retry, rate limiting, risk gating, audit, metrics and async — see [Agent Capabilities](#2--agent-capabilities--implemented) |
 
 ---
 
@@ -79,11 +80,11 @@ The items below are forward-looking ideas. **No existing code is changed** — e
 
 - **`PredictionLoader` is a singleton with global mutable state** — this is the root cause of all test isolation issues and would cause problems in multi-tenant apps. A proper DI-friendly `ActionRegistry` with scope control would fix this.
 - **Classpath scanning is unbounded** — scanning the entire classpath by default is slow and fragile. Opt-in package scanning (`actionPackagesToScan`) is there but not the default.
-- **No async/reactive support** — all `processSingleAction` calls are blocking. Modern agentic workloads need streaming and async execution.
+- **Async execution** ✅ Implemented — `com.t4a.agent.async.AsyncActionProcessor` wraps any processor and returns `CompletableFuture`s, letting independent calls overlap. Token-level *streaming* is still absent and remains a genuine gap.
 
 ### 2. 🤖 Agent Capabilities ✅ Implemented
 
-The following four capabilities have been added as pure extensions under the `com.t4a.agent` package.
+The following capabilities have been added as pure extensions under the `com.t4a.agent` package.
 No existing source files were changed.
 
 | Capability | Package | Key classes |
@@ -93,7 +94,15 @@ No existing source files were changed.
 | **ReAct planning loop** | `com.t4a.agent.planning` | `ReActPlanner` (Reason→Act→Observe loop, configurable max iterations), `ExecutionPlan`, `PlanStep` |
 | **Tool result feedback** | `com.t4a.agent.feedback` | `ToolResultFeedbackProcessor` (decorator — feeds raw tool result back to LLM for natural-language synthesis) |
 | **Retry / fallback** | `com.t4a.agent.resilience` | `RetryActionProcessor` (decorator — exponential backoff retries, optional fallback processor e.g. a different LLM provider) |
+| **Rate limiting** | `com.t4a.agent.resilience` | `RateLimitedActionProcessor` (decorator — token bucket with burst allowance), `RateLimitExceededException` |
+| **Risk gating** | `com.t4a.agent.safety` | `RiskGatedActionProcessor` (decorator — enforces the `ActionRisk` approval contract), `ActionBlockedException` |
 | **Audit trail** | `com.t4a.agent.audit` | `AuditedActionProcessor` (decorator — records every execution), `AuditTrail`, `InMemoryAuditTrail` (bounded), `JsonFileAuditTrail` (append-only JSON-lines) |
+| **Metrics** | `com.t4a.agent.metrics` | `MeteredActionProcessor` (decorator — per-operation latency and error rate), `ActionMetrics`, `InMemoryActionMetrics`, `MetricsSnapshot` |
+| **Async execution** | `com.t4a.agent.async` | `AsyncActionProcessor` (`CompletableFuture` wrapper with owned or caller-supplied executor, ordered batch fan-out) |
+
+Every decorator wraps the `AIProcessor` interface rather than a concrete provider, so they nest
+freely — see [Composing the Stack](README.md#composing-the-stack) for how ordering changes what
+each layer measures and enforces.
 
 #### Memory — quick start
 ```java
@@ -153,10 +162,50 @@ audited.processSingleAction("Restart the payment server");
 // Failures are recorded too (success=false, errorMessage) and rethrown unchanged.
 ```
 
+#### Rate limiting — quick start
+```java
+AIProcessor throttled = new RateLimitedActionProcessor(
+        new OpenAiActionProcessor(),
+        5.0,     // sustained calls per second
+        10,      // burst that may accumulate while idle
+        2000);   // max wait for a permit, then RateLimitExceededException
+```
+
+#### Risk gating — quick start
+```java
+AIProcessor gated = new RiskGatedActionProcessor(
+        new OpenAiActionProcessor(),
+        onCallEngineerApprover,     // LOW: 0 approvals, MEDIUM: 1, HIGH: 2
+        securityOfficerApprover);
+
+gated.processSingleAction("Delete the customer database", dropDbAction, approver, explain);
+// → ActionBlockedException if declined; the delegate never runs
+```
+
+#### Metrics — quick start
+```java
+InMemoryActionMetrics metrics = new InMemoryActionMetrics();
+AIProcessor metered = new MeteredActionProcessor(new OpenAiActionProcessor(), metrics, "openai.");
+
+metered.processSingleAction("Book a flight to Bangalore");
+System.out.println(metrics.report());
+// openai.processSingleAction{count=1, success=1, failure=0, avgMs=812.0, minMs=812, maxMs=812}
+```
+
+#### Async execution — quick start
+```java
+try (AsyncActionProcessor async = new AsyncActionProcessor(new OpenAiActionProcessor(), 4)) {
+    CompletableFuture<Object> flight = async.processSingleActionAsync("Book a flight to Tokyo");
+    CompletableFuture<Object> hotel  = async.processSingleActionAsync("Reserve a hotel in Tokyo");
+    CompletableFuture.allOf(flight, hotel).join();
+}
+```
+
 ### 3. 🔒 Safety & Observability
 
 - **`HumanInLoop` is an interface with no built-in UI** — there is no out-of-box approval UI/webhook, just the interface contract.
-- **`ActionRisk` gates are not enforced by the framework** — MEDIUM/HIGH risk actions do not automatically pause for approval unless the caller explicitly checks.
+- **`ActionRisk` gates** ✅ Implemented — `com.t4a.agent.safety.RiskGatedActionProcessor` enforces the documented contract (MEDIUM → one approval, HIGH → two) before the delegate runs, and raises `ActionBlockedException` on refusal. Anything not routed through the decorator is still ungated.
+- **Metrics** ✅ Implemented — `com.t4a.agent.metrics` records per-operation latency, throughput, and error rate. `InMemoryActionMetrics` is the dependency-free default; implement `ActionMetrics` to bridge to Micrometer/Prometheus/OpenTelemetry.
 - **Audit trail / action log** ✅ Implemented — `com.t4a.agent.audit` (`AuditedActionProcessor` + `JsonFileAuditTrail`) gives a persistent record of every execution: prompt, result, success/failure, duration.
 - **`GuardRails` is Gemini-only** (`GeminiGuardRails`) — OpenAI/Anthropic actions have no guard-rail implementation.
 
@@ -169,10 +218,11 @@ audited.processSingleAction("Restart the payment server");
 
 - **`ExtendedPredictionLoader` + `@ActivateLoader` are very powerful but underdocumented** — custom action loaders auto-discovered by annotation is a great pattern that needs more examples.
 - **Retry / fallback** ✅ Implemented — `com.t4a.agent.resilience.RetryActionProcessor` retries transient `AIProcessingException` failures with exponential backoff and optionally falls back to a second processor (e.g. another LLM provider).
+- **Rate limiting** ✅ Implemented — `com.t4a.agent.resilience.RateLimitedActionProcessor` shapes traffic with a token bucket so quota limits are respected proactively rather than handled as 429 retries.
 - **`SwaggerPredictionLoader` silently swallows parse errors** — many `catch (Exception e) { log.warn(...) }` blocks do not surface which endpoints failed to load.
 
 ### 6. 🌐 Ecosystem
 
 - **No Spring Boot auto-configuration** (`spring.factories` / `@AutoConfiguration`) — Spring users have to wire it manually. A `tools4ai-spring-boot-starter` artifact would significantly drive adoption.
 - **No MCP server implementation** — the README mentions MCP protocol support but there is no MCP server/client in the codebase yet.
-- **No metrics** — no Micrometer integration for action execution latency, error rates, or LLM token usage per action.
+- **Metrics** ✅ Implemented (see §3) — latency and error rates are collected per operation via `com.t4a.agent.metrics`. **LLM token usage is still not tracked**, because the provider processors do not surface token counts from their responses; exposing those would be the next step.
