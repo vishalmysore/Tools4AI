@@ -55,6 +55,7 @@ context provided in the prompt.
   - [Gemini](#gemini)
   - [OpenAI](#OpenAi)
   - [Anthropic](#anthropic)
+  - [Ollama / Local Models](#ollama--local-models)
 - [Reference Examples](#%EF%B8%8F-reference-examples)
   - [Java Actions](#java-actions)
   - [HTTP REST Actions](#http-actions-swagger)
@@ -371,6 +372,58 @@ Instructions here https://help.openai.com/en/articles/4936850-where-do-i-find-my
 ## Anthropic
 
 If you plan to use Anthropic you will need anthropic api key https://docs.anthropic.com/claude/reference/getting-started-with-the-api
+
+## Ollama / Local Models
+
+You can run Tools4AI fully offline against models served by [Ollama](https://ollama.com). Ollama exposes an
+**OpenAI-compatible API**, so there is no separate processor to configure — just point `OpenAiActionProcessor`
+at the local endpoint.
+
+> Note: `LocalAIActionProcessor` is currently a stub (its methods return `null`). Use the OpenAI-compatible
+> route below instead.
+
+**1. Pull and run a model**
+
+```
+ollama pull llama3.1
+ollama run llama3.1
+```
+
+Ollama then serves the OpenAI-compatible API at `http://localhost:11434/v1`.
+
+**2. Point Tools4AI at it** in `tools4ai.properties`:
+
+```
+## Any non-empty value works — Ollama ignores the key, but Tools4AI only builds the
+## model when a key is present
+openAiKey=ollama
+## Ollama's OpenAI-compatible base URL
+openAiBaseURL=http://localhost:11434/v1
+## Use the exact Ollama model tag
+openAiModelName=llama3.1
+```
+
+These three values can also be supplied as VM options (`-DopenAiKey=`, `-DopenAiBaseURL=`,
+`-DopenAiModelName=`). Note that a **non-empty value in `tools4ai.properties` takes precedence** over the
+`-D` option, so if you rely on VM options make sure the corresponding property in the file is left empty.
+
+**3. Use it exactly like any other provider**
+
+```java
+OpenAiActionProcessor processor = new OpenAiActionProcessor();
+
+// Raw model call
+String pong = processor.query("Reply with exactly one word: PONG");
+
+// Agentic action routing / function calling
+Object result = processor.processSingleAction(
+        "My friend Vishal is coming for dinner, what does he like to eat?");
+```
+
+> **Model size matters for function calling.** Action routing and parameter extraction require the model to
+> emit a well-formed function-call JSON. Capable local models (e.g. `llama3.1`, `phi4`) route prompts to the
+> right `@Action` **and** fill in the arguments. Very small models (e.g. `gemma3:270m`) will often select the
+> correct action but leave the parameters empty — fine for `query()`, but unreliable for full tool calling.
 
 
 # ✈️ Reference Examples
