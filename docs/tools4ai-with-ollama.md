@@ -320,6 +320,43 @@ processors for Anthropic Claude (`AnthropicActionProcessor`) and Google Gemini
 (`GeminiV2ActionProcessor`), configured the same way in `tools4ai.properties`. Your agents stay exactly
 as they are.
 
+## Tools4AI vs Spring AI
+
+If you work in Java you have probably heard of [Spring AI](https://spring.io/projects/spring-ai), the
+Spring team's AI framework. Both let a model call your Java methods, but they do it in different ways.
+
+**Spring AI uses the model's native tool calling.** It turns your `@Tool` methods into JSON schemas,
+sends them with the request, and the model replies with a structured tool call. Spring runs your method
+and usually hands the result back to the model, which writes the final answer. That is fast (one or two
+model calls), but the model must support tool calling. Many Ollama models do, such as `qwen2.5` and
+`llama3.1`, but not all of them.
+
+**Tools4AI asks the model in plain text, one small question at a time**: which group, which action,
+which values. It then converts the values to Java types and calls your method itself. Because it never
+relies on a special tool-calling API, it works with any chat model, including small or older local models
+that have no tool support. The trade-off is speed: each request takes at least three model calls.
+
+| | Spring AI | Tools4AI |
+|---|---|---|
+| How the method is chosen | The model's native tool-calling API | Plain-text questions, works with any chat model |
+| Model calls per request | 1 to 2 | 3 or more |
+| What you get back | Usually the model's text answer, written using your tool's result | Your method's return value, unchanged |
+| Framework | Built for Spring Boot | Plain Java, with or without Spring |
+| Safety built in | You add your own checks | Risk levels on actions (HIGH-risk actions are refused automatically) and human approval |
+| Actions without Java code | No | Shell scripts, REST calls and Swagger APIs declared in config files |
+| Beyond tool calling | Much broader: RAG and vector stores, chat memory, advisors, structured output, embeddings, image and audio models, MCP, observability | Focused on actions and agents |
+| Community | Large, backed by the Spring team | Smaller, open-source project |
+
+**Which one should you use?**
+
+- Pick **Spring AI** if you are already on Spring Boot, your model supports tool calling, and you also
+  need RAG, chat memory or observability out of the box.
+- Pick **Tools4AI** if you want plain Java without a framework, you are running small local models whose
+  tool calling is missing or unreliable, or you want risk gating and human approval for actions built in.
+
+They are not mutually exclusive: Tools4AI is an ordinary Maven dependency, so you can also use it
+inside a Spring application.
+
 ## Where to go next
 
 Once the basics work, Tools4AI has more to offer for real applications:
@@ -352,6 +389,12 @@ requests contain customer or company data.
 Calling the model directly gives you text back. Function calling gives you an *action*: the model
 chooses one of your methods and its arguments, and your own code does the work. That is what turns a
 chatbot into an agent that can book, cancel, look up or update things in your systems.
+
+**How is this different from Spring AI?**
+Spring AI relies on the model's native tool-calling API and is built for Spring Boot. Tools4AI asks the
+model in plain text, so it works with any chat model (including small local ones without tool support)
+and runs in plain Java, at the cost of a few more model calls per request. See
+[Tools4AI vs Spring AI](#tools4ai-vs-spring-ai) above for the full comparison.
 
 **Is it free?**
 Yes. Ollama and the models used here are free, and Tools4AI is open source under the MIT license.
