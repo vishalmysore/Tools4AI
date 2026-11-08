@@ -72,13 +72,17 @@ public String cancelBooking(String customerName) {
 }
 ```
 
-Then run `mvn -q compile exec:java -Dexec.args="Please cancel Maria's booking"`.
+Then run `mvn -q compile exec:java -Dexec.args="Please cancel the booking for Maria"`.
 
 Tips:
 
 - Give parameters descriptive names. The model sees them, so `customerName` works far better than `name1`.
   The pom compiles with `-parameters` so the real names are kept.
 - Write the `description` the way a user would ask for the action.
+- Avoid apostrophes in `-Dexec.args` (`Maria's`): the exec plugin treats them as quotes.
+- [prompt.properties](src/main/resources/prompt.properties) words the "which action?" question so that
+  small models answer with an action name. Without it, `qwen2.5:3b` sometimes replies with a number
+  once an agent has three or more actions.
 
 ## Use a different model
 
