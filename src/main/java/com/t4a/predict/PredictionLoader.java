@@ -45,6 +45,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.*;
+import java.util.regex.Pattern;
 /**
  * The {@code PredictionLoader} class is responsible for managing the prediction process
  * by interacting with various prediction models and loading actions based on predictions.
@@ -337,7 +338,7 @@ public class PredictionLoader {
         try {
             String groupName = ResponseHandler.getText(chatGroupFinder.sendMessage(" This is the prompt -"+prompt+" - which group does it belong "+actionGroupJson+" - just provide the group name and nothing else"));
             log.info(" will look in group "+groupName);
-            String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+            String actionNameListTemp = findGroupActions(groupName);
             log.info(" list of actions "+actionNameListTemp);
             response = chat.sendMessage(buildPrompt(prompt,num,actionNameListTemp));
         } catch (IOException e) {
@@ -437,7 +438,7 @@ public class PredictionLoader {
                 log.info(groupName);
                 groupName= utils.fetchGroupName(groupName);
                 log.info(LOOK_FOR_ACTION_IN_THE_GROUP +groupName+ OUT_OF +actionGroupJson);
-                String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName.trim())).getGroupInfo()).trim();
+                String actionNameListTemp = findGroupActions(groupName).trim();
                 log.info(" list of actions "+actionNameListTemp);
                 response = chat.sendMessage(buildPromptWithJsonResponse(prompt, 1,actionNameListTemp));
 
@@ -469,6 +470,9 @@ public class PredictionLoader {
                 actionName = getOpenAiActionName(prompt);
                 action = getAiAction(actionName);
                 if(action == null) {
+                    action = getAiAction(fetchActionNameFromList(actionName));
+                }
+                if(action == null) {
                     actionName = openAiChatModel.generate("provide action name from this and nothing else - "+actionName);
                     action = getAiAction(actionName);
                 }
@@ -481,6 +485,9 @@ public class PredictionLoader {
             }else if (AIPlatform.ANTHROPIC == aiProvider) {
                 actionName = getAnthrpicActionName(prompt);
                 action = getAiAction(actionName);
+                if(action == null) {
+                    action = getAiAction(fetchActionNameFromList(actionName));
+                }
                 if(action == null) {
                     actionName = anthropicChatModel.generate("provide action name from this and nothing else - "+actionName);
                     action = getAiAction(actionName);
@@ -507,7 +514,7 @@ public class PredictionLoader {
         String actionName;
         String groupName = openAiChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else, do not add extra space or new line and make sure group name matches exactly from the list");
         log.info(LOOK_FOR_ACTION_IN_THE_GROUP +groupName+ OUT_OF +actionGroupJson);
-        String actionNameListTemp = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+        String actionNameListTemp = findGroupActions(groupName);
         actionName = openAiChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuilder(actionNameListTemp)));
         actionName = actionName.replace("()","");
         return actionName;
@@ -518,23 +525,88 @@ public class PredictionLoader {
         String actionName;
         String groupName = anthropicChatModel.generate(PRMPT+ prompt +GRP+actionGroupJson+"} - just provide the group name and nothing else, do not add extra space or new line and make sure group name matches exactly from the list");
         log.info(LOOK_FOR_ACTION_IN_THE_GROUP+groupName+ OUT_OF+actionGroupJson);
-        String actionNameList = getActionGroupList().getGroupActions().get((new ActionGroup(groupName)).getGroupInfo());
+        String actionNameList = findGroupActions(groupName);
         actionName = anthropicChatModel.generate(buildPromptForOpenAI(prompt, 1, new StringBuilder(actionNameList)));
         actionName = actionName.replace("()","");
         return actionName;
     }
 
-    public String fetchActionNameFromList(String actionName) {
-        String[] namesArray = actionNameList.toString().split(",");
-        String realName = null;
-        for (String name:namesArray
-        ) {
-            if(name.equalsIgnoreCase(actionName))
-            {
-                realName = name;
+    /**
+     * Returns the comma-separated actions of the group the model picked. Tolerates decorated or slightly
+     * different group names ("travels" for "travel") and falls back to every action when no group matches,
+     * so a bad group answer degrades to a wider choice instead of failing the prompt.
+     */
+    private String findGroupActions(String groupReply) {
+        Map<GroupInfo, String> groups = getActionGroupList().getGroupActions();
+        String actions = groups.get(new ActionGroup(groupReply).getGroupInfo());
+        if (actions != null) return actions;
+        List<String> names = new ArrayList<>();
+        for (GroupInfo info : groups.keySet()) {
+            names.add(info.getGroupName());
+        }
+        String matched = matchGroupName(groupReply, names.toArray(new String[0]));
+        if (matched != null) {
+            actions = groups.get(new ActionGroup(matched).getGroupInfo());
+            if (actions != null) return actions;
+        }
+        log.warn("Group '{}' not recognised, choosing from all actions", groupReply);
+        return actionNameList.toString();
+    }
+
+    static String matchGroupName(String reply, String[] names) {
+        String matched = matchActionName(reply, names);
+        if (matched != null || reply == null) return matched;
+        String wanted = normalizeActionName(reply);
+        if (wanted.isEmpty()) return null;
+        String found = null;
+        for (String name : names) {
+            String normalized = normalizeActionName(name);
+            if (!normalized.isEmpty() && (wanted.startsWith(normalized) || normalized.startsWith(wanted))) {
+                if (found != null && !found.equals(name.trim())) {
+                    return null;
+                }
+                found = name.trim();
             }
         }
-        return realName;
+        return found;
+    }
+
+    public String fetchActionNameFromList(String actionName) {
+        return matchActionName(actionName, actionNameList.toString().split(","));
+    }
+
+    /**
+     * Maps a model's free-text reply onto a registered action name. Models often decorate the name
+     * ({@code `saveCustomer`}, {@code 1 saveCustomer}, {@code Save Customer}), so this first compares names with
+     * punctuation, spacing and case removed, then accepts a reply that mentions exactly one registered name.
+     * A reply naming more than one action is ambiguous and returns {@code null} rather than guessing.
+     */
+    static String matchActionName(String reply, String[] names) {
+        if (reply == null) return null;
+        String wanted = normalizeActionName(reply);
+        if (wanted.isEmpty()) return null;
+        for (String name : names) {
+            if (!name.trim().isEmpty() && normalizeActionName(name).equals(wanted)) {
+                return name.trim();
+            }
+        }
+        String found = null;
+        for (String name : names) {
+            String trimmed = name.trim();
+            if (trimmed.isEmpty()) continue;
+            Pattern token = Pattern.compile("(?<![A-Za-z0-9_])" + Pattern.quote(trimmed) + "(?![A-Za-z0-9_])");
+            if (token.matcher(reply).find()) {
+                if (found != null && !found.equals(trimmed)) {
+                    return null;
+                }
+                found = trimmed;
+            }
+        }
+        return found;
+    }
+
+    private static String normalizeActionName(String name) {
+        return name.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
     }
 
     public AIAction getPredictedAction(String prompt)  {

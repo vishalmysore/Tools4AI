@@ -1,0 +1,8 @@
+<configuration>
+  <appender name="OUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder><pattern>%d{HH:mm:ss} %-5level %logger{20} - %msg%n</pattern></encoder>
+  </appender>
+  <logger name="com.t4a" level="INFO"/>
+  <logger name="org.reflections" level="ERROR"/>
+  <root level="WARN"><appender-ref ref="OUT"/></root>
+</configuration>

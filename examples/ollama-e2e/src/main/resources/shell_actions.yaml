@@ -1,0 +1,8 @@
+groups:
+  - name: Employee Actions
+    description : Actions for onboarding new employees who joined the company
+    scripts:
+      - scriptName: "e2e_record.cmd"
+        actionName: saveEmployeeInformation
+        parameters: employeeName,employeeLocation
+        description: Saves information about a new employee who joined the company and where they are placed
