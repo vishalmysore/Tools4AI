@@ -10,7 +10,7 @@
 
 ## What is Tools4AI?
 
-**Tools4AI** (v1.2.1, published on Maven Central) is a **pure Java agentic AI framework / ADK (Agent Development Kit)**.  
+**Tools4AI** (v1.3.0, published on Maven Central) is a **pure Java agentic AI framework / ADK (Agent Development Kit)**.  
 Its core idea is simple and powerful: **annotate existing Java methods with `@Agent`/`@Action` and the framework automatically maps natural-language prompts to those method calls at runtime** — no manual parsing, no glue code.
 
 ```java

@@ -1,6 +1,6 @@
 # Tools4AI Tutorial: Build Java AI Agents Without Rewriting Your Application
 
-> **Tools4AI** (v1.2.1 · Maven Central) is a pure-Java agentic AI framework that lets you
+> **Tools4AI** (v1.3.0 · Maven Central) is a pure-Java agentic AI framework that lets you
 > turn *any existing Java method* into an AI-callable action by adding two annotations.
 > No Spring context required. No manual function schemas. No glue code.
 
@@ -80,7 +80,7 @@ what parameters to extract from the user's natural-language prompt.
 <dependency>
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>1.2.1</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 

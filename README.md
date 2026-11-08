@@ -349,7 +349,7 @@ Or use as maven dependency
 <dependency>
     <groupId>io.github.vishalmysore</groupId>
     <artifactId>tools4ai</artifactId>
-    <version>0.9.6</version>
+    <version>1.3.0</version>
 </dependency>
 
 ```
