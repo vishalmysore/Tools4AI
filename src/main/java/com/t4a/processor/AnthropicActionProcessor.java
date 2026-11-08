@@ -29,11 +29,6 @@ public class AnthropicActionProcessor implements AIProcessor {
         return PredictionLoader.getInstance().getAnthropicChatModel().generate(promptText);
     }
 
-    @Override
-    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) {
-        return null;
-    }
-
     public AnthropicActionProcessor() {
         this.gson = new Gson();
     }
@@ -56,8 +51,16 @@ public class AnthropicActionProcessor implements AIProcessor {
     }
 
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
+        return processSingleAction(prompt, action, humanVerification, explain, null);
+    }
+
+    @Override
+    public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) throws AIProcessingException {
         if (action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.ANTHROPIC);
+            if (action == null) {
+                return "no action found for the prompt " + prompt;
+            }
             if (action.getActionRisk() == ActionRisk.HIGH) {
                 log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI " + action.getActionName());
                 return "This is a high risk action will not proceed " + action.getActionName();
@@ -68,18 +71,14 @@ public class AnthropicActionProcessor implements AIProcessor {
             JsonUtils utils = new JsonUtils();
             Method m = null;
             JavaMethodAction javaMethodAction = (JavaMethodAction) action;
+            try {
+                setCallBack(callback, javaMethodAction);
+            } catch (IllegalAccessException e) {
+                throw new AIProcessingException(e);
+            }
+            setProcessor(javaMethodAction);
             Class<?> clazz = javaMethodAction.getActionClass();
-            Method[] methods = clazz.getMethods();
-            for (Method m1 : methods
-            ) {
-                if (m1.getName().equals(action.getActionName())) {
-                    m = m1;
-                    break;
-                }
-            }
-            if (m == null) {
-                throw new AIProcessingException("Method name should matches the actionName  " + action.getActionName() + " class " + action.getClass().getName());
-            }
+            m = findActionMethod(javaMethodAction);
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
                 jsonStr = PredictionLoader.getInstance().getAnthropicChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json");
@@ -103,6 +102,9 @@ public class AnthropicActionProcessor implements AIProcessor {
 
             Object result ;
             try {
+                if (!isApprovedByHuman(humanVerification, prompt, action.getActionName(), jsonStr)) {
+                    return "Human verification failed";
+                }
                 result = invokeReflection(method, javaMethodAction, parameterValues);
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new AIProcessingException(e);
@@ -116,9 +118,11 @@ public class AnthropicActionProcessor implements AIProcessor {
             String params = PredictionLoader.getInstance().getActionParams(action, prompt, AIPlatform.ANTHROPIC, methodExecutor.getProperties());
             Object obj = null;
             try {
-                if (humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
+                if (isApprovedByHuman(humanVerification, prompt, action.getActionName(), params)) {
                     obj = methodExecutor.action(params, action);
                     log.debug(" the action returned " + obj);
+                } else {
+                    return "Human verification failed";
                 }
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new AIProcessingException(e);
@@ -135,6 +139,6 @@ public class AnthropicActionProcessor implements AIProcessor {
 
     @Override
     public Object processSingleAction(String promptText, ActionCallback callback) throws AIProcessingException {
-        return null;
+        return processSingleAction(promptText, null, new LoggingHumanDecision(), null, callback);
     }
 }

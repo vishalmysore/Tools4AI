@@ -44,7 +44,7 @@ class ShellPredictedActionTest {
         })) {
             // Call the method under test
             ShellPredictedAction shellPredictedAction = new ShellPredictedAction();
-            shellPredictedAction.setScriptPath("path/to/your/script"); // Set the script path here
+            shellPredictedAction.setScriptPath("test_script.cmd"); // on the test classpath
             shellPredictedAction.executeShell(new String[]{});
 
             // Verify the interactions

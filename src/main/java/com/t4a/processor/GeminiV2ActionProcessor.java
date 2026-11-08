@@ -63,6 +63,9 @@ public class GeminiV2ActionProcessor implements AIProcessor{
     public Object processSingleAction(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain, ActionCallback callback) throws AIProcessingException {
         if (action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.GEMINI);
+            if(action == null) {
+                return "no action found for the prompt "+prompt;
+            }
             if(action.getActionRisk() == ActionRisk.HIGH) {
                 log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI, {} ",action.getActionName());
                 return "This is a high risk action will not proceed "+action.getActionName();
@@ -80,17 +83,7 @@ public class GeminiV2ActionProcessor implements AIProcessor{
             JsonUtils utils = new JsonUtils();
             Method m = null;
             Class<?> clazz = javaMethodAction.getActionClass();
-            Method[] methods = clazz.getMethods();
-            for (Method m1 : methods
-            ) {
-                if (m1.getName().equals(action.getActionName())) {
-                    m = m1;
-                    break;
-                }
-            }
-            if(m== null) {
-                throw new AIProcessingException("Method name should matches the actionName  "+action.getActionName()+" class "+action.getClass().getName());
-            }
+            m = findActionMethod(javaMethodAction);
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
                 jsonStr = ResponseHandler.getText(PredictionLoader.getInstance().getChatExplain().sendMessage(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " - populate the fieldValue and return the json ,here are you additional instructions  "+javaMethodAction.getPrompt()+" : "+javaMethodAction.getSubprompt()) );
@@ -116,7 +109,9 @@ public class GeminiV2ActionProcessor implements AIProcessor{
 
             Object result ;
             try {
-
+                if(!isApprovedByHuman(humanVerification, prompt, action.getActionName(), jsonStr)) {
+                    return " Human in loop verification failed for action " + action.getActionName();
+                }
                 result = invokeReflection(method, javaMethodAction, parameterValues);
             } catch (InvocationTargetException | IllegalAccessException e) {
                 throw new AIProcessingException(e);

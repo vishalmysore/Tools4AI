@@ -96,8 +96,52 @@ public interface AIProcessor {
             return;
         }
 
-        // 2. FALLBACK: Keep your existing reflection logic here for backward compatibility
-        // ... (paste your existing reflection code here) ...
+        // 2. FALLBACK: inject into an ActionCallback or ThreadLocal<ActionCallback> field
+        Class<?> clazz = resolveActualClass(obj);
+        if (clazz == null) return;
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.getType().equals(ActionCallback.class)) {
+                field.setAccessible(true);
+                field.set(obj, callback);
+                return;
+            }
+            if (ThreadLocal.class.isAssignableFrom(field.getType())
+                    && field.getGenericType() instanceof ParameterizedType) {
+                Type actualType = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+                if (actualType.getTypeName().equals(ActionCallback.class.getName())) {
+                    field.setAccessible(true);
+                    ThreadLocal<ActionCallback> threadLocal = (ThreadLocal<ActionCallback>) field.get(obj);
+                    if (threadLocal == null) {
+                        threadLocal = new ThreadLocal<>();
+                        field.set(obj, threadLocal);
+                    }
+                    threadLocal.set(callback);
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Resolves the method backing a Java action. Prefers the exact method captured at registration
+     * so overloaded methods resolve to the annotated one, falling back to a lookup by name.
+     */
+    default Method findActionMethod(JavaMethodAction javaMethodAction) throws AIProcessingException {
+        if (javaMethodAction instanceof GenericJavaMethodAction) {
+            Method method = ((GenericJavaMethodAction) javaMethodAction).getActionMethod();
+            if (method != null) return method;
+        }
+        for (Method m : javaMethodAction.getActionClass().getMethods()) {
+            if (m.getName().equals(javaMethodAction.getActionName())) return m;
+        }
+        throw new AIProcessingException("Method name should matches the actionName  " + javaMethodAction.getActionName()
+                + " class " + javaMethodAction.getClass().getName());
+    }
+
+    /** A null {@link HumanInLoop} means no verification was requested. */
+    default boolean isApprovedByHuman(HumanInLoop humanVerification, String prompt, String actionName, String params) {
+        return humanVerification == null || humanVerification.allow(prompt, actionName, params).isAIResponseValid();
     }
 
     default Class<?> resolveActualClass(Object obj) {

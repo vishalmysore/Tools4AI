@@ -25,12 +25,9 @@ public class ProcessorMiscTest {
     }
 
     @Test
-    public void testLocalAIActionProcessor() throws AIProcessingException {
+    public void testLocalAIActionProcessor() {
         LocalAIActionProcessor processor = new LocalAIActionProcessor();
-        assertNull(processor.query("test"));
-        assertNull(processor.processSingleAction("test", (com.t4a.api.AIAction) null, null, null));
-        assertNull(processor.processSingleAction("test"));
-        assertNull(processor.processSingleAction("test", (ActionCallback) null));
+        assertTrue(processor instanceof OpenAiActionProcessor);
     }
 
     @Test

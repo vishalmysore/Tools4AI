@@ -90,6 +90,7 @@ public class PredictionLoader {
     @Setter
     private ChatSession chatExplain;
     private ChatSession chatMulti;
+    private VertexAI vertexAI;
     @Setter
     @Getter
     private ChatSession chatGroupFinder;
@@ -118,7 +119,7 @@ public class PredictionLoader {
     private String claudeKey;
     @Getter
     private String serperKey;
-    private int maxTimeOutForOpenAI = 1; // 10 seconds
+    private int maxTimeOutForOpenAI = 1; // minutes
     private String actionGroupJson;
     private ApplicationContext springContext;
 
@@ -138,49 +139,45 @@ public class PredictionLoader {
         initPromptProp();
         initModelProp();
         if((modelName!=null)&&(projectId!=null)&&(location!=null)) {
-            try (VertexAI vertexAI = new VertexAI(projectId, location)) {
+            // Kept open for the life of the loader: closing it shuts down the transport the chat sessions use
+            vertexAI = new VertexAI(projectId, location);
+            GenerativeModel model =
+                    new GenerativeModel.Builder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
+            GenerativeModel modelExplain =
+                    new GenerativeModel.Builder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
+            GenerativeModel multiCommand =
+                    new GenerativeModel.Builder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
 
-
-                GenerativeModel model =
-                        new GenerativeModel.Builder()
-                                .setModelName(modelName)
-                                .setVertexAi(vertexAI)
-                                .build();
-                GenerativeModel modelExplain =
-                        new GenerativeModel.Builder()
-                                .setModelName(modelName)
-                                .setVertexAi(vertexAI)
-                                .build();
-                GenerativeModel multiCommand =
-                        new GenerativeModel.Builder()
-                                .setModelName(modelName)
-                                .setVertexAi(vertexAI)
-                                .build();
-
-                GenerativeModel chatGroupFinderCommand =
-                        new GenerativeModel.Builder()
-                                .setModelName(modelName)
-                                .setVertexAi(vertexAI)
-                                .build();
-                chat = model.startChat();
-                chatExplain = modelExplain.startChat();
-                chatMulti = multiCommand.startChat();
-                chatGroupFinder = chatGroupFinderCommand.startChat();
-
-            }
+            GenerativeModel chatGroupFinderCommand =
+                    new GenerativeModel.Builder()
+                            .setModelName(modelName)
+                            .setVertexAi(vertexAI)
+                            .build();
+            chat = model.startChat();
+            chatExplain = modelExplain.startChat();
+            chatMulti = multiCommand.startChat();
+            chatGroupFinder = chatGroupFinderCommand.startChat();
         }
         if(openAiKey!=null) {
             Duration timeout = Duration.ofMinutes(maxTimeOutForOpenAI);
-            if(openAiBaseURL!=null) {
-                log.info("baseurl "+openAiBaseURL+" timeout "+timeout+" minutes");
-
-                openAiChatModel = OpenAiChatModel.builder().apiKey(openAiKey).baseUrl(openAiBaseURL).modelName(openAiModelName).timeout(timeout).build();
-
-            } else {
-                openAiChatModel = OpenAiChatModel.withApiKey(openAiKey);
+            OpenAiChatModel.OpenAiChatModelBuilder builder = OpenAiChatModel.builder().apiKey(openAiKey).timeout(timeout);
+            if(!isBlank(openAiBaseURL)) {
+                builder.baseUrl(openAiBaseURL);
             }
-
-
+            if(!isBlank(openAiModelName)) {
+                builder.modelName(openAiModelName);
+            }
+            log.info("baseurl "+openAiBaseURL+" model "+openAiModelName+" timeout "+timeout);
+            openAiChatModel = builder.build();
         }
 
         if(claudeKey!=null) {
@@ -281,6 +278,7 @@ public class PredictionLoader {
             if(openAiKey == null || openAiKey.trim().isEmpty()) {
                 openAiKey = System.getenv("openAiKey");
             }
+            openAiKey = isBlank(openAiKey) ? null : openAiKey.trim();
 
 
             openAiBaseURL = tools4AIProperties.getProperty("openAiBaseURL");
@@ -298,9 +296,14 @@ public class PredictionLoader {
             }
 
 
+            claudeKey = tools4AIProperties.getProperty("claudeKey");
             if(claudeKey == null || claudeKey.trim().isEmpty()) {
                 claudeKey = System.getProperty("claudeKey");
             }
+            if(claudeKey == null || claudeKey.trim().isEmpty()) {
+                claudeKey = System.getenv("claudeKey");
+            }
+            claudeKey = isBlank(claudeKey) ? null : claudeKey.trim();
             serperKey = tools4AIProperties.getProperty("serperKey");
             if(serperKey == null || serperKey.trim().isEmpty()) {
                 serperKey = System.getProperty("serperKey");
@@ -563,15 +566,17 @@ public class PredictionLoader {
     }
 
     public String explainAction(String prompt, String action)  {
-        GenerateContentResponse response = null;
+        if (chatExplain == null) {
+            log.warn("explainAction requires Gemini to be configured");
+            return null;
+        }
         try {
-            response = chatExplain.sendMessage("explain why this action "+action+" is appropriate for this command "+prompt+" out of all these actions "+actionNameList);
-
+            GenerateContentResponse response = chatExplain.sendMessage("explain why this action "+action+" is appropriate for this command "+prompt+" out of all these actions "+actionNameList);
+            return ResponseHandler.getText(response);
         } catch (IOException e) {
             log.warn(e.getMessage());
+            return null;
         }
-        assert response != null;
-        return  ResponseHandler.getText(response);
 
 
     }
@@ -776,6 +781,7 @@ public class PredictionLoader {
         }
         action.setActionInstance(instance);
         String actionName = action.getActionName();
+        warnIfDuplicate(actionName, action.getActionClass());
 
         actionNameList.append(actionName).append(",");
         actionGroupList.addAction(action);
@@ -803,10 +809,23 @@ public class PredictionLoader {
         }
 
         String actionName = instance.getActionName();
+        warnIfDuplicate(actionName, clazz);
 
         actionNameList.append(actionName).append(",");
         actionGroupList.addAction(instance);
         predictions.put(actionName,instance);
+    }
+
+    /** Actions are keyed by name only, so a second registration silently replaces the first. */
+    private void warnIfDuplicate(String actionName, Class<?> newClass) {
+        AIAction existing = predictions.get(actionName);
+        if (existing != null) {
+            String existingClass = existing instanceof JavaMethodAction && ((JavaMethodAction) existing).getActionClass() != null
+                    ? ((JavaMethodAction) existing).getActionClass().getName()
+                    : existing.getClass().getName();
+            log.warn("Duplicate action name '{}': {} replaces the action from {}. Rename one of the methods "
+                    + "or narrow action.packages.to.scan", actionName, newClass.getName(), existingClass);
+        }
     }
 
     public Map<String, AIAction> getPredictions() {

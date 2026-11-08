@@ -83,17 +83,7 @@ public class OpenAiActionProcessor implements AIProcessor{
             }
             setProcessor(javaMethodAction);
             Class<?> clazz = javaMethodAction.getActionClass();
-            Method[] methods = clazz.getMethods();
-            for (Method m1 : methods
-            ) {
-                if (m1.getName().equals(javaMethodAction.getActionName())) {
-                    m = m1;
-                    break;
-                }
-            }
-            if(m== null) {
-                throw new AIProcessingException("Method name should matches the actionName  "+action.getActionName()+" class "+action.getClass().getName());
-            }
+            m = findActionMethod(javaMethodAction);
             String jsonStr = utils.convertMethodTOJsonString(m);
             try {
                 jsonStr = PredictionLoader.getInstance().getOpenAiChatModel().generate(" Here is your prompt {" + prompt + "} - here is the json - " + jsonStr + " "+PredictionLoader.getInstance().METHODTOJSONOI+ " Do not add any additional comments to JSON and here are additional instructions "+(javaMethodAction).getPrompt()+" and "+javaMethodAction.getSubprompt());
@@ -115,7 +105,7 @@ public class OpenAiActionProcessor implements AIProcessor{
 
             Object result;
             try {
-                if(humanVerification==null || humanVerification.allow(prompt, action.getActionName(), jsonStr).isAIResponseValid()) {
+                if(isApprovedByHuman(humanVerification, prompt, action.getActionName(), jsonStr)) {
                     result = invokeReflection(method, javaMethodAction, parameterValues);
                 } else {
                     return "Human verification failed";
@@ -132,9 +122,11 @@ public class OpenAiActionProcessor implements AIProcessor{
             String params = PredictionLoader.getInstance().getActionParams(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties());
             Object obj = null;
             try {
-                if(humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
+                if(isApprovedByHuman(humanVerification, prompt, action.getActionName(), params)) {
                     obj = methodExecutor.action(params, action);
                     log.debug(" the action is returning "+obj);
+                } else {
+                    return "Human verification failed";
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new AIProcessingException(e);
@@ -149,6 +141,13 @@ public class OpenAiActionProcessor implements AIProcessor{
     public Object processSingleNonJava(String prompt, AIAction action, HumanInLoop humanVerification, ExplainDecision explain) throws AIProcessingException {
         if(action == null) {
             action = PredictionLoader.getInstance().getPredictedAction(prompt, AIPlatform.OPENAI);
+            if(action == null) {
+                return "no action found for the prompt "+prompt;
+            }
+            if(action.getActionRisk() == ActionRisk.HIGH) {
+                log.warn(" This is a high risk action needs to be explicitly provided by human operator cannot be predicted by AI "+action.getActionName());
+                return "This is a high risk action will not proceed "+action.getActionName();
+            }
         }
         log.debug(action+"");
         JavaMethodExecutor methodExecutor = new JavaMethodExecutor();
@@ -166,7 +165,7 @@ public class OpenAiActionProcessor implements AIProcessor{
                 String params = PredictionLoader.getInstance().getActionParams(action,prompt,AIPlatform.OPENAI,methodExecutor.getProperties());
 
                 try {
-                    if(humanVerification.allow(prompt, action.getActionName(), params).isAIResponseValid()) {
+                    if(isApprovedByHuman(humanVerification, prompt, action.getActionName(), params)) {
                         objReturnFromAI = methodExecutor.action(params, action);
                         log.debug(" the action returned "+objReturnFromAI);
                     }
