@@ -9,6 +9,7 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.parameters>true</maven.compiler.parameters>
   </properties>
   <dependencies>
     <dependency><groupId>io.github.vishalmysore</groupId><artifactId>tools4ai</artifactId><version>1.3.0</version></dependency>
