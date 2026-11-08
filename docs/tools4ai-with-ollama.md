@@ -1,25 +1,67 @@
-# Run Java Methods from Plain English with Tools4AI and Ollama
+# Build a Local AI Agent in Java with Ollama: Call Your Java Methods from Plain English (No API Key)
 
-You have a Java method:
+Most AI agent tutorials are written for Python. If you are a Java developer, you have probably watched
+LangChain demos and wondered how to do the same thing in the language your production systems actually
+run on, without rewriting them, without paying for an API key, and without sending customer data to
+the cloud.
+
+This guide shows you how. In about 10 minutes you will build a **Java AI agent** that:
+
+- understands a plain English request such as *"Book a table for 4 people under the name Maria this Friday"*,
+- decides which of your Java methods should handle it,
+- pulls the arguments out of the sentence (`customerName = "Maria"`, `numberOfPeople = 4`, `day = "Friday"`),
+- and calls the method, with real Java types.
+
+It all runs on your own laptop with a free, open-source **local LLM** through
+[Ollama](https://ollama.com). No GPU, no cloud account, no OpenAI key, and no data leaves your machine.
+
+## Why this is harder in Java than it should be
+
+The technique behind every AI agent is called **function calling** (or **tool calling**): you describe
+your functions to a large language model, it picks one and fills in the arguments, and your code runs it.
+
+Doing that by hand in Java means a lot of plumbing:
+
+1. Write a JSON schema describing every method and every parameter.
+2. Send the schemas and the user's request to the model.
+3. Parse the tool call that comes back.
+4. Convert the string arguments into `int`, `boolean`, dates and your own objects.
+5. Find the right method and invoke it.
+6. Repeat all of it every time you add or change a method.
+
+That is a lot of code that has nothing to do with your business logic.
+
+## The shortcut: annotate your Java methods
+
+[Tools4AI](https://github.com/vishalmysore/Tools4AI) is a free, open-source (MIT) Java library that does
+all six steps for you. You add two annotations, `@Agent` on a class and `@Action` on each method, and it
+handles the schemas, the prompts, the type conversion and the method call. It works with OpenAI, Anthropic
+Claude, Google Gemini, and any server that speaks the OpenAI API. Ollama is one of those, which is how it
+runs local models.
+
+Here is the whole idea in one class:
 
 ```java
-public String bookTable(String customerName, int numberOfPeople, String day)
+@Agent(groupName = "restaurant", groupDescription = "Restaurant table bookings and menu questions")
+public class RestaurantAgent {
+
+    @Action(description = "Book a table at the restaurant")
+    public String bookTable(String customerName, int numberOfPeople, String day) {
+        return "Booked a table for " + numberOfPeople + " under " + customerName + " on " + day;
+    }
+}
 ```
 
-and you want a user to type *"Book a table for 4 people under the name Maria this Friday"* and have that
-method run with `customerName = "Maria"`, `numberOfPeople = 4` and `day = "Friday"`.
+and one line to use it:
 
-Normally that means writing a JSON schema for every method, sending it to a cloud model with an API key,
-parsing the tool call that comes back, converting the arguments, and dispatching to the right method.
+```java
+Object result = new OpenAiActionProcessor().processSingleAction("Book a table for 4 people under the name Maria this Friday");
+// Booked a table for 4 under Maria on Friday
+```
 
-[Tools4AI](https://github.com/vishalmysore/Tools4AI) does all of that for you. You add two annotations to
-an ordinary Java class, and Tools4AI asks the model which method fits the sentence and what values to pass,
-then calls the method. Combined with [Ollama](https://ollama.com), the model runs on your own machine:
-no API key, no cloud account, and no data leaves your laptop.
+The rest of this article builds that restaurant assistant step by step, running entirely on your machine.
 
-This article builds a small restaurant assistant from scratch.
-
-## What you need
+## What you need to run a local LLM in Java
 
 - Java 17 or newer
 - Maven
@@ -35,7 +77,7 @@ If you just want to see it work, the finished project is in
 [examples/ollama-quickstart](https://github.com/vishalmysore/Tools4AI/tree/main/examples/ollama-quickstart).
 Clone the repository, go to that folder and run `mvn -q compile exec:java`.
 
-## Step 1: the project
+## Step 1: Create the Maven project
 
 Create a Maven project with this `pom.xml`:
 
@@ -85,7 +127,7 @@ The one line that matters most is `maven.compiler.parameters`. Tools4AI shows th
 names. Without this flag Java compiles them as `arg0`, `arg1`, and the model has no idea that `arg0`
 is a customer's name.
 
-## Step 2: the agent
+## Step 2: Write the agent as a plain Java class
 
 An agent is a plain Java class. Mark the class with `@Agent` and each method the model may call with
 `@Action`:
@@ -118,7 +160,7 @@ reads the parameter types (`String`, `int`) from the method signature.
 In a real application these methods would write to a database or call a booking service. The model
 never runs your code itself: it only chooses the method and the values, and Tools4AI makes the call.
 
-## Step 3: point Tools4AI at Ollama
+## Step 3: Connect Java to Ollama
 
 Ollama serves an OpenAI-compatible API, so Tools4AI's OpenAI support works with it unchanged. Create
 `src/main/resources/tools4ai.properties`:
@@ -148,7 +190,7 @@ This changes how Tools4AI words its "which action?" question. Large models are f
 wording, but a 3B model sometimes answers it with a number instead of a method name once an agent has
 three or more actions. Spelling out "the exact name" fixes that.
 
-## Step 4: the main class
+## Step 4: Call the agent from main
 
 ```java
 package quickstart;
@@ -172,7 +214,7 @@ public class QuickStart {
 
 `processSingleAction` is the whole integration. It returns whatever your method returned.
 
-## Run it
+## Run your Java AI agent
 
 ```bash
 mvn -q compile exec:java
@@ -202,7 +244,7 @@ You may see a few log lines saying `shell_actions.yaml` or `http_actions.json` w
 optional files for other kinds of actions (shell scripts and REST calls) and are safe to ignore. The
 finished example in the repository hides them.
 
-## What happens inside
+## How function calling works under the hood
 
 For each prompt, Tools4AI has a short conversation with the model:
 
@@ -217,7 +259,7 @@ For each prompt, Tools4AI has a short conversation with the model:
 Because the model only ever answers small, focused questions, a 3B model running locally is enough
 for this kind of work.
 
-## Add your own action
+## Add a new tool with one method
 
 Add a method to `RestaurantAgent`:
 
@@ -250,7 +292,7 @@ A few things make small models much more reliable:
 - **Avoid apostrophes in `-Dexec.args`.** The exec plugin treats `Maria's` as an opening quote. This
   only affects passing prompts on the Maven command line, not prompts your application passes in code.
 
-## Choosing a model
+## Which Ollama model is best for Java function calling?
 
 To try another model, `ollama pull` it and change one line in `tools4ai.properties`:
 
@@ -270,7 +312,7 @@ code, so there you can switch with `mvn -q compile exec:java -DopenAiModelName=p
 
 If you have a GPU, Ollama uses it automatically and every model gets much faster.
 
-## Moving to a cloud model later
+## Switching to OpenAI, Claude or Gemini later
 
 Nothing in `RestaurantAgent` or `QuickStart` is tied to Ollama. To use OpenAI itself, put a real key in
 `openAiKey`, remove `openAiBaseURL`, and set `openAiModelName` to an OpenAI model. Tools4AI also has
@@ -291,3 +333,30 @@ Once the basics work, Tools4AI has more to offer for real applications:
 
 The complete code from this article is in
 [examples/ollama-quickstart](https://github.com/vishalmysore/Tools4AI/tree/main/examples/ollama-quickstart).
+
+## FAQ
+
+**Can I use Ollama from Java?**
+Yes. Ollama exposes an OpenAI-compatible API at `http://localhost:11434/v1`, so any Java library that
+talks to OpenAI can talk to Ollama by changing the base URL. That is all the setup in Step 3 does.
+
+**Do I need an OpenAI API key or a GPU?**
+No. The model runs locally through Ollama, so there is no key and no bill. Everything in this article
+was tested on a laptop CPU, at about 10 to 20 seconds per request. A GPU makes it much faster.
+
+**Is my data sent anywhere?**
+No. The prompt, the model and your Java code all stay on your machine, which matters when the
+requests contain customer or company data.
+
+**What is the difference between this and calling the LLM directly?**
+Calling the model directly gives you text back. Function calling gives you an *action*: the model
+chooses one of your methods and its arguments, and your own code does the work. That is what turns a
+chatbot into an agent that can book, cancel, look up or update things in your systems.
+
+**Is it free?**
+Yes. Ollama and the models used here are free, and Tools4AI is open source under the MIT license.
+
+**Where is the code?**
+The complete example is in
+[examples/ollama-quickstart](https://github.com/vishalmysore/Tools4AI/tree/main/examples/ollama-quickstart),
+and the library is at [github.com/vishalmysore/Tools4AI](https://github.com/vishalmysore/Tools4AI).
